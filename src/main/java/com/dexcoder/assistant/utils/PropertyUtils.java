@@ -22,41 +22,35 @@ import org.slf4j.LoggerFactory;
  */
 public final class PropertyUtils {
 
-    private static final Logger        LOG                = LoggerFactory
-                                                              .getLogger(PropertyUtils.class);
+    private static final Logger        LOG        = LoggerFactory.getLogger(PropertyUtils.class);
 
     /** 属性文件后缀 */
-    private static final String        PRO_SUFFIX         = ".properties";
-
-    /** 默认的web容器 */
-    private static final String        DEFAULT_WEB_SERVER = "tomcat";
+    private static final String        PRO_SUFFIX = ".properties";
 
     /** 配置文件保存map */
-    private static Map<String, String> propMap            = new HashMap<String, String>();
+    private static Map<String, String> propMap    = new HashMap<String, String>();
 
     /**
      * 加载properties文件
      *
-     * @param webServer the web server
      * @param resourceName the resource name
      */
-    public static void loadProperties(String webServer, String resourceName) {
+    public static void loadProperties(String resourceName) {
 
         try {
             if (!StringUtils.endsWith(resourceName, PRO_SUFFIX)) {
                 resourceName += PRO_SUFFIX;
             }
             Properties prop = new Properties();
-            String confPath = getWebServerConfPath(webServer);
-            File file = new File(confPath, resourceName);
-            if (StringUtils.isBlank(confPath) || !file.exists()) {
-                LOG.info("从classpath加载配置文件{}", resourceName);
+            File configFile = getConfigFile(resourceName);
+            if (configFile == null) {
+                LOG.info("从classpath加载配置文件:{}", resourceName);
                 InputStream stream = Thread.currentThread().getContextClassLoader()
                     .getResourceAsStream(resourceName);
                 prop.load(stream);
             } else {
-                LOG.info("从web容器配置目录加载配置文件{}", resourceName);
-                prop.load(new FileReader(file));
+                LOG.info("从目录加载配置文件:{}", configFile.getAbsolutePath());
+                prop.load(new FileReader(configFile));
             }
             Iterator<Map.Entry<Object, Object>> iterator = prop.entrySet().iterator();
             while (iterator.hasNext()) {
@@ -67,6 +61,7 @@ public final class PropertyUtils {
             //为配置文件加入一个属性，用以判断该配置文件已加载过
             propMap.put(resourceName, "true");
         } catch (IOException e) {
+            LOG.error("加载配置文件失败:" + resourceName, e);
             //ignore
         }
     }
@@ -96,7 +91,7 @@ public final class PropertyUtils {
         }
         String finalKey = resourceName + key;
         if (propMap.get(resourceName) == null) {
-            loadProperties(DEFAULT_WEB_SERVER, resourceName);
+            loadProperties(resourceName);
         }
         String value = propMap.get(finalKey);
         return StringUtils.isBlank(value) ? defaultValue : value;
@@ -105,13 +100,21 @@ public final class PropertyUtils {
     /**
      * 获取web容器的配置目录
      *  
-     * @param webServer
      * @return
      */
-    private static String getWebServerConfPath(String webServer) {
+    private static File getConfigFile(String resourceName) {
 
-        if (StringUtils.equalsIgnoreCase(webServer, "tomcat")) {
-            return System.getProperty("catalina.home") + "/conf";
+        //tomcat
+        String resourcePath = System.getProperty("catalina.home") + "/conf";
+        File file = new File(resourcePath, resourceName);
+        if (file.exists()) {
+            return file;
+        }
+        //程序目录
+        resourcePath = System.getProperty("user.dir");
+        file = new File(resourcePath, resourceName);
+        if (file.exists()) {
+            return file;
         }
         return null;
     }
