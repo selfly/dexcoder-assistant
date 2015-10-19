@@ -55,10 +55,10 @@
             <scope>${jar.scope}</scope>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>commons-lang</groupId>-->
-            <!--<artifactId>commons-lang</artifactId>-->
-            <!--<version>${commons-lang.version}</version>-->
-            <!--<scope>${jar.scope}</scope>-->
+        <!--<groupId>commons-lang</groupId>-->
+        <!--<artifactId>commons-lang</artifactId>-->
+        <!--<version>${commons-lang.version}</version>-->
+        <!--<scope>${jar.scope}</scope>-->
         <!--</dependency>-->
         <dependency>
             <groupId>commons-io</groupId>
@@ -72,10 +72,10 @@
             <version>2.5</version>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>org.apache.commons</groupId>-->
-            <!--<artifactId>commons-lang3</artifactId>-->
-            <!--<version>${commons-lang3.version}</version>-->
-            <!--<scope>${jar.scope}</scope>-->
+        <!--<groupId>org.apache.commons</groupId>-->
+        <!--<artifactId>commons-lang3</artifactId>-->
+        <!--<version>${commons-lang3.version}</version>-->
+        <!--<scope>${jar.scope}</scope>-->
         <!--</dependency>-->
         <dependency>
             <groupId>commons-collections</groupId>
@@ -146,7 +146,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.7</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

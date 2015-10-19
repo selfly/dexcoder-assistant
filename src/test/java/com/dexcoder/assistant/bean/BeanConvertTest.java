@@ -1,6 +1,7 @@
 package com.dexcoder.assistant.bean;
 
-import com.dexcoder.assistant.persistence.User;
+import com.dexcoder.assistant.model.UserVo;
+import com.dexcoder.assistant.model.User;
 import org.junit.Test;
 
 /**
@@ -13,7 +14,7 @@ public class BeanConvertTest {
 
         UserVo user = new UserVo();
         user.setUserId(1000L);
-        user.setUserName("liyd");
+        user.setLoginName("liyd");
 
         User userVo = BeanConverter.convert(new User(), user);
 
