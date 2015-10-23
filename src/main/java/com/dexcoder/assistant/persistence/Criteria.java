@@ -88,8 +88,8 @@ public class Criteria {
      */
     public Criteria asc(String... field) {
         for (String f : field) {
-            AutoField autoField = this.buildAutoFields(f, null, "ASC", AutoField.FIELD_ORDER_BY,
-                null);
+            AutoField autoField = AutoFieldUtils.buildAutoFields(f, null, "ASC",
+                AutoField.FIELD_ORDER_BY, null);
             this.orderByFields.add(autoField);
         }
         return this;
@@ -103,8 +103,8 @@ public class Criteria {
      */
     public Criteria desc(String... field) {
         for (String f : field) {
-            AutoField autoField = this.buildAutoFields(f, null, "DESC", AutoField.FIELD_ORDER_BY,
-                null);
+            AutoField autoField = AutoFieldUtils.buildAutoFields(f, null, "DESC",
+                AutoField.FIELD_ORDER_BY, null);
             this.orderByFields.add(autoField);
         }
         return this;
@@ -118,8 +118,8 @@ public class Criteria {
      * @return
      */
     public Criteria set(String fieldName, Object value) {
-        AutoField autoField = this.buildAutoFields(fieldName, null, "=", AutoField.FIELD_UPDATE,
-            value);
+        AutoField autoField = AutoFieldUtils.buildAutoFields(fieldName, null, "=",
+            AutoField.FIELD_UPDATE, value);
         this.autoFields.add(autoField);
         return this;
     }
@@ -132,8 +132,8 @@ public class Criteria {
      * @return
      */
     public Criteria setPKValueName(String pkName, String valueName) {
-        AutoField autoField = this.buildAutoFields(pkName, null, "=", AutoField.PK_VALUE_NAME,
-            valueName);
+        AutoField autoField = AutoFieldUtils.buildAutoFields(pkName, null, "=",
+            AutoField.PK_VALUE_NAME, valueName);
         this.autoFields.add(autoField);
         return this;
     }
@@ -159,7 +159,7 @@ public class Criteria {
      * @return
      */
     public Criteria and(String fieldName, String fieldOperator, Object[] values) {
-        AutoField autoField = this.buildAutoFields(fieldName, "and", fieldOperator,
+        AutoField autoField = AutoFieldUtils.buildAutoFields(fieldName, "and", fieldOperator,
             AutoField.FIELD_WHERE, values);
         this.autoFields.add(autoField);
         return this;
@@ -186,7 +186,7 @@ public class Criteria {
      * @return
      */
     public Criteria or(String fieldName, String fieldOperator, Object[] values) {
-        AutoField autoField = this.buildAutoFields(fieldName, "or", fieldOperator,
+        AutoField autoField = AutoFieldUtils.buildAutoFields(fieldName, "or", fieldOperator,
             AutoField.FIELD_WHERE, values);
         this.autoFields.add(autoField);
         return this;
@@ -216,7 +216,7 @@ public class Criteria {
         if (this.isWhere) {
             throw new AssistantException("There can be only one 'where'!");
         }
-        AutoField autoField = this.buildAutoFields(fieldName, "and", fieldOperator,
+        AutoField autoField = AutoFieldUtils.buildAutoFields(fieldName, "and", fieldOperator,
             AutoField.FIELD_WHERE, values);
         this.autoFields.add(autoField);
         this.isWhere = true;
@@ -239,8 +239,8 @@ public class Criteria {
      * @return
      */
     public Criteria beginBracket(String operator) {
-        AutoField autoField = this.buildAutoFields("(", operator, null, AutoField.FIELD_BRACKET,
-            null);
+        AutoField autoField = AutoFieldUtils.buildAutoFields("(", operator, null,
+            AutoField.FIELD_BRACKET, null);
         this.autoFields.add(autoField);
         return this;
     }
@@ -251,7 +251,8 @@ public class Criteria {
      * @return
      */
     public Criteria endBracket() {
-        AutoField autoField = this.buildAutoFields(")", null, null, AutoField.FIELD_BRACKET, null);
+        AutoField autoField = AutoFieldUtils.buildAutoFields(")", null, null,
+            AutoField.FIELD_BRACKET, null);
         this.autoFields.add(autoField);
         return this;
     }
@@ -274,23 +275,6 @@ public class Criteria {
 
     public List<AutoField> getOrderByFields() {
         return orderByFields;
-    }
-
-    /**
-     * 获取操作的字段
-     *
-     * @return
-     */
-    private AutoField buildAutoFields(String fieldName, String sqlOperator, String fieldOperator,
-                                      int type, Object... values) {
-        AutoField autoField = new AutoField();
-        autoField.setName(fieldName);
-        autoField.setSqlOperator(sqlOperator);
-        autoField.setFieldOperator(fieldOperator);
-        autoField.setValues(values);
-        autoField.setType(type);
-
-        return autoField;
     }
 
 }

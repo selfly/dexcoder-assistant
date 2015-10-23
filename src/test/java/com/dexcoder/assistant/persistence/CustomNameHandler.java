@@ -2,9 +2,10 @@ package com.dexcoder.assistant.persistence;
 
 import java.util.Map;
 
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
+import com.dexcoder.assistant.model.User;
 import com.dexcoder.assistant.utils.NameUtils;
 
 /**
@@ -14,14 +15,28 @@ import com.dexcoder.assistant.utils.NameUtils;
  * Date: 2/12/14
  * Time: 4:51 PM
  */
-public class DefaultNameHandler implements NameHandler {
+public class CustomNameHandler implements NameHandler {
 
     /** 主键后缀 */
     private static final String PRI_SUFFIX = "_ID";
 
     public String getTableName(Class<?> entityClass, Map<String, AutoField> fieldMap) {
         //Java属性的骆驼命名法转换回数据库下划线“_”分隔的格式
-        return NameUtils.getUnderlineName(entityClass.getSimpleName());
+        String tableName = NameUtils.getUnderlineName(entityClass.getSimpleName());
+        if (User.class.equals(entityClass)) {
+            AutoField autoField = fieldMap.get("userId");
+            if (autoField == null || ArrayUtils.isEmpty(autoField.getValues())) {
+                return tableName;
+            }
+            Long id = (Long) autoField.getValues()[0];
+            if (id == null) {
+                return tableName;
+            }
+            long tableNum = id % 5;
+
+            return tableName + "_" + tableNum;
+        }
+        return tableName;
     }
 
     public String getPKName(Class<?> entityClass) {

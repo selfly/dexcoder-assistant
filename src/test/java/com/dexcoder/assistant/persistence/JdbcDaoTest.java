@@ -161,7 +161,7 @@ public class JdbcDaoTest extends BaseTest {
     @Test
     public void queryList3() {
         Criteria criteria = Criteria.create(User.class).exclude("userId")
-            .where("userType", new Object[] { UserType.MEMBER.getCode() }).asc("userAge")
+            .where("userType", new Object[]{UserType.MEMBER.getCode()}).asc("userAge")
             .desc("userId");
         List<User> users = jdbcDao.queryList(criteria);
         Assert.assertNotNull(users);
@@ -242,10 +242,35 @@ public class JdbcDaoTest extends BaseTest {
         Criteria criteria = Criteria.create(User.class)
             .where("userType", new Object[] { UserType.MEMBER.getCode() }).beginBracket()
             .and("loginName", new Object[] { "selfly1" })
-            .or("email", new Object[] { "javaer1@live.com" }).endBracket()
+            .or("email", new Object[]{"javaer1@live.com"}).endBracket()
             .and("password", new Object[] { "123456" });
         User user = jdbcDao.querySingleResult(criteria);
         Assert.assertNotNull(user);
+        System.out.println(user.getLoginName());
+    }
+
+    @Test
+    public void multiTable() {
+
+        for (int i = 1; i < 50; i++) {
+
+            User user = new User();
+            user.setUserId((long) i);
+            user.setUserType("1");
+            user.setPassword("123456-" + i);
+            user.setLoginName("selfly-" + i);
+            user.setEmail(i + "selfly@foxmail.com");
+            user.setUserAge(i);
+            user.setGmtCreate(new Date());
+            jdbcDao.save(user);
+        }
+
+        System.out.println("=================");
+    }
+
+    @Test
+    public void multiTableGet(){
+        User user = jdbcDao.get(User.class, 22L);
         System.out.println(user.getLoginName());
     }
 }

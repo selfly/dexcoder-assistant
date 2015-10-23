@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.dao.DataAccessException;
@@ -115,7 +117,7 @@ public class JdbcDaoImpl implements JdbcDao {
     }
 
     public void deleteAll(Class<?> clazz) {
-        String tableName = this.getNameHandler().getTableName(clazz);
+        String tableName = this.getNameHandler().getTableName(clazz, null);
         String sql = "TRUNCATE TABLE " + tableName;
         jdbcTemplate.execute(sql);
     }
@@ -211,9 +213,9 @@ public class JdbcDaoImpl implements JdbcDao {
     }
 
     public byte[] getBlobValue(Class<?> clazz, String fieldName, Long id) {
-        String tableName = nameHandler.getTableName(clazz);
         String primaryName = nameHandler.getPKName(clazz);
         String columnName = nameHandler.getColumnName(fieldName);
+        String tableName = nameHandler.getTableName(clazz, null);
         String tmp_sql = "select t.%s from %s t where t.%s = ?";
         String sql = String.format(tmp_sql, columnName, tableName, primaryName);
         return jdbcTemplate.query(sql, new Object[] { id }, new ResultSetExtractor<byte[]>() {

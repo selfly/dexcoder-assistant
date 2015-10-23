@@ -4,12 +4,10 @@ import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -17,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.dexcoder.assistant.exceptions.AssistantException;
 import com.dexcoder.assistant.utils.ClassUtils;
+import com.dexcoder.assistant.utils.UUIDUtils;
 
 /**
  * Created by liyd on 3/3/15.
@@ -54,9 +53,9 @@ public class SqlUtils {
     public static BoundSql buildInsertSql(Object entity, Criteria criteria, NameHandler nameHandler) {
 
         Class<?> entityClass = getEntityClass(entity, criteria);
-        List<AutoField> autoFields = mergeAutoField(entity, criteria, AutoField.FIELD_UPDATE);
+        Map<String, AutoField> autoFields = mergeAutoField(entity, criteria, AutoField.FIELD_UPDATE);
 
-        String tableName = nameHandler.getTableName(entityClass);
+        String tableName = nameHandler.getTableName(entityClass, autoFields);
         String pkName = nameHandler.getPKName(entityClass);
 
         StringBuilder sql = new StringBuilder("INSERT INTO ");
@@ -67,7 +66,7 @@ public class SqlUtils {
         StringBuilder args = new StringBuilder();
         args.append("(");
 
-        for (AutoField autoField : autoFields) {
+        for (AutoField autoField : autoFields.values()) {
 
             if (autoField.getType() != AutoField.FIELD_UPDATE
                 && autoField.getType() != AutoField.PK_VALUE_NAME) {
@@ -109,18 +108,18 @@ public class SqlUtils {
     public static BoundSql buildUpdateSql(Object entity, Criteria criteria, NameHandler nameHandler) {
 
         Class<?> entityClass = getEntityClass(entity, criteria);
-        List<AutoField> autoFields = mergeAutoField(entity, criteria, AutoField.FIELD_UPDATE);
+        Map<String, AutoField> autoFields = mergeAutoField(entity, criteria, AutoField.FIELD_UPDATE);
 
         StringBuilder sql = new StringBuilder();
         List<Object> params = new ArrayList<Object>();
-        String tableName = nameHandler.getTableName(entityClass);
+        String tableName = nameHandler.getTableName(entityClass, autoFields);
         String primaryName = nameHandler.getPKName(entityClass);
 
         sql.append("UPDATE ").append(tableName).append(" SET ");
 
         Object primaryValue = null;
 
-        Iterator<AutoField> iterator = autoFields.iterator();
+        Iterator<AutoField> iterator = autoFields.values().iterator();
         while (iterator.hasNext()) {
 
             AutoField autoField = iterator.next();
@@ -184,17 +183,27 @@ public class SqlUtils {
      * @param entity the entity
      * @param criteria the criteria
      * @param operateType the operate type
-     * @return the list
+     * @return
      */
-    protected static List<AutoField> mergeAutoField(Object entity, Criteria criteria,
-                                                    int operateType) {
+    protected static Map<String, AutoField> mergeAutoField(Object entity, Criteria criteria,
+                                                           int operateType) {
+
+        Map<String, AutoField> autoFieldMap = new LinkedHashMap<String, AutoField>();
 
         //汇总的所有操作属性,必须criteria字段在前，防止or等操作被覆盖
-        List<AutoField> autoFields = (criteria != null ? criteria.getAutoFields()
-            : new ArrayList<AutoField>());
+        if (criteria != null && !CollectionUtils.isEmpty(criteria.getAutoFields())) {
+            Iterator<AutoField> iterator = criteria.getAutoFields().iterator();
+            while (iterator.hasNext()) {
+                AutoField autoField = iterator.next();
+                //括号字段生成唯一key，防止sql中多个括号操作时覆盖
+                String key = (autoField.getType() == AutoField.FIELD_BRACKET ? UUIDUtils.getUUID8()
+                    : autoField.getName());
+                autoFieldMap.put(key, autoField);
+            }
+        }
 
         if (entity == null) {
-            return autoFields;
+            return autoFieldMap;
         }
 
         //获取属性信息
@@ -223,9 +232,9 @@ public class SqlUtils {
             autoField.setValues(new Object[] { value });
             autoField.setType(operateType);
 
-            autoFields.add(autoField);
+            autoFieldMap.put(autoField.getName(), autoField);
         }
-        return autoFields;
+        return autoFieldMap;
     }
 
     /**
@@ -235,11 +244,12 @@ public class SqlUtils {
      * @param nameHandler the name handler
      * @return bound sql
      */
-    protected static BoundSql buildWhereSql(List<AutoField> autoFields, NameHandler nameHandler) {
+    protected static BoundSql buildWhereSql(Map<String, AutoField> autoFields,
+                                            NameHandler nameHandler) {
 
         StringBuilder sql = new StringBuilder();
         List<Object> params = new ArrayList<Object>();
-        Iterator<AutoField> iterator = autoFields.iterator();
+        Iterator<AutoField> iterator = autoFields.values().iterator();
         while (iterator.hasNext()) {
             AutoField autoField = iterator.next();
             if (AutoField.FIELD_WHERE != autoField.getType()
@@ -312,10 +322,11 @@ public class SqlUtils {
 
         List<Object> params = new ArrayList<Object>();
         params.add(id);
-        String tableName = nameHandler.getTableName(clazz);
-        String primaryName = nameHandler.getPKName(clazz);
-        String sql = "DELETE FROM " + tableName + " WHERE " + primaryName + " = ?";
-        return new BoundSql(sql, primaryName, params);
+        String pkName = nameHandler.getPKName(clazz);
+        Map<String, AutoField> fieldMap = AutoFieldUtils.buildPKMap(pkName, id);
+        String tableName = nameHandler.getTableName(clazz, fieldMap);
+        String sql = "DELETE FROM " + tableName + " WHERE " + pkName + " = ?";
+        return new BoundSql(sql, pkName, params);
     }
 
     /**
@@ -329,9 +340,9 @@ public class SqlUtils {
     public static BoundSql buildDeleteSql(Object entity, Criteria criteria, NameHandler nameHandler) {
 
         Class<?> entityClass = getEntityClass(entity, criteria);
-        List<AutoField> autoFields = mergeAutoField(entity, criteria, AutoField.FIELD_WHERE);
+        Map<String, AutoField> autoFields = mergeAutoField(entity, criteria, AutoField.FIELD_WHERE);
 
-        String tableName = nameHandler.getTableName(entityClass);
+        String tableName = nameHandler.getTableName(entityClass, autoFields);
         String primaryName = nameHandler.getPKName(entityClass);
 
         StringBuilder sql = new StringBuilder("DELETE FROM " + tableName + " WHERE ");
@@ -355,15 +366,17 @@ public class SqlUtils {
                                         NameHandler nameHandler) {
 
         Class<?> entityClass = (clazz == null ? criteria.getEntityClass() : clazz);
-        String tableName = nameHandler.getTableName(entityClass);
-        String primaryName = nameHandler.getPKName(entityClass);
+        String pkName = nameHandler.getPKName(entityClass);
+        Map<String, AutoField> fieldMap = AutoFieldUtils.buildPKMap(pkName, id);
+        String tableName = nameHandler.getTableName(entityClass, fieldMap);
+
         String columns = SqlUtils.buildColumnSql(entityClass, nameHandler, criteria == null ? null
             : criteria.getIncludeFields(), criteria == null ? null : criteria.getExcludeFields());
-        String sql = "SELECT " + columns + " FROM " + tableName + " WHERE " + primaryName + " = ?";
+        String sql = "SELECT " + columns + " FROM " + tableName + " WHERE " + pkName + " = ?";
         List<Object> params = new ArrayList<Object>();
         params.add(id);
 
-        return new BoundSql(sql, primaryName, params);
+        return new BoundSql(sql, pkName, params);
     }
 
     /**
@@ -377,9 +390,9 @@ public class SqlUtils {
     public static BoundSql buildQuerySql(Object entity, Criteria criteria, NameHandler nameHandler) {
 
         Class<?> entityClass = getEntityClass(entity, criteria);
-        List<AutoField> autoFields = mergeAutoField(entity, criteria, AutoField.FIELD_WHERE);
+        Map<String, AutoField> autoFields = mergeAutoField(entity, criteria, AutoField.FIELD_WHERE);
 
-        String tableName = nameHandler.getTableName(entityClass);
+        String tableName = nameHandler.getTableName(entityClass, autoFields);
         String primaryName = nameHandler.getPKName(entityClass);
 
         String columns = SqlUtils.buildColumnSql(entityClass, nameHandler, criteria == null ? null
@@ -388,7 +401,7 @@ public class SqlUtils {
         querySql.append(tableName);
 
         List<Object> params = null;
-        if (!CollectionUtils.isEmpty(autoFields)) {
+        if (!MapUtils.isEmpty(autoFields)) {
             querySql.append(" WHERE ");
 
             BoundSql boundSql = SqlUtils.buildWhereSql(autoFields, nameHandler);
@@ -444,14 +457,14 @@ public class SqlUtils {
     public static BoundSql buildCountSql(Object entity, Criteria criteria, NameHandler nameHandler) {
 
         Class<?> entityClass = getEntityClass(entity, criteria);
-        List<AutoField> autoFields = mergeAutoField(entity, criteria, AutoField.FIELD_WHERE);
+        Map<String, AutoField> autoFields = mergeAutoField(entity, criteria, AutoField.FIELD_WHERE);
 
-        String tableName = nameHandler.getTableName(entityClass);
+        String tableName = nameHandler.getTableName(entityClass, autoFields);
         StringBuilder countSql = new StringBuilder("SELECT COUNT(*) FROM ");
         countSql.append(tableName);
 
         List<Object> params = Collections.EMPTY_LIST;
-        if (!CollectionUtils.isEmpty(autoFields)) {
+        if (!MapUtils.isEmpty(autoFields)) {
             countSql.append(" WHERE ");
             BoundSql boundSql = buildWhereSql(autoFields, nameHandler);
             countSql.append(boundSql.getSql());

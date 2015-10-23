@@ -11,6 +11,11 @@
         </layout>
     </appender>
 
+    <logger name="org.springframework.jdbc.core.JdbcTemplate" additivity="false">
+        <level value="debug"/>
+        <appender-ref ref="STDOUT-APPENDER"/>
+    </logger>
+
     <root>
         <level value="info"/>
         <appender-ref ref="STDOUT-APPENDER"/>
