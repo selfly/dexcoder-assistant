@@ -282,3 +282,8 @@ JdbcDao在声明时可以根据需要注入其它几个参数：
 
     SELECT LOGIN_NAME,... FROM USER WHERE USER_TYPE = ? or (LOGIN_NAME = ? or EMAIL = ?) and PASSWORD = ?
 
+2015-10-27 V1.1.2版本
+
+本次更新增加了数据拆分时，水平分表的支持。
+
+具体请看：[增加数据分表水平拆分支持](http://www.dexcoder.com/selfly/article/3857 "增加数据分表水平拆分支持")
