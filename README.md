@@ -51,7 +51,7 @@
 
 #相关链接
 
-网站：http://www.dexcoder.com
+博客：http://www.dexcoder.com/selfly
 
 作者邮箱： javaer@live.com
 
