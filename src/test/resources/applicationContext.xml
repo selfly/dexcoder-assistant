@@ -62,7 +62,6 @@
     </bean>
 
     <bean id="customNameHandler" class="com.dexcoder.assistant.persistence.CustomNameHandler"></bean>
-
     <bean id="jdbcDao" class="com.dexcoder.assistant.persistence.JdbcDaoImpl">
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
         <property name="nameHandler" ref="customNameHandler"/>

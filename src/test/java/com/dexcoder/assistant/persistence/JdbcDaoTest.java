@@ -3,6 +3,9 @@ package com.dexcoder.assistant.persistence;
 import java.util.Date;
 import java.util.List;
 
+import com.dexcoder.assistant.model.Book;
+import com.dexcoder.assistant.model.Chapter;
+import org.apache.xmlbeans.impl.values.JavaDecimalHolder;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -114,9 +117,12 @@ public class JdbcDaoTest extends BaseTest {
 
     @Test
     public void delete2() {
-        Criteria criteria = Criteria.create(User.class)
-            .where("loginName", new Object[] { "selfly13" }).or("userAge", new Object[] { 33 });
-        jdbcDao.delete(criteria);
+        //        Criteria criteria = Criteria.create(User.class)
+        //            .where("loginName", new Object[] { "selfly13" }).or("userAge", new Object[] { 33 });
+        //        jdbcDao.delete(criteria);
+
+        jdbcDao
+            .delete(Criteria.create(User.class).where("userId", "in", new Object[] { 88L, 99L }));
     }
 
     @Test
@@ -161,7 +167,7 @@ public class JdbcDaoTest extends BaseTest {
     @Test
     public void queryList3() {
         Criteria criteria = Criteria.create(User.class).exclude("userId")
-            .where("userType", new Object[]{UserType.MEMBER.getCode()}).asc("userAge")
+            .where("userType", new Object[] { UserType.MEMBER.getCode() }).asc("userAge")
             .desc("userId");
         List<User> users = jdbcDao.queryList(criteria);
         Assert.assertNotNull(users);
@@ -242,7 +248,7 @@ public class JdbcDaoTest extends BaseTest {
         Criteria criteria = Criteria.create(User.class)
             .where("userType", new Object[] { UserType.MEMBER.getCode() }).beginBracket()
             .and("loginName", new Object[] { "selfly1" })
-            .or("email", new Object[]{"javaer1@live.com"}).endBracket()
+            .or("email", new Object[] { "javaer1@live.com" }).endBracket()
             .and("password", new Object[] { "123456" });
         User user = jdbcDao.querySingleResult(criteria);
         Assert.assertNotNull(user);
@@ -250,27 +256,73 @@ public class JdbcDaoTest extends BaseTest {
     }
 
     @Test
-    public void multiTable() {
-
-        for (int i = 1; i < 50; i++) {
-
-            User user = new User();
-            user.setUserId((long) i);
-            user.setUserType("1");
-            user.setPassword("123456-" + i);
-            user.setLoginName("selfly-" + i);
-            user.setEmail(i + "selfly@foxmail.com");
-            user.setUserAge(i);
-            user.setGmtCreate(new Date());
-            jdbcDao.save(user);
+    public void multiTableBook() {
+        for (int i = 1; i < 51; i++) {
+            Book book = new Book();
+            book.setBookId((long) i);
+            book.setBookName("测试book" + i);
+            book.setGmtCreate(new Date());
+            jdbcDao.save(book);
         }
-
         System.out.println("=================");
     }
 
     @Test
-    public void multiTableGet(){
-        User user = jdbcDao.get(User.class, 22L);
-        System.out.println(user.getLoginName());
+    public void multiTableChapter() {
+        for (int i = 1; i < 51; i++) {
+            Chapter chapter = new Chapter();
+            chapter.setChapterId((long) i);
+            chapter.setBookId(5L);
+            chapter.setChapterName("章节一" + i);
+            chapter.setGmtCreate(new Date());
+            jdbcDao.save(chapter);
+        }
+        System.out.println("=================");
+        for (int i = 51; i < 101; i++) {
+            Chapter chapter = new Chapter();
+            chapter.setChapterId((long) i);
+            chapter.setBookId(6L);
+            chapter.setChapterName("章节二" + i);
+            chapter.setGmtCreate(new Date());
+            jdbcDao.save(chapter);
+        }
+        System.out.println("=================");
+    }
+
+    @Test
+    public void multiTableChapterQuery() {
+        Chapter chapter = new Chapter();
+        chapter.setChapterId(22L);
+        chapter.setBookId(5L);
+        chapter = jdbcDao.querySingleResult(chapter);
+        System.out.println(chapter.getChapterName());
+        chapter = jdbcDao.querySingleResult(Criteria.create(Chapter.class)
+            .where("chapterId", new Object[] { 67L }).and("bookId", new Object[] { 6L }));
+        System.out.println(chapter.getChapterName());
+    }
+
+    @Test
+    public void multiTableChapterUpdate() {
+        Chapter chapter = new Chapter();
+        chapter.setChapterId(22L);
+        chapter.setBookId(5L);
+        chapter.setChapterName("更新后章节名");
+        jdbcDao.update(chapter);
+
+        Chapter tmp = jdbcDao.querySingleResult(Criteria.create(Chapter.class)
+            .where("chapterId", new Object[] { 22L }).and("bookId", new Object[] { 5L }));
+        System.out.println(tmp.getChapterName());
+    }
+
+    @Test
+    public void multiTableChapterDelete() {
+        Chapter chapter = new Chapter();
+        chapter.setChapterId(23L);
+        chapter.setBookId(5L);
+        jdbcDao.delete(chapter);
+
+        Chapter tmp = jdbcDao.querySingleResult(Criteria.create(Chapter.class)
+            .where("chapterId", new Object[] { 23L }).and("bookId", new Object[] { 5L }));
+        Assert.assertNull(tmp);
     }
 }

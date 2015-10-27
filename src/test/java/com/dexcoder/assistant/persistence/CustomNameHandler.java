@@ -3,9 +3,10 @@ package com.dexcoder.assistant.persistence;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 
-import com.dexcoder.assistant.model.User;
+import com.dexcoder.assistant.exceptions.AssistantException;
+import com.dexcoder.assistant.model.Book;
+import com.dexcoder.assistant.model.Chapter;
 import com.dexcoder.assistant.utils.NameUtils;
 
 /**
@@ -23,17 +24,25 @@ public class CustomNameHandler implements NameHandler {
     public String getTableName(Class<?> entityClass, Map<String, AutoField> fieldMap) {
         //Java属性的骆驼命名法转换回数据库下划线“_”分隔的格式
         String tableName = NameUtils.getUnderlineName(entityClass.getSimpleName());
-        if (User.class.equals(entityClass)) {
-            AutoField autoField = fieldMap.get("userId");
-            if (autoField == null || ArrayUtils.isEmpty(autoField.getValues())) {
-                return tableName;
+        if (Book.class.equals(entityClass)) {
+            AutoField autoField = fieldMap.get("bookId");
+            if (autoField == null || ArrayUtils.isEmpty(autoField.getValues())
+                || autoField.getValues()[0] == null) {
+                throw new AssistantException("书籍bookId不能为空");
             }
             Long id = (Long) autoField.getValues()[0];
-            if (id == null) {
-                return tableName;
+            //书籍3张表
+            long tableNum = id % 3;
+            return tableName + "_" + tableNum;
+        } else if (Chapter.class.equals(entityClass)) {
+            AutoField autoField = fieldMap.get("bookId");
+            if (autoField == null || ArrayUtils.isEmpty(autoField.getValues())
+                || autoField.getValues()[0] == null) {
+                throw new AssistantException("章节bookId不能为空");
             }
+            Long id = (Long) autoField.getValues()[0];
+            //章节5张表
             long tableNum = id % 5;
-
             return tableName + "_" + tableNum;
         }
         return tableName;
@@ -51,11 +60,6 @@ public class CustomNameHandler implements NameHandler {
     }
 
     public String getPKValue(Class<?> entityClass, String dialect) {
-        if (StringUtils.equalsIgnoreCase(dialect, "oracle")) {
-            //获取序列就可以了，默认seq_加上表名为序列名
-            String tableName = this.getTableName(entityClass, null);
-            return String.format("SEQ_%s.NEXTVAL", tableName);
-        }
         return null;
     }
 }
