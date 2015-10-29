@@ -37,11 +37,12 @@ public class AutoFieldUtils {
      * @param value
      * @return
      */
-    public static Map<String, AutoField> buildPKMap(String fieldName, Object value) {
+	@SuppressWarnings("serial")
+	public static Map<String, AutoField> buildPKMap(String fieldName, Object value) {
         final AutoField autoField = buildAutoFields(fieldName, null, null, AutoField.FIELD_WHERE,
             value);
         return new LinkedHashMap<String, AutoField>() {
-            {
+			{
                 put(autoField.getName(), autoField);
             }
         };

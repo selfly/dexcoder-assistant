@@ -4,9 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.dao.DataAccessException;
@@ -23,6 +21,7 @@ import com.dexcoder.assistant.utils.NameUtils;
  *
  * Created by liyd on 3/3/15.
  */
+@SuppressWarnings("unchecked")
 public class JdbcDaoImpl implements JdbcDao {
 
     /** spring jdbcTemplate 对象 */
@@ -122,7 +121,7 @@ public class JdbcDaoImpl implements JdbcDao {
         jdbcTemplate.execute(sql);
     }
 
-    public <T> List<T> queryList(Criteria criteria) {
+	public <T> List<T> queryList(Criteria criteria) {
         BoundSql boundSql = SqlUtils.buildListSql(null, criteria, this.getNameHandler());
         List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParams().toArray(),
             this.getRowMapper(criteria.getEntityClass()));

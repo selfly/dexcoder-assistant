@@ -27,7 +27,9 @@ public class LRUCache<K, V> extends AbstractCacheMap<K, V> {
         // 需要替换时，链表最后的位置就是最近最少使用的位置
         this.cacheMap = new LinkedHashMap<K, CacheObject<K, V>>(cacheSize + 1, 1f, true) {
 
-            @Override
+			private static final long serialVersionUID = 4789439462791125917L;
+
+			@Override
             protected boolean removeEldestEntry(Map.Entry<K, CacheObject<K, V>> eldest) {
 
                 return LRUCache.this.removeEldestEntry(eldest);

@@ -8,6 +8,7 @@ import com.dexcoder.assistant.cache.LRUCache;
  *
  * Created by liyd on 1/5/15.
  */
+@SuppressWarnings("unchecked")
 public class CacheUtils {
 
     /** 默认缓存大小 */
@@ -55,7 +56,7 @@ public class CacheUtils {
      * @param key
      * @return
      */
-    public static Object getChild(Object parentKey, Object key) {
+	public static Object getChild(Object parentKey, Object key) {
         CacheMap<Object, Object> map = (CacheMap<Object, Object>) cacheMap.get(key);
         if (map == null) {
             return null;

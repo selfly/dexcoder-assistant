@@ -463,12 +463,12 @@ public class SqlUtils {
         StringBuilder countSql = new StringBuilder("SELECT COUNT(*) FROM ");
         countSql.append(tableName);
 
-        List<Object> params = Collections.EMPTY_LIST;
+        List<Object> params = new ArrayList<Object>();
         if (!MapUtils.isEmpty(autoFields)) {
             countSql.append(" WHERE ");
             BoundSql boundSql = buildWhereSql(autoFields, nameHandler);
             countSql.append(boundSql.getSql());
-            params = boundSql.getParams();
+            params.addAll(boundSql.getParams());
         }
 
         return new BoundSql(countSql.toString(), null, params);

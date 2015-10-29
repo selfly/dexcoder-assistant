@@ -96,7 +96,8 @@ public class SourceCodeFormatter {
      * @param code
      * @return
      */
-    private static String formatBodyCode(String code) {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	private static String formatBodyCode(String code) {
         try {
             //此处可以修改格式化配置
             Map m = DefaultCodeFormatterConstants.getEclipseDefaultSettings();

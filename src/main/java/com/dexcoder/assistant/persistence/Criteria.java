@@ -89,7 +89,7 @@ public class Criteria {
     public Criteria asc(String... field) {
         for (String f : field) {
             AutoField autoField = AutoFieldUtils.buildAutoFields(f, null, "ASC",
-                AutoField.FIELD_ORDER_BY, null);
+                AutoField.FIELD_ORDER_BY);
             this.orderByFields.add(autoField);
         }
         return this;
@@ -104,7 +104,7 @@ public class Criteria {
     public Criteria desc(String... field) {
         for (String f : field) {
             AutoField autoField = AutoFieldUtils.buildAutoFields(f, null, "DESC",
-                AutoField.FIELD_ORDER_BY, null);
+                AutoField.FIELD_ORDER_BY);
             this.orderByFields.add(autoField);
         }
         return this;
@@ -240,7 +240,7 @@ public class Criteria {
      */
     public Criteria beginBracket(String operator) {
         AutoField autoField = AutoFieldUtils.buildAutoFields("(", operator, null,
-            AutoField.FIELD_BRACKET, null);
+            AutoField.FIELD_BRACKET);
         this.autoFields.add(autoField);
         return this;
     }
@@ -252,7 +252,7 @@ public class Criteria {
      */
     public Criteria endBracket() {
         AutoField autoField = AutoFieldUtils.buildAutoFields(")", null, null,
-            AutoField.FIELD_BRACKET, null);
+            AutoField.FIELD_BRACKET);
         this.autoFields.add(autoField);
         return this;
     }

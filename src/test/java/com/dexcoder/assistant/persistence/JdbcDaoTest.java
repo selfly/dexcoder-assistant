@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.dexcoder.assistant.model.Book;
 import com.dexcoder.assistant.model.Chapter;
-import org.apache.xmlbeans.impl.values.JavaDecimalHolder;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;

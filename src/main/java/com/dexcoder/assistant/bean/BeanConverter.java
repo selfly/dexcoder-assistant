@@ -18,7 +18,6 @@ import com.dexcoder.assistant.exceptions.AssistantException;
  * Date: 13-5-8 下午4:29
  * version $Id: BeanConverter.java, v 0.1 Exp $
  */
-@SuppressWarnings("unchecked")
 public class BeanConverter {
 
     /** 日志对象 */

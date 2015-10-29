@@ -9,7 +9,9 @@ import com.dexcoder.assistant.enums.IEnum;
  */
 public class DexcoderException extends RuntimeException {
 
-    /** Exception code */
+	private static final long serialVersionUID = -3039546280700778038L;
+
+	/** Exception code */
     protected String resultCode = "UN_KNOWN_EXCEPTION";
 
     /** Exception message */
