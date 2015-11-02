@@ -3,10 +3,13 @@ package com.dexcoder.assistant.utils;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,6 +87,43 @@ public class ClassUtils {
     public static BeanInfo getSelfBeanInfo(Class<?> clazz) {
 
         return getBeanInfo(clazz, clazz.getSuperclass());
+    }
+
+    /**
+     * 获取类属性的PropertyDescriptor
+     * 
+     * @param clazz
+     * @param name
+     * @return
+     */
+    public static PropertyDescriptor getPropertyDescriptor(Class<?> clazz, String name) {
+        BeanInfo beanInfo = getBeanInfo(clazz);
+        PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+        if (propertyDescriptors == null) {
+            return null;
+        }
+        for (PropertyDescriptor pd : propertyDescriptors) {
+            if (StringUtils.equals(pd.getName(), name)) {
+                return pd;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * invokeMethod
+     * 
+     * @param method
+     * @param bean
+     * @param value
+     */
+    public static void invokeMethod(Method method, Object bean, Object value) {
+        try {
+            method.invoke(bean, value);
+        } catch (Exception e) {
+            LOG.error("执行invokeMethod失败", e);
+            throw new AssistantException(e);
+        }
     }
 
     /**

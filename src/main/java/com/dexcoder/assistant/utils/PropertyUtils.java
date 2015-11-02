@@ -1,9 +1,6 @@
 package com.dexcoder.assistant.utils;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -12,6 +9,8 @@ import java.util.Properties;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.dexcoder.assistant.exceptions.AssistantException;
 
 /**
  * 属性文件操作辅助类
@@ -31,6 +30,31 @@ public final class PropertyUtils {
     private static Map<String, String> propMap    = new HashMap<String, String>();
 
     /**
+     * 加载资源文件
+     * 
+     * @param resourceName
+     * @return
+     */
+    public static InputStream loadResource(String resourceName) {
+
+        try {
+            File configFile = getConfigFile(resourceName);
+            if (configFile == null) {
+                LOG.info("从classpath加载资源文件:{}", resourceName);
+                InputStream is = Thread.currentThread().getContextClassLoader()
+                    .getResourceAsStream(resourceName);
+                return is;
+            } else {
+                LOG.info("从目录加载资源文件:{}", configFile.getAbsolutePath());
+                return new FileInputStream(configFile);
+            }
+        } catch (FileNotFoundException e) {
+            LOG.error("加载xml文件失败:" + resourceName, e);
+            throw new AssistantException(e);
+        }
+    }
+
+    /**
      * 加载properties文件
      *
      * @param resourceName the resource name
@@ -42,16 +66,17 @@ public final class PropertyUtils {
                 resourceName += PRO_SUFFIX;
             }
             Properties prop = new Properties();
-            File configFile = getConfigFile(resourceName);
-            if (configFile == null) {
-                LOG.info("从classpath加载配置文件:{}", resourceName);
-                InputStream stream = Thread.currentThread().getContextClassLoader()
-                    .getResourceAsStream(resourceName);
-                prop.load(stream);
-            } else {
-                LOG.info("从目录加载配置文件:{}", configFile.getAbsolutePath());
-                prop.load(new FileReader(configFile));
-            }
+            prop.load(loadResource(resourceName));
+            //            File configFile = getConfigFile(resourceName);
+            //            if (configFile == null) {
+            //                LOG.info("从classpath加载配置文件:{}", resourceName);
+            //                InputStream stream = Thread.currentThread().getContextClassLoader()
+            //                    .getResourceAsStream(resourceName);
+            //                prop.load(stream);
+            //            } else {
+            //                LOG.info("从目录加载配置文件:{}", configFile.getAbsolutePath());
+            //                prop.load(new FileReader(configFile));
+            //            }
             Iterator<Map.Entry<Object, Object>> iterator = prop.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<Object, Object> entry = iterator.next();
@@ -62,7 +87,7 @@ public final class PropertyUtils {
             propMap.put(resourceName, "true");
         } catch (IOException e) {
             LOG.error("加载配置文件失败:" + resourceName, e);
-            //ignore
+            throw new AssistantException(e);
         }
     }
 

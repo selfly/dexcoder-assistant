@@ -88,7 +88,7 @@ public class PageControl {
         return pager;
     }
 
-    @Pointcut("execution(* org.springframework.jdbc.core.JdbcTemplate.query*(..))")
+    @Pointcut("execution(* org.springframework.jdbc.core.JdbcOperations.query*(..))")
     public void queryMethod() {
         //该方法没实际作用，只是切面声明对象，声明一个切面的表达式
         //下面使用时，只需要写入这个表达式名(方法名)即可   等同于

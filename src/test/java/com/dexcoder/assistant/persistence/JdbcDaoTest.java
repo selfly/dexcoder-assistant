@@ -1,7 +1,6 @@
 package com.dexcoder.assistant.persistence;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import com.dexcoder.assistant.model.Book;
 import com.dexcoder.assistant.model.Chapter;
@@ -21,7 +20,10 @@ import com.dexcoder.assistant.test.BaseTest;
 public class JdbcDaoTest extends BaseTest {
 
     @Autowired
-    private JdbcDao jdbcDao;
+    private JdbcDao           jdbcDao;
+
+    @Autowired
+    private DynamicDataSource dynamicDataSource;
 
     @BeforeClass
     public static void before() {
@@ -323,5 +325,55 @@ public class JdbcDaoTest extends BaseTest {
         Chapter tmp = jdbcDao.querySingleResult(Criteria.create(Chapter.class)
             .where("chapterId", new Object[] { 23L }).and("bookId", new Object[] { 5L }));
         Assert.assertNull(tmp);
+    }
+
+    @Test
+    public void dyDsInsert() {
+        User user = new User();
+        user.setLoginName("selfly");
+        user.setGmtCreate(new Date());
+        Long id = jdbcDao.insert(user);
+
+        User u = jdbcDao.get(Criteria.create(User.class)
+            .include("userId", "loginName", "gmtCreate"), id);
+        Assert.assertNotNull(u);
+        System.out.println(u.getUserId() + " : " + u.getLoginName());
+    }
+
+    @Test
+    public void dyDsGet() {
+        User u = jdbcDao.get(Criteria.create(User.class)
+            .include("userId", "loginName", "gmtCreate"), 6L);
+        Assert.assertNull(u);
+    }
+
+    @Test
+    public void dyDsGet2() {
+        List<Map<String, String>> dsList = new ArrayList<Map<String, String>>();
+
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("id", "dataSource4");
+        map.put("class", "org.apache.commons.dbcp.BasicDataSource");
+        map.put("default", "true");
+        map.put("weight", "10");
+        map.put("mode", "rw");
+        map.put("driverClassName", "com.mysql.jdbc.Driver");
+        map.put("url",
+            "jdbc:mysql://localhost:3306/db1?useUnicode=true&amp;characterEncoding=utf-8");
+        map.put("username", "root");
+        map.put("password", "");
+        dsList.add(map);
+
+        int i = 0;
+        while (i < 100) {
+            User u = jdbcDao.get(
+                Criteria.create(User.class).include("userId", "loginName", "gmtCreate"), 6L);
+            System.out.println(u == null ? "null" : u.getLoginName());
+
+            if (i == 70) {
+                dynamicDataSource.initDataSources(dsList);
+            }
+            i++;
+        }
     }
 }

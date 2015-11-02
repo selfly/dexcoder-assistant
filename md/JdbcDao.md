@@ -235,6 +235,15 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
 		Pager pager = PageControl.getPager();
 	}
 	
+### 不同的属性在括号内or的情况：
+    
+        Criteria criteria = Criteria.create(User.class)
+            .where("userType", new Object[] { "1" }).beginBracket()
+            .and("loginName", new Object[] { "selfly" })
+            .or("email", new Object[] { "javaer@live.com" }).endBracket()
+            .and("password", new Object[] { "123456" });
+        User user = jdbcDao.querySingleResult(criteria);
+	
 ###一些说明
 
 JdbcDao在声明时可以根据需要注入其它几个参数：
@@ -249,41 +258,3 @@ JdbcDao在声明时可以根据需要注入其它几个参数：
 - nameHandler 默认使用DefaultNameHandler，即遵守上面的约定优于配置，如果需要自定义可以实现该接口。
 - rowMapperClass 默认使用了spring的`BeanPropertyRowMapper.newInstance(clazz)`,需要自定义可以自行实现，标准spring的RowMapper实现即可。
 - dialect 默认为自增类主键如MySql，其它类型请指定数据库如oracle
-
-##更新日志
-
-2015-10-9 V1.0.2版本
-
-该版本增加了括号的支持，可以实现不同的属性在括号内or的情况，示例：
-
-    Criteria criteria = Criteria.create(User.class)
-        .where("userType", new Object[] { "1" }).beginBracket()
-        .and("loginName", new Object[] { "selfly" })
-        .or("email", new Object[] { "javaer@live.com" }).endBracket()
-        .and("password", new Object[] { "123456" });
-    User user = jdbcDao.querySingleResult(criteria);
-
-以上代码将生成以下SQL语句：
-
-    SELECT LOGIN_NAME,... FROM USER WHERE USER_TYPE = ? and (LOGIN_NAME = ? or EMAIL = ?) and PASSWORD = ?
-
-`beginBracket()`默认括号前为and操作符，和`beginBracket("and")`等效，之后的第一个`and("loginName", new Object[] { "selfly" })`，这里的`and`将被忽略(本来想再提供一个方法，想不出什么好的方法名，再者方法太多了也不好所以直接忽略吧，使用者知道就行)。
-
-如果使用`or`参数`beginBracket("or")`,如下：
-
-    Criteria criteria = Criteria.create(User.class)
-        .where("userType", new Object[] { "1" }).beginBracket("or")
-        .and("loginName", new Object[] { "selfly" })
-        .or("email", new Object[] { "javaer@live.com" }).endBracket()
-        .and("password", new Object[] { "123456" });
-    User user = jdbcDao.querySingleResult(criteria);
-
-将生成SQL语句，注意括号前的操作符变成了`or`：
-
-    SELECT LOGIN_NAME,... FROM USER WHERE USER_TYPE = ? or (LOGIN_NAME = ? or EMAIL = ?) and PASSWORD = ?
-
-2015-10-27 V1.1.2版本
-
-本次更新增加了数据拆分时，水平分表的支持。
-
-具体请看：[增加数据分表水平拆分支持](http://www.dexcoder.com/selfly/article/3857 "增加数据分表水平拆分支持")
