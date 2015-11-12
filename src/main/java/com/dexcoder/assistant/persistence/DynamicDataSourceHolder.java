@@ -1,8 +1,8 @@
 package com.dexcoder.assistant.persistence;
 
-/** 
+/**
  * 动态数据源切换标识
- * 
+ * <p/>
  * Created by liyd on 2015-11-2.
  */
 public class DynamicDataSourceHolder {
@@ -30,10 +30,18 @@ public class DynamicDataSourceHolder {
 
     /**
      * 获取dsKey
-     * 
+     *
      * @return
      */
     public static DataSourceContext getDsContent() {
         return DATASOURCE_LOCAL.get();
+    }
+
+
+    /**
+     * 清除
+     */
+    public static void clear() {
+        DATASOURCE_LOCAL.remove();
     }
 }

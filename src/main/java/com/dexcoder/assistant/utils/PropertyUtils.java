@@ -67,16 +67,6 @@ public final class PropertyUtils {
             }
             Properties prop = new Properties();
             prop.load(loadResource(resourceName));
-            //            File configFile = getConfigFile(resourceName);
-            //            if (configFile == null) {
-            //                LOG.info("从classpath加载配置文件:{}", resourceName);
-            //                InputStream stream = Thread.currentThread().getContextClassLoader()
-            //                    .getResourceAsStream(resourceName);
-            //                prop.load(stream);
-            //            } else {
-            //                LOG.info("从目录加载配置文件:{}", configFile.getAbsolutePath());
-            //                prop.load(new FileReader(configFile));
-            //            }
             Iterator<Map.Entry<Object, Object>> iterator = prop.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<Object, Object> entry = iterator.next();
