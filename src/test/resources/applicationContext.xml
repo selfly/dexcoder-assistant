@@ -95,7 +95,7 @@
         <property name="sqlFactory" ref="sqlFactory"/>
     </bean>
     <bean id="sqlFactory" class="com.dexcoder.assistant.persistence.manual.SqlFactoryBean">
-        <property name="sqlLocation" value="user-sql.vm.xml"/>
+        <property name="sqlLocation" value="user-sql.xml"/>
     </bean>
     <bean id="jdbcDaoTransactionService" class="com.dexcoder.assistant.transaction.JdbcDaoTransactionServiceImpl">
     </bean>

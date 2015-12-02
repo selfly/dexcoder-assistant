@@ -50,9 +50,9 @@ public class CollectionWrapper implements ObjectWrapper {
         throw new UnsupportedOperationException();
     }
 
-//    public MetaObject instantiatePropertyValue(String name, PropertyTokenizer prop, ObjectFactory objectFactory) {
-//        throw new UnsupportedOperationException();
-//    }
+    public MetaObject instantiatePropertyValue(String name, PropertyTokenizer prop) {
+        throw new UnsupportedOperationException();
+    }
 
     public boolean isCollection() {
         return true;

@@ -1,5 +1,9 @@
 package com.dexcoder.assistant.persistence.manual;
 
+import com.dexcoder.assistant.exceptions.AssistantException;
+import com.dexcoder.assistant.utils.ClassUtils;
+
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -13,7 +17,7 @@ public class BeanWrapper extends BaseWrapper {
     public BeanWrapper(MetaObject metaObject, Object object) {
         super(metaObject);
         this.object = object;
-//        this.metaClass = MetaClass.forClass(object.getClass(), metaObject.getReflectorFactory());
+        this.metaClass = new MetaClass(object.getClass());
     }
 
     public Object get(PropertyTokenizer prop) {
@@ -34,131 +38,50 @@ public class BeanWrapper extends BaseWrapper {
         }
     }
 
+    private Object getBeanProperty(PropertyTokenizer prop, Object object) {
+        Method readMethod = metaClass.getReadMethod(prop.getName());
+        return ClassUtils.invokeMethod(readMethod, object);
+    }
+
+    private void setBeanProperty(PropertyTokenizer prop, Object object, Object value) {
+        Method writeMethod = metaClass.getWriteMethod(prop.getName());
+        ClassUtils.invokeMethod(writeMethod, object, value);
+    }
+
+
     public String findProperty(String name, boolean useCamelCaseMapping) {
         return null;
-//        return metaClass.findProperty(name, useCamelCaseMapping);
+    }
+
+    public MetaObject instantiatePropertyValue(String name, PropertyTokenizer prop) {
+        Object newObject = ClassUtils.newInstance(object.getClass());
+        MetaObject metaValue = MetaObject.forObject(newObject);
+        set(prop, newObject);
+        return metaValue;
     }
 
     public String[] getGetterNames() {
-        return null;
-//        return metaClass.getGetterNames();
+        return new String[0];
     }
 
-
     public String[] getSetterNames() {
-        return null;
-//        return metaClass.getSetterNames();
+        return new String[0];
     }
 
     public Class<?> getSetterType(String name) {
         return null;
-//        PropertyTokenizer prop = new PropertyTokenizer(name);
-//        if (prop.hasNext()) {
-//            MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
-//            if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
-//                return metaClass.getSetterType(name);
-//            } else {
-//                return metaValue.getSetterType(prop.getChildren());
-//            }
-//        } else {
-//            return metaClass.getSetterType(name);
-//        }
     }
 
     public Class<?> getGetterType(String name) {
         return null;
-//        PropertyTokenizer prop = new PropertyTokenizer(name);
-//        if (prop.hasNext()) {
-//            MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
-//            if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
-//                return metaClass.getGetterType(name);
-//            } else {
-//                return metaValue.getGetterType(prop.getChildren());
-//            }
-//        } else {
-//            return metaClass.getGetterType(name);
-//        }
     }
 
     public boolean hasSetter(String name) {
-        return true;
-//        PropertyTokenizer prop = new PropertyTokenizer(name);
-//        if (prop.hasNext()) {
-//            if (metaClass.hasSetter(prop.getIndexedName())) {
-//                MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
-//                if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
-//                    return metaClass.hasSetter(name);
-//                } else {
-//                    return metaValue.hasSetter(prop.getChildren());
-//                }
-//            } else {
-//                return false;
-//            }
-//        } else {
-//            return metaClass.hasSetter(name);
-//        }
+        return false;
     }
 
     public boolean hasGetter(String name) {
-        return true;
-//        PropertyTokenizer prop = new PropertyTokenizer(name);
-//        if (prop.hasNext()) {
-//            if (metaClass.hasGetter(prop.getIndexedName())) {
-//                MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
-//                if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
-//                    return metaClass.hasGetter(name);
-//                } else {
-//                    return metaValue.hasGetter(prop.getChildren());
-//                }
-//            } else {
-//                return false;
-//            }
-//        } else {
-//            return metaClass.hasGetter(name);
-//        }
-    }
-
-//    public MetaObject instantiatePropertyValue(String name, PropertyTokenizer prop) {
-//        MetaObject metaValue;
-//        Class<?> type = getSetterType(prop.getName());
-//        try {
-//            Object newObject = objectFactory.create(type);
-//            metaValue = MetaObject.forObject(newObject, metaObject.getObjectFactory(), metaObject.getObjectWrapperFactory(), metaObject.getReflectorFactory());
-//            set(prop, newObject);
-//        } catch (Exception e) {
-//            throw new ReflectionException("Cannot set value of property '" + name + "' because '" + name + "' is null and cannot be instantiated on instance of " + type.getName() + ". Cause:" + e.toString(), e);
-//        }
-//        return metaValue;
-//    }
-
-    private Object getBeanProperty(PropertyTokenizer prop, Object object) {
-        return null;
-//        try {
-//            Invoker method = metaClass.getGetInvoker(prop.getName());
-//            try {
-//                return method.invoke(object, NO_ARGUMENTS);
-//            } catch (Throwable t) {
-//                throw ExceptionUtil.unwrapThrowable(t);
-//            }
-//        } catch (RuntimeException e) {
-//            throw e;
-//        } catch (Throwable t) {
-//            throw new ReflectionException("Could not get property '" + prop.getName() + "' from " + object.getClass() + ".  Cause: " + t.toString(), t);
-//        }
-    }
-
-    private void setBeanProperty(PropertyTokenizer prop, Object object, Object value) {
-//        try {
-//            Invoker method = metaClass.getSetInvoker(prop.getName());
-//            Object[] params = {value};
-//            try {
-//                method.invoke(object, params);
-//            } catch (Throwable t) {
-//                throw ExceptionUtil.unwrapThrowable(t);
-//            }
-//        } catch (Throwable t) {
-//            throw new ReflectionException("Could not set property '" + prop.getName() + "' of '" + object.getClass() + "' with value '" + value + "' Cause: " + t.toString(), t);
-//        }
+        return false;
     }
 
     public boolean isCollection() {

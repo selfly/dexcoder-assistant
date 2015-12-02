@@ -224,16 +224,16 @@ public class JdbcDaoImpl implements JdbcDao {
         return (T) list.iterator().next();
     }
 
-//    public List<Map<String, Object>> queryForSql(String sqlId, Map<String, Object> params) {
-//        BoundSql boundSql = this.getSqlHandler().getSql(sqlId, params);
-//        return jdbcTemplate.queryForList(boundSql.getSql(), boundSql.getParams().toArray());
-//    }
-//
-//    public List<Map<String, Object>> queryForSql(String sqlId, String name, Object object) {
-//        Map<String, Object> map = new HashMap<String, Object>();
-//        map.put(name, object);
-//        return this.queryForSql(sqlId, map);
-//    }
+    public List<Map<String, Object>> queryForSql(String sqlId, Map<String, Object> params) {
+        this.sqlFactory.getBoundSql("User", sqlId, params);
+        return null;
+    }
+
+    public List<Map<String, Object>> queryForSql(String sqlId, String name, Object object) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put(name, object);
+        return this.queryForSql(sqlId, map);
+    }
 //
 //    public void updateForSql(String sqlId, Map<String, Object> params) {
 //        BoundSql boundSql = this.getSqlHandler().getSql(sqlId, params);

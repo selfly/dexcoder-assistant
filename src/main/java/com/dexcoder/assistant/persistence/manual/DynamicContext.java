@@ -1,9 +1,6 @@
 package com.dexcoder.assistant.persistence.manual;
 
-import ognl.OgnlContext;
-import ognl.OgnlException;
-import ognl.OgnlRuntime;
-import ognl.PropertyAccessor;
+import com.dexcoder.assistant.exceptions.AssistantException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,25 +10,28 @@ import java.util.Map;
  */
 public class DynamicContext {
 
-    public static final String PARAMETER_OBJECT_KEY = "_parameter";
-    public static final String DATABASE_ID_KEY = "_databaseId";
-
-    static {
-        OgnlRuntime.setPropertyAccessor(ContextMap.class, new ContextAccessor());
-    }
-
-    private final ContextMap bindings;
+    private final Map<String, Object> bindings;
     private final StringBuilder sqlBuilder = new StringBuilder();
     private int uniqueNumber = 0;
 
     public DynamicContext(Configuration configuration, Object parameterObject) {
+        bindings = new HashMap<String, Object>();
         if (parameterObject != null && !(parameterObject instanceof Map)) {
-            MetaObject metaObject = configuration.newMetaObject(parameterObject);
-            bindings = new ContextMap(metaObject);
-        } else {
-            bindings = new ContextMap(null);
+            throw new AssistantException("参数错误");
         }
-        bindings.put(PARAMETER_OBJECT_KEY, parameterObject);
+        if (parameterObject instanceof Map) {
+            bindings.putAll((Map) parameterObject);
+        }
+
+//
+//        if (parameterObject != null && !(parameterObject instanceof Map)) {
+//            throw new AssistantException("参数错误");
+////            MetaObject metaObject = configuration.newMetaObject(parameterObject);
+////            bindings.put("value",parameterObject);
+//        } else {
+//            bindings = new ContextMap(null);
+//        }
+//        bindings.put(PARAMETER_OBJECT_KEY, parameterObject);
     }
 
     public Map<String, Object> getBindings() {
@@ -55,61 +55,61 @@ public class DynamicContext {
         return uniqueNumber++;
     }
 
-    static class ContextMap extends HashMap<String, Object> {
-        private static final long serialVersionUID = 2977601501966151582L;
-
-        private MetaObject parameterMetaObject;
-        public ContextMap(MetaObject parameterMetaObject) {
-            this.parameterMetaObject = parameterMetaObject;
-        }
-
-        @Override
-        public Object get(Object key) {
-            String strKey = (String) key;
-            if (super.containsKey(strKey)) {
-                return super.get(strKey);
-            }
-
-            if (parameterMetaObject != null) {
-                // issue #61 do not modify the context when reading
-                return parameterMetaObject.getValue(strKey);
-            }
-
-            return null;
-        }
-    }
-
-    static class ContextAccessor implements PropertyAccessor {
-
-        public Object getProperty(Map context, Object target, Object name)
-                throws OgnlException {
-            Map map = (Map) target;
-
-            Object result = map.get(name);
-            if (map.containsKey(name) || result != null) {
-                return result;
-            }
-
-            Object parameterObject = map.get(PARAMETER_OBJECT_KEY);
-            if (parameterObject instanceof Map) {
-                return ((Map)parameterObject).get(name);
-            }
-
-            return null;
-        }
-
-        public void setProperty(Map context, Object target, Object name, Object value)
-                throws OgnlException {
-            Map<Object, Object> map = (Map<Object, Object>) target;
-            map.put(name, value);
-        }
-
-        public String getSourceAccessor(OgnlContext arg0, Object arg1, Object arg2) {
-            return null;
-        }
-
-        public String getSourceSetter(OgnlContext arg0, Object arg1, Object arg2) {
-            return null;
-        }
-    }
+//    static class ContextMap extends HashMap<String, Object> {
+//        private static final long serialVersionUID = 2977601501966151582L;
+//
+//        private MetaObject parameterMetaObject;
+//        public ContextMap(MetaObject parameterMetaObject) {
+//            this.parameterMetaObject = parameterMetaObject;
+//        }
+//
+//        @Override
+//        public Object get(Object key) {
+//            String strKey = (String) key;
+//            if (super.containsKey(strKey)) {
+//                return super.get(strKey);
+//            }
+//
+//            if (parameterMetaObject != null) {
+//                // issue #61 do not modify the context when reading
+//                return parameterMetaObject.getValue(strKey);
+//            }
+//
+//            return null;
+//        }
+//    }
+//
+//    static class ContextAccessor implements PropertyAccessor {
+//
+//        public Object getProperty(Map context, Object target, Object name)
+//                throws OgnlException {
+//            Map map = (Map) target;
+//
+//            Object result = map.get(name);
+//            if (map.containsKey(name) || result != null) {
+//                return result;
+//            }
+//
+//            Object parameterObject = map.get(PARAMETER_OBJECT_KEY);
+//            if (parameterObject instanceof Map) {
+//                return ((Map)parameterObject).get(name);
+//            }
+//
+//            return null;
+//        }
+//
+//        public void setProperty(Map context, Object target, Object name, Object value)
+//                throws OgnlException {
+//            Map<Object, Object> map = (Map<Object, Object>) target;
+//            map.put(name, value);
+//        }
+//
+//        public String getSourceAccessor(OgnlContext arg0, Object arg1, Object arg2) {
+//            return null;
+//        }
+//
+//        public String getSourceSetter(OgnlContext arg0, Object arg1, Object arg2) {
+//            return null;
+//        }
+//    }
 }

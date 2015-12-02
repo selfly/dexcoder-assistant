@@ -25,7 +25,7 @@ public interface ObjectWrapper {
 
     boolean hasGetter(String name);
 
-//    MetaObject instantiatePropertyValue(String name, PropertyTokenizer prop);
+    MetaObject instantiatePropertyValue(String name, PropertyTokenizer prop);
 
     boolean isCollection();
 

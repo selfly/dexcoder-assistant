@@ -182,24 +182,24 @@ public interface JdbcDao {
      */
     public <T> T querySingleResult(Criteria criteria);
 
-//    /**
-//     * 根据sql查询
-//     *
-//     * @param sqlId the sql id
-//     * @param params the params
-//     * @return list
-//     */
-//    List<Map<String, Object>> queryForSql(String sqlId, Map<String, Object> params);
-//
-//    /**
-//     * 根据sql查询
-//     *
-//     * @param sqlId sql的id
-//     * @param name 写sql时访问的参数变量名称
-//     * @param object 写sql时的参数
-//     * @return list
-//     */
-//    List<Map<String, Object>> queryForSql(String sqlId, String name, Object object);
+    /**
+     * 根据sql查询
+     *
+     * @param sqlId the sql id
+     * @param params the params
+     * @return list
+     */
+    List<Map<String, Object>> queryForSql(String sqlId, Map<String, Object> params);
+
+    /**
+     * 根据sql查询
+     *
+     * @param sqlId sql的id
+     * @param name 写sql时访问的参数变量名称
+     * @param object 写sql时的参数
+     * @return list
+     */
+    List<Map<String, Object>> queryForSql(String sqlId, String name, Object object);
 //
 //    /**
 //     * 执行sql

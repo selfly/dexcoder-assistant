@@ -1,5 +1,6 @@
 package com.dexcoder.assistant.persistence.manual;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,9 +16,19 @@ public class SqlFactory {
 
     public void getBoundSql(String namespace, String sqlId, Map<String, Object> parameters) {
 
-        MappedStatement mappedStatement = this.configuration.getMappedStatements().get(namespace + sqlId);
+        MappedStatement mappedStatement = this.configuration.getMappedStatements().get(namespace + "." + sqlId);
         BoundSql boundSql = mappedStatement.getSqlSource().getBoundSql(parameters);
         String sql = boundSql.getSql();
         System.out.println(sql);
+
+        List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
+        for (ParameterMapping parameterMapping : parameterMappings) {
+
+            String property = parameterMapping.getProperty();
+
+            Object value = boundSql.getAdditionalParameter(property);
+
+            System.out.println(value);
+        }
     }
 }

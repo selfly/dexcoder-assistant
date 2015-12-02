@@ -1,5 +1,6 @@
 package com.dexcoder.assistant.persistence.manual;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -103,11 +104,11 @@ public class MapWrapper extends BaseWrapper {
         }
     }
 
-//    public MetaObject instantiatePropertyValue(String name, PropertyTokenizer prop) {
-//        HashMap<String, Object> map = new HashMap<String, Object>();
-//        set(prop, map);
-//        return MetaObject.forObject(map);
-//    }
+    public MetaObject instantiatePropertyValue(String name, PropertyTokenizer prop) {
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        set(prop, map);
+        return MetaObject.forObject(map);
+    }
 
     public boolean isCollection() {
         return false;
