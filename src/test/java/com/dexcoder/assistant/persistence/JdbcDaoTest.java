@@ -22,7 +22,7 @@ public class JdbcDaoTest extends BaseTest {
     @Autowired
     private JdbcDao           jdbcDao;
 
-    @Autowired
+    //    @Autowired
     private DynamicDataSource dynamicDataSource;
 
     @BeforeClass
@@ -123,7 +123,7 @@ public class JdbcDaoTest extends BaseTest {
         //        jdbcDao.delete(criteria);
 
         jdbcDao
-            .delete(Criteria.create(User.class).where("userId", "in", new Object[] { 88L, 99L }));
+            .delete(Criteria.create(User.class).where("userId", "in", new Object[]{88L, 99L}));
     }
 
     @Test
@@ -168,7 +168,7 @@ public class JdbcDaoTest extends BaseTest {
     @Test
     public void queryList3() {
         Criteria criteria = Criteria.create(User.class).exclude("userId")
-            .where("userType", new Object[] { UserType.MEMBER.getCode() }).asc("userAge")
+            .where("userType", new Object[]{UserType.MEMBER.getCode()}).asc("userAge")
             .desc("userId");
         List<User> users = jdbcDao.queryList(criteria);
         Assert.assertNotNull(users);
@@ -249,7 +249,7 @@ public class JdbcDaoTest extends BaseTest {
         Criteria criteria = Criteria.create(User.class)
             .where("userType", new Object[] { UserType.MEMBER.getCode() }).beginBracket()
             .and("loginName", new Object[] { "selfly1" })
-            .or("email", new Object[] { "javaer1@live.com" }).endBracket()
+            .or("email", new Object[]{"javaer1@live.com"}).endBracket()
             .and("password", new Object[] { "123456" });
         User user = jdbcDao.querySingleResult(criteria);
         Assert.assertNotNull(user);
@@ -335,7 +335,7 @@ public class JdbcDaoTest extends BaseTest {
         Long id = jdbcDao.insert(user);
 
         User u = jdbcDao.get(Criteria.create(User.class)
-            .include("userId", "loginName", "gmtCreate"), id);
+                .include("userId", "loginName", "gmtCreate"), id);
         Assert.assertNotNull(u);
         System.out.println(u.getUserId() + " : " + u.getLoginName());
     }
@@ -375,5 +375,38 @@ public class JdbcDaoTest extends BaseTest {
             }
             i++;
         }
+    }
+
+    @Test
+    public void testSql() {
+//        User user = new User();
+//        user.setLoginName("selfly38");
+//        List<Map<String, Object>> result = jdbcDao.queryForSql("queryUserList", "user", user);
+//        System.out.println(result.size());
+//        System.out.println(result.iterator().next().get("login_name"));
+//        System.out.println("===========");
+    }
+
+    @Test
+    public void testSql2() {
+//        User user = new User();
+//        user.setUserId(37L);
+//        user.setLoginName("selfly37");
+//        List<Map<String, Object>> result = jdbcDao.queryForSql("queryUserList", "user", user);
+//        System.out.println(result.size());
+//        System.out.println(result.iterator().next().get("login_name"));
+//        System.out.println("===========");
+    }
+
+
+    @Test
+    public void testSql3() {
+//        List<String> list = new ArrayList<String>();
+//        list.add("selfly37");
+//        list.add("selfly38");
+//        List<Map<String, Object>> result = jdbcDao.queryForSql("queryUserList2", "list", list);
+//        System.out.println(result.size());
+//        System.out.println(result.iterator().next().get("login_name"));
+//        System.out.println("===========");
     }
 }

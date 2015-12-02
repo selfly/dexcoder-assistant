@@ -5,7 +5,9 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -111,6 +113,32 @@ public class ClassUtils {
     }
 
     /**
+     * bean属性转换为map
+     * 
+     * @param object
+     * @return
+     */
+    public static Map<String, Object> getBeanPropMap(Object object) {
+
+        BeanInfo beanInfo = getBeanInfo(object.getClass());
+        PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+        if (propertyDescriptors == null) {
+            return null;
+        }
+        Map<String, Object> propMap = new HashMap<String, Object>();
+        for (PropertyDescriptor pd : propertyDescriptors) {
+
+            Method readMethod = pd.getReadMethod();
+            if (readMethod == null) {
+                continue;
+            }
+            Object value = invokeMethod(readMethod, object);
+            propMap.put(pd.getName(), value);
+        }
+        return propMap;
+    }
+
+    /**
      * invokeMethod
      * 
      * @param method
@@ -120,6 +148,24 @@ public class ClassUtils {
     public static void invokeMethod(Method method, Object bean, Object value) {
         try {
             method.invoke(bean, value);
+        } catch (Exception e) {
+            LOG.error("执行invokeMethod失败", e);
+            throw new AssistantException(e);
+        }
+    }
+
+    /**
+     * invokeMethod
+     * 
+     * @param method
+     * @param bean
+     */
+    public static Object invokeMethod(Method method, Object bean) {
+        try {
+            if (!Modifier.isPublic(method.getDeclaringClass().getModifiers())) {
+                method.setAccessible(true);
+            }
+            return method.invoke(bean);
         } catch (Exception e) {
             LOG.error("执行invokeMethod失败", e);
             throw new AssistantException(e);

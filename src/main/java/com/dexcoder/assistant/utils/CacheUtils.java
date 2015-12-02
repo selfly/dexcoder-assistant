@@ -12,7 +12,7 @@ import com.dexcoder.assistant.cache.LRUCache;
 public class CacheUtils {
 
     /** 默认缓存大小 */
-    public static final int                 DEFAULT_CACHE_SIZE      = 500;
+    public static final int                 DEFAULT_CACHE_SIZE      = 5000;
 
     /** 默认缓存存活时间 毫秒 一个小时 */
     public static final long                DEFAULT_CACHE_LIVE_TIME = 1000 * 60 * 60;
@@ -51,12 +51,22 @@ public class CacheUtils {
     }
 
     /**
+     * 获取缓存
+     *
+     * @param key
+     * @return
+     */
+    public static String getForString(Object key) {
+        return (String) cacheMap.get(key);
+    }
+
+    /**
      * 获取父缓存下的子缓存
      *
      * @param key
      * @return
      */
-	public static Object getChild(Object parentKey, Object key) {
+    public static Object getChild(Object parentKey, Object key) {
         CacheMap<Object, Object> map = (CacheMap<Object, Object>) cacheMap.get(key);
         if (map == null) {
             return null;

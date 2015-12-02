@@ -25,8 +25,9 @@
         <commons-codec.version>1.6</commons-codec.version>
         <poi.version>3.10-FINAL</poi.version>
         <xmltools.version>1.1</xmltools.version>
-        <dom4j.version>1.1</dom4j.version>
+        <dom4j.version>1.6.1</dom4j.version>
         <commons-lang3.version>3.1</commons-lang3.version>
+        <jaxen.version>1.1.1</jaxen.version>
     </properties>
 
     <dependencies>
@@ -108,10 +109,25 @@
             <scope>${jar.scope}</scope>
         </dependency>
         <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+            <version>${jaxen.version}</version>
+        </dependency>
+        <dependency>
             <groupId>dom4j</groupId>
             <artifactId>dom4j</artifactId>
             <version>${dom4j.version}</version>
             <scope>${jar.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>ognl</groupId>
+            <artifactId>ognl</artifactId>
+            <version>2.6.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <version>1.6.2</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jdt</groupId>

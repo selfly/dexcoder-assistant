@@ -4,8 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.dexcoder.assistant.persistence.manual.SqlFactory;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.*;
@@ -18,28 +21,38 @@ import com.dexcoder.assistant.utils.NameUtils;
 
 /**
  * jdbc操作dao
- *
+ * <p/>
  * Created by liyd on 3/3/15.
  */
 @SuppressWarnings("unchecked")
 public class JdbcDaoImpl implements JdbcDao {
 
-    /** spring jdbcTemplate 对象 */
+    /**
+     * spring jdbcTemplate 对象
+     */
     protected JdbcOperations jdbcTemplate;
 
-    /** 名称处理器，为空按默认执行 */
-    protected NameHandler    nameHandler;
+    /**
+     * 名称处理器，为空按默认执行
+     */
+    protected NameHandler nameHandler;
 
-    /** rowMapper，为空按默认执行 */
-    protected String         rowMapperClass;
+    /**
+     * rowMapper，为空按默认执行
+     */
+    protected String rowMapperClass;
 
-    /** 数据库方言 */
-    protected String         dialect;
+    protected SqlFactory sqlFactory;
+
+    /**
+     * 数据库方言
+     */
+    protected String dialect;
 
     /**
      * 插入数据
      *
-     * @param entity the entity
+     * @param entity   the entity
      * @param criteria the criteria
      * @return long long
      */
@@ -60,7 +73,7 @@ public class JdbcDaoImpl implements JdbcDao {
         jdbcTemplate.update(new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
                 PreparedStatement ps = con.prepareStatement(boundSql.getSql(),
-                    new String[] { boundSql.getPrimaryKey() });
+                        new String[]{boundSql.getPrimaryKey()});
                 int index = 0;
                 for (Object param : boundSql.getParams()) {
                     index++;
@@ -121,32 +134,32 @@ public class JdbcDaoImpl implements JdbcDao {
         jdbcTemplate.execute(sql);
     }
 
-	public <T> List<T> queryList(Criteria criteria) {
+    public <T> List<T> queryList(Criteria criteria) {
         BoundSql boundSql = SqlUtils.buildListSql(null, criteria, this.getNameHandler());
         List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParams().toArray(),
-            this.getRowMapper(criteria.getEntityClass()));
+                this.getRowMapper(criteria.getEntityClass()));
         return (List<T>) list;
     }
 
     public <T> List<T> queryList(Class<?> clazz) {
         BoundSql boundSql = SqlUtils.buildListSql(null, Criteria.create(clazz),
-            this.getNameHandler());
+                this.getNameHandler());
         List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParams().toArray(),
-            this.getRowMapper(clazz));
+                this.getRowMapper(clazz));
         return (List<T>) list;
     }
 
     public <T> List<T> queryList(T entity) {
         BoundSql boundSql = SqlUtils.buildListSql(entity, null, this.getNameHandler());
         List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParams().toArray(),
-            this.getRowMapper(entity.getClass()));
+                this.getRowMapper(entity.getClass()));
         return (List<T>) list;
     }
 
     public <T> List<T> queryList(T entity, Criteria criteria) {
         BoundSql boundSql = SqlUtils.buildListSql(entity, criteria, this.getNameHandler());
         List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParams().toArray(),
-            this.getRowMapper(entity.getClass()));
+                this.getRowMapper(entity.getClass()));
         return (List<T>) list;
     }
 
@@ -181,7 +194,7 @@ public class JdbcDaoImpl implements JdbcDao {
 
         //采用list方式查询，当记录不存在时返回null而不会抛出异常
         List<T> list = (List<T>) jdbcTemplate.query(boundSql.getSql(),
-            this.getRowMapper(criteria.getEntityClass()), id);
+                this.getRowMapper(criteria.getEntityClass()), id);
         if (CollectionUtils.isEmpty(list)) {
             return null;
         }
@@ -193,7 +206,7 @@ public class JdbcDaoImpl implements JdbcDao {
 
         //采用list方式查询，当记录不存在时返回null而不会抛出异常
         List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParams().toArray(),
-            this.getRowMapper(entity.getClass()));
+                this.getRowMapper(entity.getClass()));
         if (CollectionUtils.isEmpty(list)) {
             return null;
         }
@@ -204,12 +217,34 @@ public class JdbcDaoImpl implements JdbcDao {
         BoundSql boundSql = SqlUtils.buildQuerySql(null, criteria, this.getNameHandler());
         //采用list方式查询，当记录不存在时返回null而不会抛出异常
         List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParams().toArray(),
-            this.getRowMapper(criteria.getEntityClass()));
+                this.getRowMapper(criteria.getEntityClass()));
         if (CollectionUtils.isEmpty(list)) {
             return null;
         }
         return (T) list.iterator().next();
     }
+
+//    public List<Map<String, Object>> queryForSql(String sqlId, Map<String, Object> params) {
+//        BoundSql boundSql = this.getSqlHandler().getSql(sqlId, params);
+//        return jdbcTemplate.queryForList(boundSql.getSql(), boundSql.getParams().toArray());
+//    }
+//
+//    public List<Map<String, Object>> queryForSql(String sqlId, String name, Object object) {
+//        Map<String, Object> map = new HashMap<String, Object>();
+//        map.put(name, object);
+//        return this.queryForSql(sqlId, map);
+//    }
+//
+//    public void updateForSql(String sqlId, Map<String, Object> params) {
+//        BoundSql boundSql = this.getSqlHandler().getSql(sqlId, params);
+//        jdbcTemplate.update(boundSql.getSql(), boundSql.getParams().toArray());
+//    }
+//
+//    public void updateForSql(String sqlId, String name, Object object) {
+//        Map<String, Object> map = new HashMap<String, Object>();
+//        map.put(name, object);
+//        this.updateForSql(sqlId, map);
+//    }
 
     public byte[] getBlobValue(Class<?> clazz, String fieldName, Long id) {
         String primaryName = nameHandler.getPKName(clazz);
@@ -217,7 +252,7 @@ public class JdbcDaoImpl implements JdbcDao {
         String tableName = nameHandler.getTableName(clazz, null);
         String tmp_sql = "select t.%s from %s t where t.%s = ?";
         String sql = String.format(tmp_sql, columnName, tableName, primaryName);
-        return jdbcTemplate.query(sql, new Object[] { id }, new ResultSetExtractor<byte[]>() {
+        return jdbcTemplate.query(sql, new Object[]{id}, new ResultSetExtractor<byte[]>() {
             public byte[] extractData(ResultSet rs) throws SQLException, DataAccessException {
                 if (rs.next()) {
                     return rs.getBytes(1);
@@ -269,5 +304,9 @@ public class JdbcDaoImpl implements JdbcDao {
 
     public void setDialect(String dialect) {
         this.dialect = dialect;
+    }
+
+    public void setSqlFactory(SqlFactory sqlFactory) {
+        this.sqlFactory = sqlFactory;
     }
 }

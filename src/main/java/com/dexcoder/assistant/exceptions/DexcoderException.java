@@ -4,18 +4,22 @@ import com.dexcoder.assistant.enums.IEnum;
 
 /**
  * 自定义异常类
- *
+ * <p/>
  * Created by liyd on 6/27/14.
  */
 public class DexcoderException extends RuntimeException {
 
-	private static final long serialVersionUID = -3039546280700778038L;
+    private static final long serialVersionUID = -3039546280700778038L;
 
-	/** Exception code */
+    /**
+     * Exception code
+     */
     protected String resultCode = "UN_KNOWN_EXCEPTION";
 
-    /** Exception message */
-    protected String resultMsg  = "未知异常";
+    /**
+     * Exception message
+     */
+    protected String resultMsg = "未知异常";
 
     /**
      * Constructor
@@ -33,6 +37,11 @@ public class DexcoderException extends RuntimeException {
         super(e.getDesc());
         this.resultCode = e.getCode();
         this.resultMsg = e.getDesc();
+    }
+
+    public DexcoderException(String message, Throwable e) {
+        super(message, e);
+        this.resultMsg = message;
     }
 
     /**
@@ -58,7 +67,7 @@ public class DexcoderException extends RuntimeException {
     /**
      * Constructor
      *
-     * @param code the code
+     * @param code    the code
      * @param message the message
      */
     public DexcoderException(String code, String message) {

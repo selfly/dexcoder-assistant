@@ -13,7 +13,7 @@ import java.util.Date;
 /**
  * Created by liyd on 2015-11-6.
  */
-@Service
+//@Service
 public class JdbcDaoTransactionServiceImpl implements JdbcDaoTransactionService {
 
     private static final Logger LOG = LoggerFactory.getLogger(JdbcDaoTransactionServiceImpl.class);

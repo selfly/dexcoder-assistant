@@ -1,6 +1,7 @@
 package com.dexcoder.assistant.persistence;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * jdbc操作dao
@@ -180,6 +181,42 @@ public interface JdbcDao {
      * @return t t
      */
     public <T> T querySingleResult(Criteria criteria);
+
+//    /**
+//     * 根据sql查询
+//     *
+//     * @param sqlId the sql id
+//     * @param params the params
+//     * @return list
+//     */
+//    List<Map<String, Object>> queryForSql(String sqlId, Map<String, Object> params);
+//
+//    /**
+//     * 根据sql查询
+//     *
+//     * @param sqlId sql的id
+//     * @param name 写sql时访问的参数变量名称
+//     * @param object 写sql时的参数
+//     * @return list
+//     */
+//    List<Map<String, Object>> queryForSql(String sqlId, String name, Object object);
+//
+//    /**
+//     * 执行sql
+//     *
+//     * @param sqlId
+//     * @param params
+//     */
+//    void updateForSql(String sqlId, Map<String, Object> params);
+//
+//    /**
+//     * 执行sql
+//     *
+//     * @param sqlId the sql id
+//     * @param name the name
+//     * @param object the object
+//     */
+//    void updateForSql(String sqlId, String name, Object object);
 
     /**
      * 查询blob字段值
