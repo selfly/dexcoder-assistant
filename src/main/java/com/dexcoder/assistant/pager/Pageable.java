@@ -1,30 +1,35 @@
 package com.dexcoder.assistant.pager;
 
-import java.io.Serializable;
-
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-
 import com.dexcoder.assistant.bean.BeanConverter;
+
+import java.io.Serializable;
 
 /**
  * 分页等常用信息存储
- *
+ * <p/>
  * Created by liyd on 6/26/14.
  */
 public class Pageable implements Serializable {
 
-    /** serialVersionUID */
+    /**
+     * serialVersionUID
+     */
     private static final long serialVersionUID = 4060766214127186912L;
 
-    /** 每页显示条数 */
-    protected int             itemsPerPage     = 20;
+    /**
+     * 每页显示条数
+     */
+    protected int itemsPerPage = 20;
 
-    /** 当前页码 */
-    protected int             curPage          = 1;
+    /**
+     * 当前页码
+     */
+    protected int curPage = 1;
 
-    /** 关键字 */
-    protected String          keywords;
+    /**
+     * 关键字
+     */
+    protected String keywords;
 
     /**
      * 获取自动转换后的JavaBean对象
@@ -43,15 +48,6 @@ public class Pageable implements Serializable {
             //ignore
         }
         return null;
-    }
-
-    /**
-     * 重写toString方法
-     * @see Object#toString()
-     */
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
     public int getItemsPerPage() {

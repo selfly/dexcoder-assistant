@@ -1,5 +1,15 @@
 package com.dexcoder.assistant.persistence;
 
+import com.dexcoder.assistant.persistence.manual.SqlFactory;
+import com.dexcoder.assistant.utils.ClassUtils;
+import com.dexcoder.assistant.utils.NameUtils;
+import com.dexcoder.assistant.utils.StrUtils;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.*;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.util.CollectionUtils;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,17 +17,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.dexcoder.assistant.persistence.manual.SqlFactory;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.*;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.util.CollectionUtils;
-
-import com.dexcoder.assistant.utils.ClassUtils;
-import com.dexcoder.assistant.utils.NameUtils;
 
 /**
  * jdbc操作dao
@@ -60,7 +59,7 @@ public class JdbcDaoImpl implements JdbcDao {
         Class<?> entityClass = SqlUtils.getEntityClass(entity, criteria);
         NameHandler handler = this.getNameHandler();
         String pkValue = handler.getPKValue(entityClass, this.dialect);
-        if (StringUtils.isNotBlank(pkValue)) {
+        if (StrUtils.isNotBlank(pkValue)) {
             String primaryName = handler.getPKName(entityClass);
             if (criteria == null) {
                 criteria = Criteria.create(entityClass);
@@ -270,7 +269,7 @@ public class JdbcDaoImpl implements JdbcDao {
      */
     protected <T> RowMapper<T> getRowMapper(Class<T> clazz) {
 
-        if (StringUtils.isBlank(rowMapperClass)) {
+        if (StrUtils.isBlank(rowMapperClass)) {
             return BeanPropertyRowMapper.newInstance(clazz);
         } else {
             return (RowMapper<T>) ClassUtils.newInstance(rowMapperClass);

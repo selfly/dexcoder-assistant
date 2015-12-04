@@ -4,25 +4,25 @@
  */
 package com.dexcoder.assistant.utils;
 
-import java.io.*;
-
+import com.dexcoder.assistant.exceptions.AssistantException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dexcoder.assistant.exceptions.AssistantException;
+import java.io.*;
 
 /**
  * 序列化辅助类
- * 
+ *
  * @author liyd
  * @version $Id: SerializerUtil.java, v 0.1 2012-8-16 下午4:11:08 liyd Exp $
  */
 public final class SerializeUtils {
 
-    /** 日志对象 */
+    /**
+     * 日志对象
+     */
     private static final Logger LOG = LoggerFactory.getLogger(SerializeUtils.class);
 
     private SerializeUtils() {
@@ -30,7 +30,7 @@ public final class SerializeUtils {
 
     /**
      * 将对象序列化成字符串
-     * 
+     *
      * @param obj
      * @return
      */
@@ -61,13 +61,13 @@ public final class SerializeUtils {
 
     /**
      * 将字符串反序列化成对象
-     * 
+     *
      * @param strObj
      * @return
      */
     public static Object stringToObject(String strObj) {
 
-        if (StringUtils.isBlank(strObj)) {
+        if (StrUtils.isBlank(strObj)) {
             return null;
         }
 
@@ -76,7 +76,7 @@ public final class SerializeUtils {
         try {
             byte[] bytes = strObj.getBytes();
             ois = new ObjectInputStream(new BufferedInputStream(new ByteArrayInputStream(
-                Base64.decodeBase64(bytes))));
+                    Base64.decodeBase64(bytes))));
 
             Object obj = ois.readObject();
             return obj;

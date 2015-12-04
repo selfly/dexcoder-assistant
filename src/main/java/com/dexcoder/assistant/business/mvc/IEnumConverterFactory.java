@@ -1,20 +1,19 @@
 package com.dexcoder.assistant.business.mvc;
 
-import org.apache.commons.lang.StringUtils;
+import com.dexcoder.assistant.enums.IEnum;
+import com.dexcoder.assistant.utils.EnumUtils;
+import com.dexcoder.assistant.utils.StrUtils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 
-import com.dexcoder.assistant.enums.IEnum;
-import com.dexcoder.assistant.utils.EnumUtils;
-
 /**
-* 枚举转换工厂
-*
-* User: liyd
-* Date: 14-1-20
-* Time: 下午9:11
-*/
-@SuppressWarnings({ "rawtypes", "unchecked" })
+ * 枚举转换工厂
+ * <p/>
+ * User: liyd
+ * Date: 14-1-20
+ * Time: 下午9:11
+ */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class IEnumConverterFactory implements ConverterFactory<String, Enum> {
 
     /**
@@ -37,7 +36,9 @@ public class IEnumConverterFactory implements ConverterFactory<String, Enum> {
      */
     private class IEnumConverter<T extends Enum> implements Converter<String, T> {
 
-        /** 枚举类型 */
+        /**
+         * 枚举类型
+         */
         private final Class<T> enumType;
 
         public IEnumConverter(Class<T> enumType) {
@@ -51,7 +52,7 @@ public class IEnumConverterFactory implements ConverterFactory<String, Enum> {
          * @return
          */
         public T convert(String source) {
-            if (StringUtils.isBlank(source)) {
+            if (StrUtils.isBlank(source)) {
                 return null;
             }
             return EnumUtils.getEnum(enumType, source);

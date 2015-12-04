@@ -35,14 +35,14 @@ public class MetaClass {
 
     public Method getReadMethod(String field) {
         if (!fields.contains(field) || readMethods.get(field) == null) {
-            throw new AssistantException(String.format("属性%s在类%s中不存在或没有getter方法", field, typeClass.getName()));
+            throw new AssistantException(String.format("属性[%s]在类[%s]中不存在或没有getter方法", field, typeClass.getName()));
         }
         return readMethods.get(field);
     }
 
     public Method getWriteMethod(String field) {
         if (!field.contains(field) || writeMethods.get(field) == null) {
-            throw new AssistantException(String.format("属性%s在类%s中不存在或没有setter方法", field, typeClass.getName()));
+            throw new AssistantException(String.format("属性[%s]在类[%s]中不存在或没有setter方法", field, typeClass.getName()));
         }
         return writeMethods.get(field);
     }

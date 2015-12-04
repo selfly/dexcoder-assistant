@@ -1,17 +1,16 @@
 package com.dexcoder.assistant.interceptor;
 
-import org.apache.commons.lang.StringUtils;
+import com.dexcoder.assistant.persistence.DynamicDataSourceHolder;
+import com.dexcoder.assistant.utils.StrUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
-import com.dexcoder.assistant.persistence.DynamicDataSourceHolder;
-
 /**
  * 动态数据源拦截器
- *
+ * <p/>
  * Created by liyd on 2015-11-2.
  */
 @Aspect
@@ -26,7 +25,7 @@ public class DynamicDsInterceptor {
     public Object methodAspect(ProceedingJoinPoint pjp) throws Throwable {
 
         String methodName = pjp.getSignature().getName();
-        if (StringUtils.startsWith(methodName, "query")) {
+        if (StrUtils.startsWith(methodName, "query")) {
             DynamicDataSourceHolder.setIsWrite(false);
         } else {
             DynamicDataSourceHolder.setIsWrite(true);

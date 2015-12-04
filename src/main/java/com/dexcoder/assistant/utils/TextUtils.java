@@ -1,18 +1,15 @@
 package com.dexcoder.assistant.utils;
 
-import java.io.UnsupportedEncodingException;
-
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
+import com.dexcoder.assistant.exceptions.DexcoderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dexcoder.assistant.exceptions.DexcoderException;
+import java.io.UnsupportedEncodingException;
 
 /**
  * 字符文本操作
  * 太多的StringUtils了，命名为TextUtils
- * 
+ * <p/>
  * Created by liyd on 2015-8-14.
  */
 public class TextUtils {
@@ -25,17 +22,13 @@ public class TextUtils {
      * @param str
      * @return
      */
-    public static String convertSpecialChars(String str) {
-        if (StringUtils.isBlank(str)) {
+    public static String convertHtmlSpecialChars(String str) {
+        if (StrUtils.isBlank(str)) {
             return null;
         }
-        str = str.replaceAll("&", "&amp;");
-        str = str.replaceAll("<", "&lt;");
-        str = str.replaceAll(">", "&gt;");
-        str = str.replaceAll("\"", "&quot;");
-        //中文全角空格换成英文，防止strin的trim方法失效
-        str = str.replaceAll("　", " ");
-        return str;
+        //最后一个中文全角空格换成英文，防止strin的trim方法失效
+        String[][] chars = new String[][]{{"&", "&amp;"}, {"<", "&lt;"}, {">", "&gt;"}, {"\"", "&quot;"}, {"　", " "}};
+        return replaceChars(str, chars);
     }
 
     /**
@@ -44,16 +37,18 @@ public class TextUtils {
      * @param str
      * @return
      */
-    public static String reverseSpecialChars(String str) {
-        if (StringUtils.isBlank(str)) {
+    public static String reverseHtmlSpecialChars(String str) {
+        if (StrUtils.isBlank(str)) {
             return null;
         }
-        str = str.replaceAll("&amp;", "&");
-        str = str.replaceAll("&lt;", "<");
-        str = str.replaceAll("&gt;", ">");
-        str = str.replaceAll("&quot;", "\"");
-        //中文全角空格换成英文，防止strin的trim方法失效
-        str = str.replaceAll("　", " ");
+        String[][] chars = new String[][]{{"&amp;", "&"}, {"&lt;", "<"}, {"&gt;", ">"}, {"&quot;", "\""}, {"　", " "}};
+        return replaceChars(str, chars);
+    }
+
+    public static String replaceChars(String str, String[][] chars) {
+        for (String[] cs : chars) {
+            str = str.replace(cs[1], cs[2]);
+        }
         return str;
     }
 
@@ -78,7 +73,7 @@ public class TextUtils {
      */
     public static String substringForByte(String text, int length, boolean isConvertSpecialChars) {
 
-        if (StringUtils.isBlank(text) || length < 1) {
+        if (StrUtils.isBlank(text) || length < 1) {
             return text;
         }
         try {
@@ -86,7 +81,7 @@ public class TextUtils {
             byte[] bytes = text.getBytes("GBK");
 
             //截取
-            byte[] contentNameBytes = ArrayUtils.subarray(bytes, 0, length);
+            byte[] contentNameBytes = ArrUtils.subarray(bytes, 0, length);
 
             //处理截取了半个汉字的情况
             int count = 0;
@@ -96,14 +91,14 @@ public class TextUtils {
                 }
             }
             if (count % 2 != 0) {
-                contentNameBytes = ArrayUtils.subarray(contentNameBytes, 0,
-                    contentNameBytes.length - 1);
+                contentNameBytes = ArrUtils.subarray(contentNameBytes, 0,
+                        contentNameBytes.length - 1);
             }
 
             String contentName = new String(contentNameBytes, "GBK");
             //转换特殊字符，页面显示时非常有用
             if (isConvertSpecialChars) {
-                contentName = convertSpecialChars(contentName);
+                contentName = convertHtmlSpecialChars(contentName);
             }
             return contentName;
         } catch (UnsupportedEncodingException e) {

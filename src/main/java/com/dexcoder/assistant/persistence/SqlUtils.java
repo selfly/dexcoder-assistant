@@ -1,21 +1,20 @@
 package com.dexcoder.assistant.persistence;
 
+import com.dexcoder.assistant.exceptions.AssistantException;
+import com.dexcoder.assistant.utils.ArrUtils;
+import com.dexcoder.assistant.utils.ClassUtils;
+import com.dexcoder.assistant.utils.StrUtils;
+import com.dexcoder.assistant.utils.UUIDUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.dexcoder.assistant.exceptions.AssistantException;
-import com.dexcoder.assistant.utils.ClassUtils;
-import com.dexcoder.assistant.utils.UUIDUtils;
 
 /**
  * Created by liyd on 3/3/15.
@@ -77,7 +76,7 @@ public class SqlUtils {
 
             sql.append(columnName);
             //如果是主键，且是主键的值名称
-            if (StringUtils.equalsIgnoreCase(pkName, columnName)
+            if (StrUtils.equalsIgnoreCase(pkName, columnName)
                 && autoField.getType() == AutoField.PK_VALUE_NAME) {
                 //参数直接append，传参方式会无法调用序列等问题
                 args.append(value);
@@ -131,11 +130,11 @@ public class SqlUtils {
             String columnName = nameHandler.getColumnName(autoField.getName());
 
             //如果是主键
-            if (StringUtils.equalsIgnoreCase(primaryName, columnName)) {
+            if (StrUtils.equalsIgnoreCase(primaryName, columnName)) {
 
                 Object[] values = autoField.getValues();
 
-                if (ArrayUtils.isEmpty(values) || StringUtils.isBlank(values[0].toString())) {
+                if (ArrUtils.isEmpty(values) || StrUtils.isBlank(values[0].toString())) {
                     throw new AssistantException("主键值不能设为空");
                 }
                 primaryValue = values[0];
@@ -151,7 +150,7 @@ public class SqlUtils {
             }
 
             sql.append(columnName).append(" ").append(autoField.getFieldOperator()).append(" ");
-            if (ArrayUtils.isEmpty(autoField.getValues()) || autoField.getValues()[0] == null) {
+            if (ArrUtils.isEmpty(autoField.getValues()) || autoField.getValues()[0] == null) {
                 sql.append("NULL");
             } else {
                 sql.append("?");
@@ -221,7 +220,7 @@ public class SqlUtils {
                 continue;
             }
 
-            if (value instanceof String && StringUtils.isBlank(value.toString())) {
+            if (value instanceof String && StrUtils.isBlank(value.toString())) {
                 continue;
             }
 
@@ -259,7 +258,7 @@ public class SqlUtils {
             //操作过，移除
             iterator.remove();
             if (sql.length() > 0 && sql.charAt(sql.length() - 1) != '('
-                && StringUtils.isNotBlank(autoField.getSqlOperator())) {
+                && StrUtils.isNotBlank(autoField.getSqlOperator())) {
                 sql.append(" ").append(autoField.getSqlOperator()).append(" ");
             }
             if (AutoField.FIELD_BRACKET == autoField.getType()) {
@@ -269,9 +268,9 @@ public class SqlUtils {
             String columnName = nameHandler.getColumnName(autoField.getName());
             Object[] values = autoField.getValues();
 
-            if (StringUtils.equalsIgnoreCase(IN, StringUtils.trim(autoField.getFieldOperator()))
-                || StringUtils.equalsIgnoreCase(NOT_IN,
-                    StringUtils.trim(autoField.getFieldOperator()))) {
+            if (StrUtils.equalsIgnoreCase(IN, StrUtils.trim(autoField.getFieldOperator()))
+                || StrUtils.equalsIgnoreCase(NOT_IN,
+                    StrUtils.trim(autoField.getFieldOperator()))) {
 
                 //in，not in的情况
                 sql.append(columnName).append(" ").append(autoField.getFieldOperator()).append(" ");

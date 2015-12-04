@@ -1,22 +1,20 @@
 package com.dexcoder.assistant.persistence;
 
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.*;
-
-import javax.sql.DataSource;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.apache.commons.lang.StringUtils;
+import com.dexcoder.assistant.exceptions.AssistantException;
+import com.dexcoder.assistant.utils.ClassUtils;
+import com.dexcoder.assistant.utils.PropertyUtils;
+import com.dexcoder.assistant.utils.StrUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.*;
 
-import com.dexcoder.assistant.exceptions.AssistantException;
-import com.dexcoder.assistant.utils.ClassUtils;
-import com.dexcoder.assistant.utils.PropertyUtils;
+import javax.sql.DataSource;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.*;
 
 /**
  * Created by liyd on 2015-10-30.
@@ -28,23 +26,23 @@ public class DynamicDataSourceUtils {
     /**
      * 设置数据源权重量
      *
-     * @param readDsList the read ds list
+     * @param readDsList  the read ds list
      * @param writeDsList the write ds list
-     * @param dsId the ds id
-     * @param weight the weight
+     * @param dsId        the ds id
+     * @param weight      the weight
      */
     public static void addWeightDataSource(List<String> readDsList, List<String> writeDsList,
                                            String dsId, int weight, String mode) {
 
-        if (StringUtils.equalsIgnoreCase(mode, DynamicDataSource.DS_MODE_R)) {
+        if (StrUtils.equalsIgnoreCase(mode, DynamicDataSource.DS_MODE_R)) {
             for (int i = 0; i < weight; i++) {
                 readDsList.add(dsId);
             }
-        } else if (StringUtils.equalsIgnoreCase(mode, DynamicDataSource.DS_MODE_W)) {
+        } else if (StrUtils.equalsIgnoreCase(mode, DynamicDataSource.DS_MODE_W)) {
             for (int i = 0; i < weight; i++) {
                 writeDsList.add(dsId);
             }
-        } else if (StringUtils.equalsIgnoreCase(mode, DynamicDataSource.DS_MODE_RW)) {
+        } else if (StrUtils.equalsIgnoreCase(mode, DynamicDataSource.DS_MODE_RW)) {
             for (int i = 0; i < weight; i++) {
                 readDsList.add(dsId);
                 writeDsList.add(dsId);
@@ -56,7 +54,7 @@ public class DynamicDataSourceUtils {
 
     /**
      * 设置数据源各项属性
-     * 
+     *
      * @param map
      * @param dataSource
      */
@@ -67,7 +65,7 @@ public class DynamicDataSourceUtils {
 
             String name = entry.getKey();
             PropertyDescriptor propertyDescriptor = ClassUtils.getPropertyDescriptor(
-                dataSource.getClass(), name);
+                    dataSource.getClass(), name);
             if (propertyDescriptor == null || propertyDescriptor.getWriteMethod() == null) {
                 LOG.warn("设置的数据源属性{}不存在", name);
                 continue;
@@ -83,30 +81,30 @@ public class DynamicDataSourceUtils {
 
     /**
      * 获取并移除元素
-     * 
+     *
      * @param map
      * @return
      */
     public static String getAndRemoveValue(Map<String, String> map, String key, String defaultValue) {
         String value = map.get(key);
         map.remove(key);
-        if (StringUtils.isBlank(value) && StringUtils.isBlank(defaultValue)) {
+        if (StrUtils.isBlank(value) && StrUtils.isBlank(defaultValue)) {
             LOG.error("属性不能为空:{}", key);
             throw new AssistantException("属性不能为空:" + key);
         }
-        return StringUtils.isBlank(value) ? defaultValue : value;
+        return StrUtils.isBlank(value) ? defaultValue : value;
     }
 
     /**
      * 解析数据源信息
-     * 
+     *
      * @param dsConfigFile
      * @return
      */
     public static List<Map<String, String>> parseDataSources(String dsConfigFile) {
         try {
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance()
-                .newDocumentBuilder();
+                    .newDocumentBuilder();
             Document doc = documentBuilder.parse(PropertyUtils.loadResource(dsConfigFile));
             Element dataSources = doc.getDocumentElement();
             NodeList datasourceNodes = dataSources.getChildNodes();
@@ -141,7 +139,7 @@ public class DynamicDataSourceUtils {
 
     /**
      * 获取属性值
-     * 
+     *
      * @param node
      * @param attrName
      * @return

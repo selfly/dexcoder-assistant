@@ -1,5 +1,9 @@
 package com.dexcoder.assistant.utils;
 
+import com.dexcoder.assistant.exceptions.AssistantException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -11,24 +15,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.dexcoder.assistant.exceptions.AssistantException;
-
 /**
  * 类辅助
- *
+ * <p/>
  * User: liyd
  * Date: 2/12/14
  * Time: 10:08 PM
  */
 public class ClassUtils {
 
-    /** 日志对象 */
-    private static final Logger                  LOG        = LoggerFactory
-                                                                .getLogger(ClassUtils.class);
+    /**
+     * 日志对象
+     */
+    private static final Logger LOG = LoggerFactory
+            .getLogger(ClassUtils.class);
 
     /**
      * Map keyed by class containing CachedIntrospectionResults.
@@ -36,11 +36,11 @@ public class ClassUtils {
      * for proper garbage collection in case of multiple class loaders.
      */
     private static final Map<Class<?>, BeanInfo> classCache = Collections
-                                                                .synchronizedMap(new WeakHashMap<Class<?>, BeanInfo>());
+            .synchronizedMap(new WeakHashMap<Class<?>, BeanInfo>());
 
     /**
      * 获取类本身的BeanInfo，不包含父类属性
-     * 
+     *
      * @param clazz
      * @return
      */
@@ -71,7 +71,7 @@ public class ClassUtils {
 
     /**
      * 获取类的BeanInfo,包含父类属性
-     * 
+     *
      * @param clazz
      * @return
      */
@@ -82,7 +82,7 @@ public class ClassUtils {
 
     /**
      * 获取类本身的BeanInfo，不包含父类属性
-     * 
+     *
      * @param clazz
      * @return
      */
@@ -93,7 +93,7 @@ public class ClassUtils {
 
     /**
      * 获取类属性的PropertyDescriptor
-     * 
+     *
      * @param clazz
      * @param name
      * @return
@@ -105,7 +105,7 @@ public class ClassUtils {
             return null;
         }
         for (PropertyDescriptor pd : propertyDescriptors) {
-            if (StringUtils.equals(pd.getName(), name)) {
+            if (StrUtils.equals(pd.getName(), name)) {
                 return pd;
             }
         }
@@ -114,7 +114,7 @@ public class ClassUtils {
 
     /**
      * bean属性转换为map
-     * 
+     *
      * @param object
      * @return
      */
@@ -140,7 +140,7 @@ public class ClassUtils {
 
     /**
      * invokeMethod
-     * 
+     *
      * @param method
      * @param bean
      * @param value
@@ -156,7 +156,7 @@ public class ClassUtils {
 
     /**
      * invokeMethod
-     * 
+     *
      * @param method
      * @param bean
      */
@@ -174,7 +174,7 @@ public class ClassUtils {
 
     /**
      * 初始化实例
-     * 
+     *
      * @param clazz
      * @return
      */
@@ -206,7 +206,7 @@ public class ClassUtils {
 
     /**
      * 加载类
-     * 
+     *
      * @param clazz
      * @return
      */
@@ -222,7 +222,7 @@ public class ClassUtils {
 
     /**
      * 当前线程的classLoader
-     * 
+     *
      * @return
      */
     public static ClassLoader getDefaultClassLoader() {

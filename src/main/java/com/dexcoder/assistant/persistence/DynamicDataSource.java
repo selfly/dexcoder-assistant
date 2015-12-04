@@ -1,69 +1,75 @@
 package com.dexcoder.assistant.persistence;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
+import com.dexcoder.assistant.utils.ClassUtils;
+import com.dexcoder.assistant.utils.RandomUtils;
+import com.dexcoder.assistant.utils.StrUtils;
+import com.dexcoder.assistant.utils.UUIDUtils;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
-import com.dexcoder.assistant.utils.ClassUtils;
-import com.dexcoder.assistant.utils.UUIDUtils;
+import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by liyd on 2015-10-26.
  */
 public class DynamicDataSource extends AbstractRoutingDataSource {
 
-    public static final String  ATTR_ID                = "id";
-    public static final String  ATTR_CLASS             = "class";
-    public static final String  ATTR_DEFAULT           = "default";
-    public static final String  ATTR_NAME              = "name";
-    public static final String  ATTR_VALUE             = "value";
-    public static final String  DS_WEIGHT              = "weight";
-    public static final String  DS_MODE                = "mode";
-    public static final String  DS_MODE_R              = "r";
-    public static final String  DS_MODE_W              = "w";
-    public static final String  DS_MODE_RW             = "rw";
+    public static final String ATTR_ID = "id";
+    public static final String ATTR_CLASS = "class";
+    public static final String ATTR_DEFAULT = "default";
+    public static final String ATTR_NAME = "name";
+    public static final String ATTR_VALUE = "value";
+    public static final String DS_WEIGHT = "weight";
+    public static final String DS_MODE = "mode";
+    public static final String DS_MODE_R = "r";
+    public static final String DS_MODE_W = "w";
+    public static final String DS_MODE_RW = "rw";
 
-    private static Logger       LOG                    = LoggerFactory
-                                                           .getLogger(DynamicDataSource.class);
+    private static Logger LOG = LoggerFactory
+            .getLogger(DynamicDataSource.class);
 
-    /** 默认配置文件名 */
+    /**
+     * 默认配置文件名
+     */
     private static final String DEFAULT_DS_CONFIG_FILE = "dynamic-ds.xml";
 
-    /** 数据源配置文件 */
-    private String              dsConfigFile;
+    /**
+     * 数据源配置文件
+     */
+    private String dsConfigFile;
 
-    /** 读数据源列表，这里保存key 根据权重会有相应的数量 */
-    private List<String>        readDataSourceKeyList;
+    /**
+     * 读数据源列表，这里保存key 根据权重会有相应的数量
+     */
+    private List<String> readDataSourceKeyList;
 
-    /** 写数据源列表，这里保存key 根据权重会有相应的数量 */
-    private List<String>        writeDataSourceKeyList;
+    /**
+     * 写数据源列表，这里保存key 根据权重会有相应的数量
+     */
+    private List<String> writeDataSourceKeyList;
 
     @Override
     protected Object determineCurrentLookupKey() {
 
         DataSourceContext dsContent = DynamicDataSourceHolder.getDsContent();
         //已设置过数据源，直接返回
-        if (StringUtils.isNotBlank(dsContent.getDsKey())) {
+        if (StrUtils.isNotBlank(dsContent.getDsKey())) {
             return dsContent.getDsKey();
         }
 
         if (dsContent.getIsWrite()) {
             String dsKey = writeDataSourceKeyList.get(RandomUtils.nextInt(writeDataSourceKeyList
-                .size()));
+                    .size()));
             dsContent.setDsKey(dsKey);
         } else {
             String dsKey = readDataSourceKeyList.get(RandomUtils.nextInt(readDataSourceKeyList
-                .size()));
+                    .size()));
             dsContent.setDsKey(dsKey);
         }
         if (LOG.isDebugEnabled()) {
@@ -83,13 +89,13 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
     public void initDataSources() {
 
         List<Map<String, String>> dataSourceList = DynamicDataSourceUtils.parseDataSources(this
-            .getDsConfigFile());
+                .getDsConfigFile());
         this.initDataSources(dataSourceList);
     }
 
     /**
      * 初始化数据源
-     * 
+     *
      * @param dataSourceList
      */
     public void initDataSources(List<Map<String, String>> dataSourceList) {
@@ -100,11 +106,11 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
         Object defaultTargetDataSource = null;
         for (Map<String, String> map : dataSourceList) {
             String dataSourceId = DynamicDataSourceUtils.getAndRemoveValue(map, ATTR_ID,
-                UUIDUtils.getUUID8());
+                    UUIDUtils.getUUID8());
             String dataSourceClass = DynamicDataSourceUtils
-                .getAndRemoveValue(map, ATTR_CLASS, null);
+                    .getAndRemoveValue(map, ATTR_CLASS, null);
             String isDefaultDataSource = DynamicDataSourceUtils.getAndRemoveValue(map,
-                ATTR_DEFAULT, "false");
+                    ATTR_DEFAULT, "false");
             String weight = DynamicDataSourceUtils.getAndRemoveValue(map, DS_WEIGHT, "1");
             String mode = DynamicDataSourceUtils.getAndRemoveValue(map, DS_MODE, "rw");
             DataSource dataSource = (DataSource) ClassUtils.newInstance(dataSourceClass);
@@ -114,15 +120,15 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
                 defaultTargetDataSource = dataSource;
             }
             DynamicDataSourceUtils.addWeightDataSource(readDataSourceKeyList,
-                writeDataSourceKeyList, dataSourceId, Integer.valueOf(weight), mode);
+                    writeDataSourceKeyList, dataSourceId, Integer.valueOf(weight), mode);
             LOG.info("dataSourceId={},dataSourceClass={},isDefaultDataSource={},weight={},mode={}",
-                new Object[] { dataSourceId, dataSourceClass, isDefaultDataSource, weight, mode });
+                    new Object[]{dataSourceId, dataSourceClass, isDefaultDataSource, weight, mode});
         }
         this.setTargetDataSources(targetDataSource);
         if (defaultTargetDataSource == null) {
             defaultTargetDataSource = (CollectionUtils.isEmpty(writeDataSourceKeyList) ? targetDataSource
-                .get(readDataSourceKeyList.iterator().next()) : targetDataSource
-                .get(writeDataSourceKeyList.iterator().next()));
+                    .get(readDataSourceKeyList.iterator().next()) : targetDataSource
+                    .get(writeDataSourceKeyList.iterator().next()));
         }
         this.setDefaultTargetDataSource(defaultTargetDataSource);
         super.afterPropertiesSet();
@@ -130,7 +136,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
     }
 
     public String getDsConfigFile() {
-        if (StringUtils.isBlank(this.dsConfigFile)) {
+        if (StrUtils.isBlank(this.dsConfigFile)) {
             return DEFAULT_DS_CONFIG_FILE;
         }
         return dsConfigFile;

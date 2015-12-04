@@ -1,5 +1,10 @@
 package com.dexcoder.assistant.bean;
 
+import com.dexcoder.assistant.exceptions.AssistantException;
+import com.dexcoder.assistant.utils.StrUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -10,12 +15,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.dexcoder.assistant.exceptions.AssistantException;
-
 /**
  * JavaBean信息缓存
  * <p/>
@@ -25,19 +24,23 @@ import com.dexcoder.assistant.exceptions.AssistantException;
  */
 public class IntrospectionCache {
 
-    /** 日志对象 */
-    private static final Logger                   LOG        = LoggerFactory
-                                                                 .getLogger(IntrospectionCache.class);
+    /**
+     * 日志对象
+     */
+    private static final Logger LOG = LoggerFactory
+            .getLogger(IntrospectionCache.class);
 
     /**
      * Map keyed by class containing IntrospectionCache.
      * Needs to be a WeakHashMap with WeakReferences as values to allow
      * for proper garbage collection in case of multiple class loaders.
      */
-    public static final Map<Class<?>, Object>     classCache = Collections
-                                                                 .synchronizedMap(new WeakHashMap<Class<?>, Object>());
+    public static final Map<Class<?>, Object> classCache = Collections
+            .synchronizedMap(new WeakHashMap<Class<?>, Object>());
 
-    /** 类的属性信息，key为属性名 */
+    /**
+     * 类的属性信息，key为属性名
+     */
     private final Map<String, PropertyDescriptor> propertyDescriptorCache;
 
     /**
@@ -143,13 +146,13 @@ public class IntrospectionCache {
 
         PropertyDescriptor pd = this.propertyDescriptorCache.get(name);
 
-        if (pd == null && StringUtils.isNotBlank(name)) {
+        if (pd == null && StrUtils.isNotBlank(name)) {
             // Same lenient fallback checking as in PropertyTypeDescriptor...
             pd = this.propertyDescriptorCache.get(name.substring(0, 1).toLowerCase()
-                                                  + name.substring(1));
+                    + name.substring(1));
             if (pd == null) {
                 pd = this.propertyDescriptorCache.get(name.substring(0, 1).toUpperCase()
-                                                      + name.substring(1));
+                        + name.substring(1));
             }
         }
         return pd;

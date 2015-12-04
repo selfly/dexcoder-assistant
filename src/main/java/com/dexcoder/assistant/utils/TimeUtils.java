@@ -3,24 +3,23 @@ package com.dexcoder.assistant.utils;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Created by liyd on 7/30/14.
  */
 public class TimeUtils {
 
-    private static final long   ONE_MINUTE     = 60000L;
-    private static final long   ONE_HOUR       = 3600000L;
-    private static final long   ONE_DAY        = 86400000L;
-    private static final long   ONE_WEEK       = 604800000L;
+    private static final long ONE_MINUTE = 60000L;
+    private static final long ONE_HOUR = 3600000L;
+    private static final long ONE_DAY = 86400000L;
+    private static final long ONE_WEEK = 604800000L;
 
     private static final String ONE_SECOND_AGO = "秒前";
     private static final String ONE_MINUTE_AGO = "分钟前";
-    private static final String ONE_HOUR_AGO   = "小时前";
-    private static final String ONE_DAY_AGO    = "天前";
-    private static final String ONE_MONTH_AGO  = "月前";
-    private static final String ONE_YEAR_AGO   = "年前";
+    private static final String ONE_HOUR_AGO = "小时前";
+    private static final String ONE_DAY_AGO = "天前";
+    private static final String ONE_MONTH_AGO = "月前";
+    private static final String ONE_YEAR_AGO = "年前";
 
     /**
      * 获取当天开始时间
@@ -107,17 +106,17 @@ public class TimeUtils {
 
     /**
      * 格式化换行
-     * 
+     *
      * @param ago
      * @param line
      * @return
      */
     public static String getAgo(String ago, String line) {
 
-        if (StringUtils.equals("one", line)) {
+        if (StrUtils.equals("one", line)) {
             return ago;
         }
-        if (StringUtils.equals("two", line)) {
+        if (StrUtils.equals("two", line)) {
             return "<br>" + ago;
         }
 

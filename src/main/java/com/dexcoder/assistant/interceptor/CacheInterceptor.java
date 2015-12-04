@@ -1,5 +1,14 @@
 package com.dexcoder.assistant.interceptor;
 
+import com.dexcoder.assistant.cache.DisableCache;
+import com.dexcoder.assistant.cache.EnableCache;
+import com.dexcoder.assistant.pager.Pageable;
+import com.dexcoder.assistant.utils.*;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
@@ -7,40 +16,33 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.dexcoder.assistant.cache.DisableCache;
-import com.dexcoder.assistant.cache.EnableCache;
-import com.dexcoder.assistant.pager.Pageable;
-import com.dexcoder.assistant.utils.CacheUtils;
-import com.dexcoder.assistant.utils.ClassUtils;
-import com.dexcoder.assistant.utils.SerializeUtils;
-import com.dexcoder.assistant.utils.UUIDUtils;
-
 /**
  * 缓存拦截器
- *
+ * <p/>
  * Created by liyd on 9/26/14.
  */
 public class CacheInterceptor implements MethodInterceptor {
 
-    /** 日志对象 */
-    private static final Logger LOG                    = LoggerFactory
-                                                           .getLogger(CacheInterceptor.class);
+    /**
+     * 日志对象
+     */
+    private static final Logger LOG = LoggerFactory
+            .getLogger(CacheInterceptor.class);
 
-    /** 是否开启自动缓存 */
-    private boolean             enableAutoCache        = false;
+    /**
+     * 是否开启自动缓存
+     */
+    private boolean enableAutoCache = false;
 
-    /** 更新数据方法名开始前缀 */
-    private String[]            updateMethodNamesBegin = { "insert", "save", "update", "del", "exe" };
+    /**
+     * 更新数据方法名开始前缀
+     */
+    private String[] updateMethodNamesBegin = {"insert", "save", "update", "del", "exe"};
 
-    /** 类名固定后缀 */
-    private String              classNameFixEnd        = "ServiceImpl";
+    /**
+     * 类名固定后缀
+     */
+    private String classNameFixEnd = "ServiceImpl";
 
     public Object invoke(MethodInvocation invocation) throws Throwable {
 
@@ -75,7 +77,7 @@ public class CacheInterceptor implements MethodInterceptor {
             }
         } else if (enableAutoCache) {
             entityNames = new ArrayList<String>();
-            entityNames.add(StringUtils.replace(targetClass.getSimpleName(), classNameFixEnd, ""));
+            entityNames.add(StrUtils.replace(targetClass.getSimpleName(), classNameFixEnd, ""));
         } else {
             //没有开启缓存，直接调用方法
             return invocation.proceed();
@@ -89,7 +91,7 @@ public class CacheInterceptor implements MethodInterceptor {
 
         Object result = null;
         //列表查询
-        if (StringUtils.startsWith(targetMethod, "query")) {
+        if (StrUtils.startsWith(targetMethod, "query")) {
 
             String argsId = this.getArgsUUID(arguments);
             String parentCacheKey = entityNames.get(0) + "_query";
@@ -99,7 +101,7 @@ public class CacheInterceptor implements MethodInterceptor {
                 result = invocation.proceed();
                 CacheUtils.putChild(parentCacheKey, childCacheKey, result);
             }
-        } else if (StringUtils.startsWith(targetMethod, "get")) {
+        } else if (StrUtils.startsWith(targetMethod, "get")) {
 
             Long primaryValue = this.getPrimaryValue(arguments);
             //返回null，不启用缓存
@@ -122,7 +124,7 @@ public class CacheInterceptor implements MethodInterceptor {
             Long primaryValue = null;
             for (String updateMethodNameBegin : updateMethodNamesBegin) {
 
-                if (!StringUtils.startsWith(targetMethod, updateMethodNameBegin)) {
+                if (!StrUtils.startsWith(targetMethod, updateMethodNameBegin)) {
                     continue;
                 }
                 primaryValue = this.getPrimaryValue(arguments);
@@ -150,7 +152,7 @@ public class CacheInterceptor implements MethodInterceptor {
     private String getArgsUUID(Object[] arguments) {
 
         StringBuilder sb = new StringBuilder();
-        if (!ArrayUtils.isEmpty(arguments)) {
+        if (!ArrUtils.isEmpty(arguments)) {
             for (Object arg : arguments) {
                 String argStr = SerializeUtils.objectToString(arg);
                 sb.append(argStr).append("#");
@@ -162,13 +164,13 @@ public class CacheInterceptor implements MethodInterceptor {
 
     /**
      * 获取实体类型主键值
-     * 
+     *
      * @param arguments
      * @return
      */
     private Long getPrimaryValue(Object[] arguments) {
 
-        if (ArrayUtils.isEmpty(arguments)) {
+        if (ArrUtils.isEmpty(arguments)) {
             return null;
         }
         Object entityObject = null;
@@ -183,16 +185,16 @@ public class CacheInterceptor implements MethodInterceptor {
         if (entityObject != null) {
 
             String entityObjectClassName = entityObject.getClass().getSimpleName();
-            if (StringUtils.endsWith(entityObjectClassName, "Vo")) {
-                entityObjectClassName = StringUtils.substring(entityObjectClassName, 0,
-                    entityObjectClassName.length() - 2);
+            if (StrUtils.endsWith(entityObjectClassName, "Vo")) {
+                entityObjectClassName = StrUtils.substring(entityObjectClassName, 0,
+                        entityObjectClassName.length() - 2);
             }
 
             BeanInfo beanInfo = ClassUtils.getSelfBeanInfo(entityObject.getClass());
             PropertyDescriptor[] pds = beanInfo.getPropertyDescriptors();
             for (PropertyDescriptor pd : pds) {
 
-                if (!StringUtils.equalsIgnoreCase(entityObjectClassName + "Id", pd.getName())) {
+                if (!StrUtils.equalsIgnoreCase(entityObjectClassName + "Id", pd.getName())) {
 
                     continue;
                 }

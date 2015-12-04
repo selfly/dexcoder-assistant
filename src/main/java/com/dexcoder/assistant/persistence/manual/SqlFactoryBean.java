@@ -1,7 +1,7 @@
 package com.dexcoder.assistant.persistence.manual;
 
 import com.dexcoder.assistant.exceptions.AssistantException;
-import org.apache.commons.lang.StringUtils;
+import com.dexcoder.assistant.utils.StrUtils;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
@@ -21,7 +21,7 @@ public class SqlFactoryBean implements FactoryBean<SqlFactory>, InitializingBean
 
     public void afterPropertiesSet() throws Exception {
         this.configuration = new Configuration();
-        String[] sqlLocations = StringUtils.split(this.sqlLocation, ",");
+        String[] sqlLocations = StrUtils.split(this.sqlLocation, ",");
         ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
         for (String location : sqlLocations) {
             try {

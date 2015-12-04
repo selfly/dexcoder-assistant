@@ -1,14 +1,12 @@
 package com.dexcoder.assistant.utils;
 
-import java.util.Collection;
-
+import com.dexcoder.assistant.enums.IEnum;
+import com.dexcoder.assistant.exceptions.AssistantException;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dexcoder.assistant.enums.IEnum;
-import com.dexcoder.assistant.exceptions.AssistantException;
+import java.util.Collection;
 
 /**
  * Created by liyd on 2015-8-24.
@@ -30,13 +28,13 @@ public class AssertUtils {
     }
 
     public static void assertEquals(String str1, String str2, String message) {
-        if (!StringUtils.equals(str1, str2)) {
+        if (!StrUtils.equals(str1, str2)) {
             throw new AssistantException(message);
         }
     }
 
     public static void assertBlank(String str, String message) {
-        if (StringUtils.isBlank(str)) {
+        if (StrUtils.isBlank(str)) {
             throw new AssistantException(message);
         }
     }
@@ -54,7 +52,7 @@ public class AssertUtils {
     }
 
     public static void assertMinLength(String str, int length, String message) {
-        if (StringUtils.length(str) < length) {
+        if (StrUtils.length(str) < length) {
             throw new AssistantException(message);
         }
     }

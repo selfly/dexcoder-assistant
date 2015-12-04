@@ -1,24 +1,21 @@
 package com.dexcoder.assistant.utils;
 
+import com.dexcoder.assistant.exceptions.AssistantException;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 import java.io.*;
 import java.util.Iterator;
-
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
-import javax.swing.*;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.dexcoder.assistant.exceptions.AssistantException;
 
 /**
  * 图片工具
@@ -30,22 +27,24 @@ import com.dexcoder.assistant.exceptions.AssistantException;
 public final class ImageUtils {
 
     /* 日志对象 */
-    private static final Logger LOG                  = LoggerFactory.getLogger(ImageUtils.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ImageUtils.class);
 
-    /** 默认图片格式 */
+    /**
+     * 默认图片格式
+     */
     private static final String DEFAULT_IMAGE_FORMAT = "jpg";
 
     /**
      * 给图片添加水印、可设置水印图片旋转角度
      *
-     * @param srcImage the src image
-     * @param waterImage the water image
+     * @param srcImage    the src image
+     * @param waterImage  the water image
      * @param maxImgWidth the max img width
-     * @param alpha the alpha
-     * @param pointX the point x
-     * @param pointY the point y
-     * @param degree 水印图片旋转角度 
-     * @param targetPath 目标图片路径
+     * @param alpha       the alpha
+     * @param pointX      the point x
+     * @param pointY      the point y
+     * @param degree      水印图片旋转角度
+     * @param targetPath  目标图片路径
      */
     public static void resizeAddLogoSave(InputStream srcImage, InputStream waterImage,
                                          int maxImgWidth, float alpha, int pointX, int pointY,
@@ -63,10 +62,10 @@ public final class ImageUtils {
 
                 if (iWidth > iHeight) {
                     image = image.getScaledInstance(maxImgWidth, (maxImgWidth * iHeight) / iWidth,
-                        Image.SCALE_SMOOTH);
+                            Image.SCALE_SMOOTH);
                 } else {
                     image = image.getScaledInstance((maxImgWidth * iWidth) / iHeight, maxImgWidth,
-                        Image.SCALE_SMOOTH);
+                            Image.SCALE_SMOOTH);
                 }
             }
 
@@ -75,7 +74,7 @@ public final class ImageUtils {
 
             // Create the buffered image.
             BufferedImage bufferedImage = new BufferedImage(temp.getWidth(null),
-                temp.getHeight(null), BufferedImage.TYPE_INT_RGB);
+                    temp.getHeight(null), BufferedImage.TYPE_INT_RGB);
 
             // Copy image to buffered image.
             Graphics2D g1 = bufferedImage.createGraphics();
@@ -88,8 +87,8 @@ public final class ImageUtils {
 
             // Soften.
             float softenFactor = 0.05f;
-            float[] softenArray = { 0, softenFactor, 0, softenFactor, 1 - (softenFactor * 4),
-                    softenFactor, 0, softenFactor, 0 };
+            float[] softenArray = {0, softenFactor, 0, softenFactor, 1 - (softenFactor * 4),
+                    softenFactor, 0, softenFactor, 0};
             Kernel kernel = new Kernel(3, 3, softenArray);
             ConvolveOp cOp = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
             bufferedImage = cOp.filter(bufferedImage, null);
@@ -102,15 +101,15 @@ public final class ImageUtils {
 
             // 设置对线段的锯齿状边缘处理
             g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                    RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
             g.drawImage(image.getScaledInstance(image.getWidth(null), image.getHeight(null),
-                Image.SCALE_SMOOTH), 0, 0, null);
+                    Image.SCALE_SMOOTH), 0, 0, null);
             //
             if (null != degree) {
                 // 设置水印旋转
                 g.rotate(Math.toRadians(degree), (double) bufferedImage.getWidth() / 2,
-                    (double) bufferedImage.getHeight() / 2);
+                        (double) bufferedImage.getHeight() / 2);
             }
 
             // 水印图象的路径 水印一般为gif或者png的，这样可设置透明度
@@ -146,14 +145,14 @@ public final class ImageUtils {
     /**
      * 给图片添加文字水印、可设置水印的旋转角度
      *
-     * @param logoText the logo text 水印文字
-     * @param fontColor the font color 水印文字颜色
-     * @param fontName the font name 水印字体
-     * @param fontSize the font size 水印字体大小
-     * @param alpha the alpha 水印字体透明度
-     * @param pointX the point x 水印字体X坐标
-     * @param pointY the point y 水印字体Y坐标
-     * @param degree the degree 水印字段旋转角度
+     * @param logoText      the logo text 水印文字
+     * @param fontColor     the font color 水印文字颜色
+     * @param fontName      the font name 水印字体
+     * @param fontSize      the font size 水印字体大小
+     * @param alpha         the alpha 水印字体透明度
+     * @param pointX        the point x 水印字体X坐标
+     * @param pointY        the point y 水印字体Y坐标
+     * @param degree        the degree 水印字段旋转角度
      * @param bufferedImage the buffered image 水印图片对象
      * @return the buffered image
      */
@@ -167,16 +166,16 @@ public final class ImageUtils {
 
             // 设置对线段的锯齿状边缘处理
             g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                    RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
             g.drawImage(
-                bufferedImage.getScaledInstance(bufferedImage.getWidth(null),
-                    bufferedImage.getHeight(null), Image.SCALE_SMOOTH), 0, 0, null);
+                    bufferedImage.getScaledInstance(bufferedImage.getWidth(null),
+                            bufferedImage.getHeight(null), Image.SCALE_SMOOTH), 0, 0, null);
 
             if (null != degree) {
                 // 设置水印旋转
                 g.rotate(Math.toRadians(degree), (double) bufferedImage.getWidth() / 2,
-                    (double) bufferedImage.getHeight() / 2);
+                        (double) bufferedImage.getHeight() / 2);
             }
 
             // 设置颜色
@@ -204,16 +203,16 @@ public final class ImageUtils {
      * 重设图片文件大小并设置水印后保存
      *
      * @param inputStream the input stream 图片文件流
-     * @param logoText the logo text 水印文字 
+     * @param logoText    the logo text 水印文字
      * @param maxImgWidth the max img width 图片重设大小最大宽度
-     * @param fontColor the font color 水印文件颜色
-     * @param fontName the font name 水印文字字体
-     * @param fontSize the font size 水印文字大小
-     * @param alpha the alpha 水印文字透明度
-     * @param pointX the point x 水印文字x坐标
-     * @param pointY the point y 水印文字y坐标
-     * @param degree the degree 水印文字旋转角度
-     * @param targetPath the target path 加工后图片保存路径
+     * @param fontColor   the font color 水印文件颜色
+     * @param fontName    the font name 水印文字字体
+     * @param fontSize    the font size 水印文字大小
+     * @param alpha       the alpha 水印文字透明度
+     * @param pointX      the point x 水印文字x坐标
+     * @param pointY      the point y 水印文字y坐标
+     * @param degree      the degree 水印文字旋转角度
+     * @param targetPath  the target path 加工后图片保存路径
      */
     public static void resizeAddLogoWrite(InputStream inputStream, String logoText,
                                           int maxImgWidth, Color fontColor, String fontName,
@@ -267,7 +266,7 @@ public final class ImageUtils {
 
             int width = image.getWidth();
             int height = image.getHeight();
-            return new int[] { width, height };
+            return new int[]{width, height};
 
         } catch (Exception e) {
 
@@ -336,7 +335,7 @@ public final class ImageUtils {
 
     /**
      * 按指定的宽度、高度重设图片大小后保存
-     * 
+     *
      * @param bytes
      * @param newWidth
      * @param newHeight
@@ -367,7 +366,7 @@ public final class ImageUtils {
     /**
      * 按指定的最大值缩放，以Math.max(width,height)为准
      *
-     * @param bytes the bytes
+     * @param bytes   the bytes
      * @param maxSize the max size
      * @return the byte [ ]
      */
@@ -395,7 +394,7 @@ public final class ImageUtils {
     /**
      * 根据宽度按比例缩放
      *
-     * @param bytes the bytes
+     * @param bytes   the bytes
      * @param newWith the new with
      * @return the byte [ ]
      */
@@ -422,8 +421,8 @@ public final class ImageUtils {
     /**
      * 按指定的宽度、高度重设图片大小后保存
      *
-     * @param bytes the bytes
-     * @param newWidth the new width
+     * @param bytes     the bytes
+     * @param newWidth  the new width
      * @param newHeight the new height
      * @return the byte [ ]
      */
@@ -436,8 +435,8 @@ public final class ImageUtils {
     /**
      * 按指定的宽度、高度重设图片大小后保存
      *
-     * @param srcFile the src file
-     * @param newWidth the new width
+     * @param srcFile   the src file
+     * @param newWidth  the new width
      * @param newHeight the new height
      * @return the byte [ ]
      */
@@ -508,11 +507,11 @@ public final class ImageUtils {
 
     /**
      * 裁切图片
-     * 
+     *
      * @param imageFile 图片文件
-     * @param x 起始x坐标
-     * @param y 起始y坐标
-     * @param cutWidth 裁切的宽度
+     * @param x         起始x坐标
+     * @param y         起始y坐标
+     * @param cutWidth  裁切的宽度
      * @param cutHeight 裁切的高度
      * @return
      */
@@ -530,12 +529,12 @@ public final class ImageUtils {
 
     /**
      * 裁切图片
-     * 
+     *
      * @param imageBytes 图片文件
-     * @param x 起始x坐标
-     * @param y 起始y坐标
-     * @param cutWidth 裁切的宽度
-     * @param cutHeight 裁切的高度
+     * @param x          起始x坐标
+     * @param y          起始y坐标
+     * @param cutWidth   裁切的宽度
+     * @param cutHeight  裁切的高度
      * @return
      */
     public static byte[] cutImage(byte[] imageBytes, int x, int y, int cutWidth, int cutHeight) {
@@ -546,7 +545,7 @@ public final class ImageUtils {
 
     /**
      * 将BufferedImage对象转换成byte数组
-     * 
+     *
      * @param bufferedImage
      * @param imageFormat
      * @return
@@ -557,8 +556,8 @@ public final class ImageUtils {
         try {
             bos = new ByteArrayOutputStream();
 
-            ImageIO.write(bufferedImage, (StringUtils.isBlank(imageFormat) ? DEFAULT_IMAGE_FORMAT
-                : imageFormat), bos);
+            ImageIO.write(bufferedImage, (StrUtils.isBlank(imageFormat) ? DEFAULT_IMAGE_FORMAT
+                    : imageFormat), bos);
 
             byte[] data = bos.toByteArray();
 
@@ -573,7 +572,7 @@ public final class ImageUtils {
 
     /**
      * 将文件转换成byte数组
-     * 
+     *
      * @param srcFile
      * @return
      */
@@ -606,7 +605,7 @@ public final class ImageUtils {
 
     /**
      * 按指定格式将图片对象写入到指定文件
-     * 
+     *
      * @param bufferedImage
      * @param formatName
      * @param targetFile
@@ -626,9 +625,9 @@ public final class ImageUtils {
     /**
      * 图片按指定宽、高缩放
      *
-     * @param bytes 图片byte数组
-     * @param newWidth 指定的缩放宽度
-     * @param newHeight 指定的缩放高度，0或小于0时将按比例缩放
+     * @param bytes      图片byte数组
+     * @param newWidth   指定的缩放宽度
+     * @param newHeight  指定的缩放高度，0或小于0时将按比例缩放
      * @param isDoHeight 最大宽度是否作用于高度(true时即高度不得超过指定的宽度，竖形长图片高度超过宽度时以高度为准)
      * @return 缩放后的图片 buffered image
      */
@@ -656,10 +655,10 @@ public final class ImageUtils {
             int iHeight = srcImage.getHeight(null);
             if (iWidth < iHeight && isDoHeight) {
                 resizedImage = srcImage.getScaledInstance((newWidth * iWidth) / iHeight, newWidth,
-                    Image.SCALE_SMOOTH);
+                        Image.SCALE_SMOOTH);
             } else {
                 resizedImage = srcImage.getScaledInstance(newWidth, (newWidth * iHeight) / iWidth,
-                    Image.SCALE_SMOOTH);
+                        Image.SCALE_SMOOTH);
             }
         }
 
@@ -668,7 +667,7 @@ public final class ImageUtils {
 
         // Create the buffered image.
         BufferedImage bufferedImage = new BufferedImage(temp.getWidth(null), temp.getHeight(null),
-            BufferedImage.TYPE_INT_RGB);
+                BufferedImage.TYPE_INT_RGB);
 
         // Copy image to buffered image.
         Graphics g = bufferedImage.createGraphics();
@@ -681,8 +680,8 @@ public final class ImageUtils {
 
         // Soften.
         float softenFactor = 0.05f;
-        float[] softenArray = { 0, softenFactor, 0, softenFactor, 1 - (softenFactor * 4),
-                softenFactor, 0, softenFactor, 0 };
+        float[] softenArray = {0, softenFactor, 0, softenFactor, 1 - (softenFactor * 4),
+                softenFactor, 0, softenFactor, 0};
         Kernel kernel = new Kernel(3, 3, softenArray);
         ConvolveOp cOp = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
         bufferedImage = cOp.filter(bufferedImage, null);
@@ -693,10 +692,10 @@ public final class ImageUtils {
     /**
      * 图片裁切截取
      *
-     * @param bytes 图片对象
-     * @param cutWidth 裁切截取的宽度
+     * @param bytes     图片对象
+     * @param cutWidth  裁切截取的宽度
      * @param cutHeight 裁切截取的高度
-     * @param isZoom 是否缩放后截取
+     * @param isZoom    是否缩放后截取
      * @return 裁切后的图片对象
      */
     private static BufferedImage resizeCutImage(byte[] bytes, int cutWidth, int cutHeight,
@@ -722,7 +721,7 @@ public final class ImageUtils {
             int newImageWidth = (int) (imageWidth / scale);
             int newImageHeight = (int) (imageHeight / scale);
             image = resizeImage(bytes, Math.max(newImageWidth, cutWidth),
-                Math.max(newImageHeight, cutHeight), false);
+                    Math.max(newImageHeight, cutHeight), false);
         }
 
         // This code ensures that all the pixels in the image are loaded.
@@ -730,7 +729,7 @@ public final class ImageUtils {
 
         // Create the buffered image.
         BufferedImage bufferedImage = new BufferedImage(cutWidth, cutHeight,
-            BufferedImage.TYPE_INT_RGB);
+                BufferedImage.TYPE_INT_RGB);
 
         // Copy image to buffered image.
         Graphics g = bufferedImage.createGraphics();
@@ -743,8 +742,8 @@ public final class ImageUtils {
 
         // Soften.
         float softenFactor = 0.05f;
-        float[] softenArray = { 0, softenFactor, 0, softenFactor, 1 - (softenFactor * 4),
-                softenFactor, 0, softenFactor, 0 };
+        float[] softenArray = {0, softenFactor, 0, softenFactor, 1 - (softenFactor * 4),
+                softenFactor, 0, softenFactor, 0};
         Kernel kernel = new Kernel(3, 3, softenArray);
         ConvolveOp cOp = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
         bufferedImage = cOp.filter(bufferedImage, null);

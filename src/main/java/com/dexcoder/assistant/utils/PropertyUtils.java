@@ -1,37 +1,39 @@
 package com.dexcoder.assistant.utils;
 
+import com.dexcoder.assistant.exceptions.AssistantException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.dexcoder.assistant.exceptions.AssistantException;
-
 /**
  * 属性文件操作辅助类
- * 
+ * <p/>
  * User: liyd
  * Date: 14-1-7
  * Time: 上午11:24
  */
 public final class PropertyUtils {
 
-    private static final Logger        LOG        = LoggerFactory.getLogger(PropertyUtils.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PropertyUtils.class);
 
-    /** 属性文件后缀 */
-    private static final String        PRO_SUFFIX = ".properties";
+    /**
+     * 属性文件后缀
+     */
+    private static final String PRO_SUFFIX = ".properties";
 
-    /** 配置文件保存map */
-    private static Map<String, String> propMap    = new HashMap<String, String>();
+    /**
+     * 配置文件保存map
+     */
+    private static Map<String, String> propMap = new HashMap<String, String>();
 
     /**
      * 加载资源文件
-     * 
+     *
      * @param resourceName
      * @return
      */
@@ -42,7 +44,7 @@ public final class PropertyUtils {
             if (configFile == null) {
                 LOG.info("从classpath加载资源文件:{}", resourceName);
                 InputStream is = Thread.currentThread().getContextClassLoader()
-                    .getResourceAsStream(resourceName);
+                        .getResourceAsStream(resourceName);
                 return is;
             } else {
                 LOG.info("从目录加载资源文件:{}", configFile.getAbsolutePath());
@@ -62,7 +64,7 @@ public final class PropertyUtils {
     public static void loadProperties(String resourceName) {
 
         try {
-            if (!StringUtils.endsWith(resourceName, PRO_SUFFIX)) {
+            if (!StrUtils.endsWith(resourceName, PRO_SUFFIX)) {
                 resourceName += PRO_SUFFIX;
             }
             Properties prop = new Properties();
@@ -71,7 +73,7 @@ public final class PropertyUtils {
             while (iterator.hasNext()) {
                 Map.Entry<Object, Object> entry = iterator.next();
                 propMap.put(resourceName + String.valueOf(entry.getKey()),
-                    String.valueOf(entry.getValue()));
+                        String.valueOf(entry.getValue()));
             }
             //为配置文件加入一个属性，用以判断该配置文件已加载过
             propMap.put(resourceName, "true");
@@ -83,7 +85,7 @@ public final class PropertyUtils {
 
     /**
      * 根据key获取properties文件的value值
-     * 
+     *
      * @param resourceName properties文件名
      * @param key
      * @return
@@ -96,12 +98,12 @@ public final class PropertyUtils {
      * 根据key获取properties文件的value值
      *
      * @param resourceName properties文件名
-     * @param key the key
+     * @param key          the key
      * @param defaultValue 不存在时返回的默认值
      * @return property
      */
     public static String getProperty(String resourceName, String key, String defaultValue) {
-        if (!StringUtils.endsWith(resourceName, PRO_SUFFIX)) {
+        if (!StrUtils.endsWith(resourceName, PRO_SUFFIX)) {
             resourceName += PRO_SUFFIX;
         }
         String finalKey = resourceName + key;
@@ -109,12 +111,12 @@ public final class PropertyUtils {
             loadProperties(resourceName);
         }
         String value = propMap.get(finalKey);
-        return StringUtils.isBlank(value) ? defaultValue : value;
+        return StrUtils.isBlank(value) ? defaultValue : value;
     }
 
     /**
      * 获取web容器的配置目录
-     *  
+     *
      * @return
      */
     private static File getConfigFile(String resourceName) {

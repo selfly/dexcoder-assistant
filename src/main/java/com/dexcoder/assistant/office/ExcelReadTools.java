@@ -1,37 +1,36 @@
 /**
- * 
+ *
  */
 package com.dexcoder.assistant.office;
+
+import com.dexcoder.assistant.exceptions.AssistantException;
+import com.dexcoder.assistant.utils.StrUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.ss.usermodel.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateFormatUtils;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.ss.usermodel.*;
-
-import com.dexcoder.assistant.exceptions.AssistantException;
-
 /**
  * excel解析工具，兼容03,07以上格式
- * 
+ *
  * @author liyd
- * 
  */
 public class ExcelReadTools {
 
     /**
      * 解析excel文件
-     * 
+     *
      * @param file
      * @return
      */
@@ -63,7 +62,7 @@ public class ExcelReadTools {
 
     /**
      * 解析第一个sheet
-     * 
+     *
      * @param file
      * @return
      */
@@ -88,7 +87,7 @@ public class ExcelReadTools {
 
     /**
      * 解析sheet
-     * 
+     *
      * @param sheet
      * @return
      */
@@ -117,7 +116,7 @@ public class ExcelReadTools {
 
     /**
      * 解析row
-     * 
+     *
      * @param row
      */
     private static ExcelRow readRow(Row row) {
@@ -143,7 +142,7 @@ public class ExcelReadTools {
 
     /**
      * 解析cell
-     * 
+     *
      * @param cell
      * @return
      */
@@ -167,8 +166,8 @@ public class ExcelReadTools {
             case Cell.CELL_TYPE_NUMERIC:
                 if (HSSFDateUtil.isCellDateFormatted(cell)) {
                     Date date = cell.getDateCellValue();
-                    value = StringUtils.replace(
-                        DateFormatUtils.format(date, "yyyy-MM-dd HH:mm:ss"), " 00:00:00", "");
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    value = StrUtils.replace(dateFormat.format(date), " 00:00:00", "");
                 } else {
                     value = cell.getNumericCellValue();
                     DecimalFormat df = new DecimalFormat("0");

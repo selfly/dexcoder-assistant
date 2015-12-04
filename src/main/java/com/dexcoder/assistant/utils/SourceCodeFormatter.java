@@ -1,12 +1,6 @@
 package com.dexcoder.assistant.utils;
 
-import java.io.BufferedReader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.Map;
-
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
@@ -20,6 +14,11 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.text.edits.TextEdit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.Map;
 
 /**
  * 对源代码进行格式化
@@ -36,21 +35,21 @@ public class SourceCodeFormatter {
      */
     public static String formatEscapeCode(String source) {
 
-        source = StringUtils.trim(source);
+        source = StrUtils.trim(source);
         //需要先还原，因为提交过来页面显示的代码都是转义后的
-        source = TextUtils.reverseSpecialChars(source);
-        if (StringUtils.startsWith(source, "<")) {
+        source = TextUtils.reverseHtmlSpecialChars(source);
+        if (StrUtils.startsWith(source, "<")) {
             source = formatXML(source);
         } else {
             source = formatCode(source);
         }
         //还原成转义后
-        return TextUtils.convertSpecialChars(source);
+        return TextUtils.convertHtmlSpecialChars(source);
     }
 
     /**
      * 对源代码进行格式化，格式化失败返回原格式
-     * 
+     *
      * @param sourceCode
      * @return
      */
@@ -64,12 +63,12 @@ public class SourceCodeFormatter {
             boolean isHeader = true;
             String line;
             while ((line = reader.readLine()) != null) {
-                line = StringUtils.trim(line);
-                if (StringUtils.isBlank(line)) {
+                line = StrUtils.trim(line);
+                if (StrUtils.isBlank(line)) {
                     continue;
                 }
                 if (isHeader
-                    && (StringUtils.startsWith(line, "package") || StringUtils.startsWith(line,
+                        && (StrUtils.startsWith(line, "package") || StrUtils.startsWith(line,
                         "import"))) {
                     header.append(line).append(lineSeparator);
                 } else {
@@ -77,7 +76,7 @@ public class SourceCodeFormatter {
                     content.append(line).append(lineSeparator);
                 }
             }
-            String finalCode = StringUtils.trim(content.toString());
+            String finalCode = StrUtils.trim(content.toString());
             finalCode = formatBodyCode(finalCode);
             return header.append(finalCode).toString();
 
@@ -92,12 +91,12 @@ public class SourceCodeFormatter {
 
     /**
      * 格式化源码
-     * 
+     *
      * @param code
      * @return
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-	private static String formatBodyCode(String code) {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private static String formatBodyCode(String code) {
         try {
             //此处可以修改格式化配置
             Map m = DefaultCodeFormatterConstants.getEclipseDefaultSettings();
@@ -106,7 +105,7 @@ public class SourceCodeFormatter {
             m.put(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR, JavaCore.SPACE);
             CodeFormatter codeFormatter = ToolFactory.createCodeFormatter(m);
             TextEdit textEdit = codeFormatter.format(CodeFormatter.K_UNKNOWN, code, 0,
-                code.length(), 0, null);
+                    code.length(), 0, null);
             if (textEdit != null) {
                 IDocument doc = new Document(code);
                 textEdit.apply(doc);
@@ -120,7 +119,7 @@ public class SourceCodeFormatter {
 
     /**
      * 格式化xml
-     * 
+     *
      * @param xml
      * @return
      */

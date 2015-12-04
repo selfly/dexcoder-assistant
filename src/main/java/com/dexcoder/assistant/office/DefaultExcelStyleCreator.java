@@ -4,30 +4,34 @@
  */
 package com.dexcoder.assistant.office;
 
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddressList;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
 /**
- * 
  * @author liyd
  * @version $Id: DefaultExcelStyleCreate.java, v 0.1 2013-1-17 上午10:43:20 liyd Exp $
  */
 public class DefaultExcelStyleCreator implements ExcelStyleCreator {
 
-    /** 时间格式 */
-    private static final String DATE_FORMAT  = "yyyy-MM-dd HH:mm:ss";
+    /**
+     * 时间格式
+     */
+    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
-    /** 是否为数字正则表达式 */
-    public static final String  REGEX_NUMBER = "^\\d+(\\.\\d+)?$";
+    /**
+     * 是否为数字正则表达式
+     */
+    public static final String REGEX_NUMBER = "^\\d+(\\.\\d+)?$";
 
     /**
      * 按指定的标题创建一个sheet
      *
-     * @param workbook             工作薄对象
+     * @param workbook   工作薄对象
      * @param excelSheet the excel sheet
      * @return hSSF sheet
      */
@@ -45,8 +49,8 @@ public class DefaultExcelStyleCreator implements ExcelStyleCreator {
     /**
      * 生成sheet列标题行
      *
-     * @param workbook 工作薄对象
-     * @param sheet sheet对象
+     * @param workbook   工作薄对象
+     * @param sheet      sheet对象
      * @param excelSheet the excel sheet
      */
     public void createTitle(HSSFWorkbook workbook, HSSFSheet sheet, ExcelSheet excelSheet) {
@@ -69,7 +73,7 @@ public class DefaultExcelStyleCreator implements ExcelStyleCreator {
      * 创建行
      *
      * @param workbook 工作薄
-     * @param sheet sheet对象
+     * @param sheet    sheet对象
      * @param excelRow the row
      * @param rowIndex 行索引
      * @throws Exception
@@ -87,7 +91,7 @@ public class DefaultExcelStyleCreator implements ExcelStyleCreator {
 
             ExcelCell excelCell = cells.get(i);
             Object value = ((excelCell == null || excelCell.getValue() == null) ? null : excelCell
-                .getValue());
+                    .getValue());
             createCell(workbook, sheet, row, value, rowIndex, i);
         }
     }
@@ -95,11 +99,11 @@ public class DefaultExcelStyleCreator implements ExcelStyleCreator {
     /**
      * 创建列
      *
-     * @param workbook 工作薄
-     * @param sheet sheet对象
-     * @param row 行对象
-     * @param value 列值
-     * @param rowIndex 行索引
+     * @param workbook  工作薄
+     * @param sheet     sheet对象
+     * @param row       行对象
+     * @param value     列值
+     * @param rowIndex  行索引
      * @param cellIndex 列索引
      */
     public void createCell(HSSFWorkbook workbook, HSSFSheet sheet, HSSFRow row, Object value,
@@ -127,7 +131,7 @@ public class DefaultExcelStyleCreator implements ExcelStyleCreator {
 
             // 设置下拉列表
             createSelectCellStyle(sheet, cell, rowIndex, rowIndex, cellIndex, cellIndex,
-                (String[]) value);
+                    (String[]) value);
 
         } else {
 
@@ -140,25 +144,26 @@ public class DefaultExcelStyleCreator implements ExcelStyleCreator {
     /**
      * 创建日期列
      *
-     * @param cell             列对象
-     * @param value             列的值
+     * @param cell  列对象
+     * @param value 列的值
      */
     public void createDateCellStyle(HSSFCell cell, Object value) {
 
         // 设置日期
-        String dateValue = DateFormatUtils.format((Date) value, DATE_FORMAT);
+        DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+        String dateValue = dateFormat.format((Date) value);
         cell.setCellValue(dateValue);
     }
 
     /**
      * 创建图片列
      *
-     * @param workbook 工作薄
-     * @param sheet sheet对象
-     * @param row 行对象
-     * @param rowIndex 行索引
+     * @param workbook  工作薄
+     * @param sheet     sheet对象
+     * @param row       行对象
+     * @param rowIndex  行索引
      * @param cellIndex 列索引
-     * @param value 列的值
+     * @param value     列的值
      */
     public void createPictureCellStyle(HSSFWorkbook workbook, HSSFSheet sheet, HSSFRow row,
                                        int rowIndex, int cellIndex, byte[] value) {
@@ -169,7 +174,7 @@ public class DefaultExcelStyleCreator implements ExcelStyleCreator {
         sheet.setColumnWidth(cellIndex, (int) (35.7 * 80));
 
         HSSFClientAnchor anchor = new HSSFClientAnchor(0, 0, 1023, 255, (short) cellIndex,
-            rowIndex, (short) cellIndex, rowIndex);
+                rowIndex, (short) cellIndex, rowIndex);
         anchor.setAnchorType(HSSFClientAnchor.MOVE_DONT_RESIZE);
 
         HSSFPatriarch patriarch = sheet.getDrawingPatriarch();
@@ -180,20 +185,20 @@ public class DefaultExcelStyleCreator implements ExcelStyleCreator {
     /**
      * 创建下拉列表列
      *
-     * @param sheet             sheet对象
-     * @param cell             cell对象
-     * @param firstRowIndex             开始行索引
-     * @param lastRowIndex             结束行索引
-     * @param firstCellIndex             开始列索引
-     * @param lastCellIndex             结束列索引
-     * @param cellValue             列的值
+     * @param sheet          sheet对象
+     * @param cell           cell对象
+     * @param firstRowIndex  开始行索引
+     * @param lastRowIndex   结束行索引
+     * @param firstCellIndex 开始列索引
+     * @param lastCellIndex  结束列索引
+     * @param cellValue      列的值
      */
     public void createSelectCellStyle(HSSFSheet sheet, HSSFCell cell, int firstRowIndex,
                                       int lastRowIndex, int firstCellIndex, int lastCellIndex,
                                       String[] cellValue) {
 
         CellRangeAddressList regions = new CellRangeAddressList(firstRowIndex, lastRowIndex,
-            firstCellIndex, lastCellIndex);
+                firstCellIndex, lastCellIndex);
         DVConstraint constraint = DVConstraint.createExplicitListConstraint(cellValue);
         HSSFDataValidation dataValidate = new HSSFDataValidation(regions, constraint);
         // 加入数据有效性到当前sheet对象
@@ -207,8 +212,8 @@ public class DefaultExcelStyleCreator implements ExcelStyleCreator {
     /**
      * 创建默认格式列
      *
-     * @param cell             列对象
-     * @param value             列的值
+     * @param cell  列对象
+     * @param value 列的值
      */
     public void createDefaultCellStyle(HSSFCell cell, Object value) {
 
