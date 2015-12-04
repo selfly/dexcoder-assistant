@@ -24,11 +24,11 @@
 
     <task:annotation-driven/>
 
-    <!--<bean id="dynamicDataSource" class="com.dexcoder.assistant.persistence.DynamicDataSource">-->
+    <!--<bean id="dynamicDataSource" class="com.dexcoder.jdbc.spring.datasource.DynamicDataSource">-->
     <!--<property name="dsConfigFile" value="dynamic-ds.xml"/>-->
     <!--</bean>-->
 
-    <!--<bean id="dynamicDsInterceptor" class="com.dexcoder.assistant.interceptor.DynamicDsInterceptor"></bean>-->
+    <!--<bean id="dynamicDsInterceptor" class="com.dexcoder.jdbc.spring.datasource.DynamicDsInterceptor"></bean>-->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
           destroy-method="close">
         <property name="driverClassName">
@@ -90,7 +90,7 @@
         </property>
     </bean>
 
-    <bean id="jdbcDao" class="com.dexcoder.assistant.persistence.JdbcDaoImpl">
+    <bean id="jdbcDao" class="com.dexcoder.jdbc.spring.JdbcDaoImpl">
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
         <property name="sqlFactory" ref="sqlFactory"/>
     </bean>

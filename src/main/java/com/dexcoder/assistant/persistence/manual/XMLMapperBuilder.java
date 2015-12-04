@@ -38,7 +38,7 @@ public class XMLMapperBuilder extends BaseBuilder {
                 throw new AssistantException("Mapper's namespace cannot be empty");
             }
             builderAssistant.setCurrentNamespace(namespace);
-            sqlElement(context.evalNodes("/mapper/sql"));
+            sqlElement(context.evalNodes("/mapper/build"));
             buildStatementFromContext(context.evalNodes("select|insert|update|delete"));
         } catch (Exception e) {
             throw new AssistantException("Error parsing Mapper XML. Cause: " + e, e);
