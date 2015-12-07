@@ -1,107 +1,83 @@
 package com.dexcoder.jdbc.build;
 
+import com.dexcoder.jdbc.BoundSql;
+import com.dexcoder.jdbc.NameHandler;
 import com.dexcoder.jdbc.exceptions.JdbcAssistantException;
+import com.dexcoder.jdbc.utils.StrUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by liyd on 2015-12-4.
  */
-public class WhereBuilder extends FieldBuilder {
+public class WhereBuilder extends AbstractFieldBuilder {
 
-    /**
-     * 是否设置过where
-     */
-    private boolean isWhere = false;
+    private static final String COMMAND_OPEN = " WHERE ";
 
-    /**
-     * 设置where条件属性
-     *
-     * @param fieldName
-     * @param value
-     * @return
-     */
-    public void where(String fieldName, Object... value) {
-        this.where(fieldName, "=", value);
+    public void addField(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value) {
+        AutoField autoField = buildAutoField(fieldName, null, fieldOperator, AutoFieldType.WHERE, value);
+        this.autoFields.put(fieldName, autoField);
     }
 
-    /**
-     * 设置where条件属性
-     *
-     * @param fieldName     the field name
-     * @param fieldOperator the operator
-     * @param value         the values
-     * @return
-     */
-    public void where(String fieldName, String fieldOperator, Object... value) {
-        if (this.isWhere) {
-            throw new JdbcAssistantException("There can be only one 'where'!");
+    public void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value) {
+        this.addField(fieldName, sqlOperator, fieldOperator, type, value);
+    }
+
+
+    public BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
+        if (!hasFields()) {
+            throw new JdbcAssistantException("where条件不能为空");
         }
-        buildAutoField(fieldName, null, fieldOperator, AutoFieldType.WHERE, value);
-        this.isWhere = true;
+        StringBuilder sb = new StringBuilder(COMMAND_OPEN);
+        List<Object> params = new ArrayList<Object>();
+        for (Map.Entry<String, AutoField> entry : getFields().entrySet()) {
+            String columnName = nameHandler.getColumnName(entry.getKey());
+            AutoField autoField = entry.getValue();
+            if (autoField.getValue() == null) {
+                sb.append(columnName).append(" IS NULL ");
+            } else if (autoField.getValue() instanceof Object[]) {
+                this.processArrayArgs(sb, params, columnName, autoField);
+            } else {
+                sb.append(columnName).append(" ").append(autoField.getFieldOperator()).append(" ").append("? ");
+                params.add(autoField.getValue());
+            }
+        }
+        return new CriteriaBoundSql(sb.toString(), params);
     }
 
     /**
-     * and操作符
-     */
-    public void and() {
-        this.hasWhere();
-        buildAutoField("and", null, null, AutoFieldType.SQL_OPERATOR, null);
-    }
-
-    /**
-     * 设置and条件
+     * 处理数组参数
      *
-     * @param fieldName
-     * @param fieldOperator
-     * @param values
+     * @param sb
+     * @param params
+     * @param columnName
+     * @param autoField
      */
-    public void and(String fieldName, String fieldOperator, Object[] values) {
-        this.hasWhere();
-        buildAutoField(fieldName, "and", fieldOperator, AutoFieldType.WHERE, values);
-    }
-
-    /**
-     * or操作符
-     */
-    public void or() {
-        this.hasWhere();
-        buildAutoField("or", null, null, AutoFieldType.SQL_OPERATOR, null);
-    }
-
-    /**
-     * 设置or条件
-     *
-     * @param fieldName
-     * @param fieldOperator
-     * @param values
-     */
-    public void or(String fieldName, String fieldOperator, Object[] values) {
-        this.hasWhere();
-        buildAutoField(fieldName, "or", fieldOperator, AutoFieldType.WHERE, values);
-    }
-
-    /**
-     * 左括号开始
-     */
-    public void begin() {
-        this.hasWhere();
-        buildAutoField("(", null, null, AutoFieldType.BRACKET, null);
-    }
-
-    /**
-     * 右括号结束
-     */
-    public void end() {
-        this.hasWhere();
-        buildAutoField(")", null, null, AutoFieldType.BRACKET, null);
-    }
-
-    /**
-     * 检查是否使用了where
-     */
-    private void hasWhere() {
-        if (!this.isWhere) {
-            throw new JdbcAssistantException("使用and或or之前，请先使用where！");
+    private void processArrayArgs(StringBuilder sb, List<Object> params, String columnName, AutoField autoField) {
+        Object[] args = (Object[]) autoField.getValue();
+        sb.append(autoField.getSqlOperator()).append(" (");
+        if (StrUtils.indexOf(StrUtils.upperCase(autoField.getFieldOperator()), "IN") != -1) {
+            sb.append(columnName).append(" ").append(autoField.getFieldOperator()).append(" (");
+            for (int i = 0; i < args.length; i++) {
+                sb.append("?");
+                if (i != args.length - 1) {
+                    sb.append(",");
+                }
+                params.add(args[i]);
+            }
+            sb.append(") ");
+        } else {
+            sb.append(" (");
+            for (int i = 0; i < args.length; i++) {
+                sb.append(columnName).append(" ").append(autoField.getFieldOperator()).append(" ").append("?");
+                if (i != args.length - 1) {
+                    sb.append(",");
+                }
+                params.add(args[i]);
+            }
+            sb.append(") ");
         }
     }
-
 }

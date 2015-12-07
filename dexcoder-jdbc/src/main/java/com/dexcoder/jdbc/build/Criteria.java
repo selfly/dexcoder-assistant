@@ -1,13 +1,6 @@
 package com.dexcoder.jdbc.build;
 
 
-import com.dexcoder.jdbc.BoundSql;
-import com.dexcoder.jdbc.utils.ClassUtils;
-
-import java.beans.BeanInfo;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
-
 /**
  * sql操作Criteria
  * <p/>
@@ -20,68 +13,75 @@ public class Criteria {
      */
     private Class<?> entityClass;
 
-    private SelectBuilder selectBuilder;
-
-    private WhereBuilder whereBuilder;
-
-    private OrderByBuilder orderByBuilder;
-
-    private UpdateBuilder updateBuilder;
+    /**
+     * sql Builder
+     */
+    private FieldBuilder fieldBuilder;
 
     /**
      * constructor
      *
-     * @param clazz
+     * @param clazz        the clazz
+     * @param fieldBuilder the field builder
      */
-    private Criteria(Class<?> clazz) {
+    private Criteria(Class<?> clazz, FieldBuilder fieldBuilder) {
         this.entityClass = clazz;
-        this.whereBuilder = new WhereBuilder();
-        this.selectBuilder = new SelectBuilder();
-        this.orderByBuilder = new OrderByBuilder();
-        this.updateBuilder = new UpdateBuilder();
+        this.fieldBuilder = fieldBuilder;
     }
 
     /**
-     * 初始化
+     * 查询初始化
      *
      * @param clazz
      * @return
      */
-    public static Criteria of(Class<?> clazz) {
-        return new Criteria(clazz);
+    public static Criteria select(Class<?> clazz) {
+        return new Criteria(clazz, new SelectBuilder());
     }
 
-    /**
-     * 合并属性
-     *
-     * @param entity
-     */
-    public BoundSql mergeFields(Object entity, SqlCommandType sqlCommandType, boolean isSkipNull) {
-        BeanInfo selfBeanInfo = ClassUtils.getSelfBeanInfo(entity.getClass());
-        PropertyDescriptor[] propertyDescriptors = selfBeanInfo.getPropertyDescriptors();
-        for (PropertyDescriptor pd : propertyDescriptors) {
-            Method readMethod = pd.getReadMethod();
-            if (readMethod == null) {
-                continue;
-            }
-            Object value = ClassUtils.invokeMethod(readMethod, entity);
-            if (sqlCommandType == SqlCommandType.INSERT) {
-                if (value != null) {
-                    updateBuilder.set(pd.getName(), value);
-                }
-            } else if (sqlCommandType == SqlCommandType.UPDATE) {
-                if (!isSkipNull) {
-                    updateBuilder.set(pd.getName(), value);
-                } else if (value != null) {
-                    updateBuilder.set(pd.getName(), value);
-                }
-            } else if (sqlCommandType == SqlCommandType.SELECT) {
-
-            }
-
-
-        }
+    public static Criteria insert(Class<?> clazz) {
+        return new Criteria(clazz, new InsertBuilder());
     }
+
+    public static Criteria update(Class<?> clazz) {
+        return new Criteria(clazz, new UpdateBuilder());
+    }
+
+    public static Criteria delete(Class<?> clazz) {
+        return new Criteria(clazz, new DeleteBuilder());
+    }
+
+//    /**
+//     * 合并属性
+//     *
+//     * @param entity
+//     */
+//    public BoundSql mergeFields(Object entity, SqlCommandType sqlCommandType, boolean isSkipNull) {
+//        BeanInfo selfBeanInfo = ClassUtils.getSelfBeanInfo(entity.getClass());
+//        PropertyDescriptor[] propertyDescriptors = selfBeanInfo.getPropertyDescriptors();
+//        for (PropertyDescriptor pd : propertyDescriptors) {
+//            Method readMethod = pd.getReadMethod();
+//            if (readMethod == null) {
+//                continue;
+//            }
+//            Object value = ClassUtils.invokeMethod(readMethod, entity);
+//            if (sqlCommandType == SqlCommandType.INSERT) {
+//                if (value != null) {
+//                    updateBuilder.set(pd.getName(), value);
+//                }
+//            } else if (sqlCommandType == SqlCommandType.UPDATE) {
+//                if (!isSkipNull) {
+//                    updateBuilder.set(pd.getName(), value);
+//                } else if (value != null) {
+//                    updateBuilder.set(pd.getName(), value);
+//                }
+//            } else if (sqlCommandType == SqlCommandType.SELECT) {
+//
+//            }
+//
+//
+//        }
+//    }
 
     /**
      * 添加白名单
@@ -90,7 +90,9 @@ public class Criteria {
      * @return
      */
     public Criteria include(String... field) {
-        this.selectBuilder.include(field);
+        for (String f : field) {
+            this.fieldBuilder.addField(f, null, null, AutoFieldType.INCLUDE, null);
+        }
         return this;
     }
 
@@ -101,7 +103,9 @@ public class Criteria {
      * @return
      */
     public Criteria exclude(String... field) {
-        selectBuilder.exclude(field);
+        for (String f : field) {
+            this.fieldBuilder.addField(f, null, null, AutoFieldType.EXCLUDE, null);
+        }
         return this;
     }
 
@@ -112,7 +116,9 @@ public class Criteria {
      * @return
      */
     public Criteria asc(String... field) {
-        orderByBuilder.asc(field);
+        for (String f : field) {
+            this.fieldBuilder.addField(f, null, "ASC", AutoFieldType.ORDER_BY_ASC, null);
+        }
         return this;
     }
 
@@ -123,7 +129,14 @@ public class Criteria {
      * @return
      */
     public Criteria desc(String... field) {
-        orderByBuilder.desc(field);
+        for (String f : field) {
+            this.fieldBuilder.addField(f, null, "DESC", AutoFieldType.ORDER_BY_DESC, null);
+        }
+        return this;
+    }
+
+    public Criteria into(String fieldName, Object value) {
+        this.fieldBuilder.addField(fieldName, null, null, AutoFieldType.INSERT, value);
         return this;
     }
 
@@ -135,7 +148,7 @@ public class Criteria {
      * @return
      */
     public Criteria set(String fieldName, Object value) {
-        updateBuilder.set(fieldName, value);
+        this.fieldBuilder.addField(fieldName, null, null, AutoFieldType.UPDATE, value);
         return this;
     }
 
@@ -174,7 +187,7 @@ public class Criteria {
      * @return
      */
     public Criteria where(String fieldName, String fieldOperator, Object... value) {
-        whereBuilder.where(fieldName, fieldOperator, value);
+        this.fieldBuilder.addCondition(fieldName, null, fieldOperator, AutoFieldType.WHERE, value);
         return this;
     }
 
@@ -184,7 +197,7 @@ public class Criteria {
      * @return
      */
     public Criteria and() {
-        whereBuilder.and();
+        this.and(null, null, null);
         return this;
     }
 
@@ -209,12 +222,12 @@ public class Criteria {
      * @return
      */
     public Criteria and(String fieldName, String fieldOperator, Object[] values) {
-        whereBuilder.and(fieldName, fieldOperator, values);
+        this.fieldBuilder.addCondition(fieldName, "and", fieldOperator, AutoFieldType.WHERE, values);
         return this;
     }
 
     public Criteria or() {
-        whereBuilder.or();
+        this.or(null, null, null);
         return this;
     }
 
@@ -239,7 +252,7 @@ public class Criteria {
      * @return
      */
     public Criteria or(String fieldName, String fieldOperator, Object[] values) {
-        whereBuilder.or(fieldName, fieldOperator, values);
+        this.fieldBuilder.addCondition(fieldName, "or", fieldOperator, AutoFieldType.WHERE, values);
         return this;
     }
 
@@ -249,7 +262,7 @@ public class Criteria {
      * @return
      */
     public Criteria begin() {
-        whereBuilder.begin();
+        this.fieldBuilder.addCondition("(", null, null, AutoFieldType.BRACKET, null);
         return this;
     }
 
@@ -259,7 +272,7 @@ public class Criteria {
      * @return
      */
     public Criteria end() {
-        whereBuilder.end();
+        this.fieldBuilder.addCondition(")", null, null, AutoFieldType.BRACKET, null);
         return this;
     }
 }

@@ -13,7 +13,8 @@ public enum AutoFieldType {
 
     EXCLUDE,
 
-    ORDER_BY,
+    ORDER_BY_ASC,
+    ORDER_BY_DESC,
     BRACKET,
     PK_VALUE_NAME,
 

@@ -7,5 +7,6 @@ public enum SqlCommandType {
     INSERT,
     SELECT,
     UPDATE,
-    DELETE
+    DELETE,
+    WHERE
 }

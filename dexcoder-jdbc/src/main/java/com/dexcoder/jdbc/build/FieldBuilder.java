@@ -1,70 +1,33 @@
 package com.dexcoder.jdbc.build;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.dexcoder.jdbc.BoundSql;
+import com.dexcoder.jdbc.NameHandler;
+
+import java.util.Map;
 
 /**
  * Created by liyd on 2015-12-4.
  */
-public abstract class FieldBuilder {
+public interface FieldBuilder {
 
     /**
-     * 操作的字段
-     */
-    protected List<AutoField> autoFields;
-
-    /**
-     * 是否设置了白名单
-     */
-    protected boolean isInclude = false;
-
-    /**
-     * 是否设置了黑名单
-     */
-    protected boolean isExclude = false;
-
-    protected FieldBuilder() {
-        autoFields = new ArrayList<AutoField>();
-    }
-
-    /**
-     * 构建操作的字段
+     * 添加操作字段
      *
      * @param fieldName     the field name
-     * @param sqlOperator   the build operator
+     * @param sqlOperator   the sql operator
      * @param fieldOperator the field operator
      * @param type          the type
-     * @param value         the values
-     * @return auto field
+     * @param value         the value
      */
-    protected void buildAutoField(String fieldName, String sqlOperator,
-                                  String fieldOperator, AutoFieldType type, Object value) {
-        AutoField autoField = new AutoField();
-        autoField.setName(fieldName);
-        autoField.setSqlOperator(sqlOperator);
-        autoField.setFieldOperator(fieldOperator);
-        autoField.setValue(value);
-        autoField.setType(type);
-        this.autoFields.add(autoField);
-    }
+    void addField(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value);
 
-//    /**
-//     * 构建只有主键的fieldMap
-//     *
-//     * @param fieldName
-//     * @param value
-//     * @return
-//     */
-//    @SuppressWarnings("serial")
-//    public  Map<String, AutoField> buildPkFieldMap(String fieldName, Object value) {
-//        final AutoField autoField = buildAutoField(fieldName, null, null, AutoFieldType.WHERE,
-//                value);
-//        return new LinkedHashMap<String, AutoField>() {
-//            {
-//                put(autoField.getName(), autoField);
-//            }
-//        };
-//    }
+    void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value);
+
+    boolean hasFields();
+
+    Map<String, AutoField> getFields();
+
+    BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler);
 
 
 }
