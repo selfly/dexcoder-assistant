@@ -7,21 +7,6 @@ package com.dexcoder.jdbc.build;
  */
 public class AutoField {
 
-//    /** sql中的update 字段 */
-//    public static final int FIELD_UPDATE   = 1;
-//
-//    /** sql中的where 字段 */
-//    public static final int FIELD_WHERE    = 2;
-//
-//    /** 排序字段 */
-//    public static final int FIELD_ORDER_BY = 3;
-//
-//    /** 主键值名称 例如oracle的序列名，非直接主键值 */
-//    public static final int PK_VALUE_NAME  = 4;
-//
-//    /** 括号 */
-//    public static final int FIELD_BRACKET  = 5;
-
     /**
      * 名称
      */

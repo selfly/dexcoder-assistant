@@ -18,11 +18,6 @@ public class CriteriaBoundSql implements BoundSql {
         this.parameters = parameters;
     }
 
-
-//    public String getPkName() {
-//        return null;
-//    }
-
     public String getSql() {
         return this.sql;
     }

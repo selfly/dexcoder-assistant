@@ -58,38 +58,6 @@ public class Criteria {
         return new Criteria(this.entityClass, new FieldBuilder()).and(fieldName, value);
     }
 
-//    /**
-//     * 合并属性
-//     *
-//     * @param entity
-//     */
-//    public BoundSql mergeFields(Object entity, SqlCommandType sqlCommandType, boolean isSkipNull) {
-//        BeanInfo selfBeanInfo = ClassUtils.getSelfBeanInfo(entity.getClass());
-//        PropertyDescriptor[] propertyDescriptors = selfBeanInfo.getPropertyDescriptors();
-//        for (PropertyDescriptor pd : propertyDescriptors) {
-//            Method readMethod = pd.getReadMethod();
-//            if (readMethod == null) {
-//                continue;
-//            }
-//            Object value = ClassUtils.invokeMethod(readMethod, entity);
-//            if (sqlCommandType == SqlCommandType.INSERT) {
-//                if (value != null) {
-//                    updateBuilder.set(pd.getName(), value);
-//                }
-//            } else if (sqlCommandType == SqlCommandType.UPDATE) {
-//                if (!isSkipNull) {
-//                    updateBuilder.set(pd.getName(), value);
-//                } else if (value != null) {
-//                    updateBuilder.set(pd.getName(), value);
-//                }
-//            } else if (sqlCommandType == SqlCommandType.SELECT) {
-//
-//            }
-//
-//
-//        }
-//    }
-
     /**
      * 添加白名单
      *
@@ -198,16 +166,6 @@ public class Criteria {
         return this;
     }
 
-//    /**
-//     * and 操作符
-//     *
-//     * @return
-//     */
-//    public Criteria and() {
-//        this.and(null, null, null);
-//        return this;
-//    }
-
     /**
      * 设置and条件
      *
@@ -232,11 +190,6 @@ public class Criteria {
         this.sqlBuilder.addCondition(fieldName, "and", fieldOperator, AutoFieldType.WHERE, values);
         return this;
     }
-
-//    public Criteria or() {
-//        this.or(null, null, null);
-//        return this;
-//    }
 
     /**
      * 设置or条件

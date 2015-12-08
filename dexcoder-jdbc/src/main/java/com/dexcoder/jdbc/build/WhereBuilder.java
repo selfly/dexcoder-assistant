@@ -72,7 +72,6 @@ public class WhereBuilder extends AbstractSqlBuilder {
         if (StrUtils.isNotBlank(autoField.getSqlOperator()) && !isFieldBracketBegin(preAutoField)) {
             sb.append(autoField.getSqlOperator());
         }
-//        sb.append(" (");
         if (StrUtils.indexOf(StrUtils.upperCase(autoField.getFieldOperator()), "IN") != -1) {
             sb.append(columnName).append(" ").append(autoField.getFieldOperator()).append(" (");
             for (int i = 0; i < args.length; i++) {
@@ -94,7 +93,6 @@ public class WhereBuilder extends AbstractSqlBuilder {
             }
             sb.append(") ");
         }
-//        sb.append(") ");
     }
 
     /**

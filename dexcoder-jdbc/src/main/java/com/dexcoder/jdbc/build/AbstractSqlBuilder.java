@@ -7,14 +7,15 @@ import com.dexcoder.jdbc.utils.StrUtils;
 import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by liyd on 2015-12-7.
  */
 public abstract class AbstractSqlBuilder implements SqlBuilder {
-
-    protected static final Map<Class<?>, List<String>> CLASS_FIELD_CACHE = new HashMap<Class<?>, List<String>>();
 
     protected String pkFieldName;
 
@@ -55,12 +56,7 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
                 continue;
             }
             String fieldName = pd.getName();
-//            System.out.println(pd.getPropertyEditorClass());
-//            System.out.println(pd.getReadMethod().getDeclaringClass());
-//            if (pd.getReadMethod().getDeclaringClass().equals(entity.getClass())){
-                columnFields.add(fieldName);
-//            }
-
+            columnFields.add(fieldName);
             Object value = ClassUtils.invokeMethod(readMethod, entity);
 
             //忽略掉null
@@ -101,17 +97,6 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
         return autoField;
     }
 
-
-//    //    protected void buildEntityFields(Class<?> clazz) {
-////        this.clazz = clazz;
-////    }
-////
-//    protected void mergeEntityFields(Map<String, AutoField> autoFields) {
-//        if (entityFields != null) {
-//            autoFields.putAll(entityFields);
-//        }
-//    }
-//
 ////    /**
 ////     * 构建只有主键的fieldMap
 ////     *

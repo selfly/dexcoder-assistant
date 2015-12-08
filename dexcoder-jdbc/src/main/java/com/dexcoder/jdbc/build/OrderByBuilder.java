@@ -37,28 +37,4 @@ public class OrderByBuilder extends AbstractSqlBuilder {
         }
         return new CriteriaBoundSql(sb.toString(), null);
     }
-
-
-    //    /**
-//     * asc 排序属性
-//     *
-//     * @param field the field
-//     */
-//    public void asc(String... field) {
-//        for (String f : field) {
-//            this.buildAutoField(f, null, "ASC", AutoFieldType.ORDER_BY, null);
-//        }
-//    }
-//
-//    /**
-//     * desc 排序属性
-//     *
-//     * @param field the field
-//     */
-//    public void desc(String... field) {
-//        for (String f : field) {
-//            this.buildAutoField(f, null, "DESC", AutoFieldType.ORDER_BY, null);
-//        }
-//    }
-
 }

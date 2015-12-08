@@ -82,6 +82,7 @@ public class SelectBuilder extends AbstractSqlBuilder {
      * @param clazz
      */
     private void fetchClassFields(Class<?> clazz) {
+        //ClassUtils已经使用了缓存，此处就不用了
         BeanInfo selfBeanInfo = ClassUtils.getSelfBeanInfo(clazz);
         PropertyDescriptor[] propertyDescriptors = selfBeanInfo.getPropertyDescriptors();
         for (PropertyDescriptor pd : propertyDescriptors) {
