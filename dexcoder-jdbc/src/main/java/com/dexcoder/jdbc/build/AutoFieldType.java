@@ -8,17 +8,11 @@ public enum AutoFieldType {
     INSERT,
     UPDATE,
     WHERE,
-
     INCLUDE,
-
     EXCLUDE,
-
     ORDER_BY_ASC,
     ORDER_BY_DESC,
-    BRACKET,
+    BRACKET_BEGIN,
+    BRACKET_END,
     PK_VALUE_NAME,
-
-    SQL_OPERATOR
-
-
 }

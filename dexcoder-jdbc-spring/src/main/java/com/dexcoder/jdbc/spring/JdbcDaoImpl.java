@@ -1,9 +1,6 @@
 package com.dexcoder.jdbc.spring;
 
-import com.dexcoder.jdbc.BoundSql;
-import com.dexcoder.jdbc.JdbcDao;
-import com.dexcoder.jdbc.NameHandler;
-import com.dexcoder.jdbc.SqlFactory;
+import com.dexcoder.jdbc.*;
 import com.dexcoder.jdbc.build.Criteria;
 import com.dexcoder.jdbc.utils.ClassUtils;
 import com.dexcoder.jdbc.utils.NameUtils;

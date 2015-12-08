@@ -5,6 +5,7 @@ import com.dexcoder.jdbc.NameHandler;
 import com.dexcoder.jdbc.exceptions.JdbcAssistantException;
 import com.dexcoder.jdbc.utils.StrUtils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,17 +13,21 @@ import java.util.Map;
 /**
  * Created by liyd on 2015-12-4.
  */
-public class WhereBuilder extends AbstractFieldBuilder {
+public class WhereBuilder extends AbstractSqlBuilder {
 
-    private static final String COMMAND_OPEN = " WHERE ";
+    protected static final String COMMAND_OPEN = " WHERE ";
 
     public void addField(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value) {
-        AutoField autoField = buildAutoField(fieldName, null, fieldOperator, AutoFieldType.WHERE, value);
+        AutoField autoField = buildAutoField(fieldName, sqlOperator, fieldOperator, type, value);
         this.autoFields.put(fieldName, autoField);
     }
 
     public void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value) {
-        this.addField(fieldName, sqlOperator, fieldOperator, type, value);
+        Object obj = value;
+        if (value instanceof Object[] && Array.getLength(value) == 1) {
+            obj = ((Object[]) value)[0];
+        }
+        this.addField(fieldName, sqlOperator, fieldOperator, type, obj);
     }
 
 
@@ -32,17 +37,24 @@ public class WhereBuilder extends AbstractFieldBuilder {
         }
         StringBuilder sb = new StringBuilder(COMMAND_OPEN);
         List<Object> params = new ArrayList<Object>();
+        AutoField preAutoFile = null;
         for (Map.Entry<String, AutoField> entry : getFields().entrySet()) {
             String columnName = nameHandler.getColumnName(entry.getKey());
             AutoField autoField = entry.getValue();
-            if (autoField.getValue() == null) {
+            if (StrUtils.isNotBlank(autoField.getSqlOperator()) && sb.length() > COMMAND_OPEN.length() && !isFieldBracketBegin(preAutoFile)) {
+                sb.append(autoField.getSqlOperator()).append(" ");
+            }
+            if (autoField.getType() == AutoFieldType.BRACKET_BEGIN || autoField.getType() == AutoFieldType.BRACKET_END) {
+                sb.append(autoField.getName()).append(" ");
+            } else if (autoField.getValue() == null) {
                 sb.append(columnName).append(" IS NULL ");
             } else if (autoField.getValue() instanceof Object[]) {
-                this.processArrayArgs(sb, params, columnName, autoField);
+                this.processArrayArgs(sb, params, columnName, autoField, preAutoFile);
             } else {
-                sb.append(columnName).append(" ").append(autoField.getFieldOperator()).append(" ").append("? ");
+                sb.append(columnName).append(" ").append(autoField.getFieldOperator()).append(" ").append(" ? ");
                 params.add(autoField.getValue());
             }
+            preAutoFile = autoField;
         }
         return new CriteriaBoundSql(sb.toString(), params);
     }
@@ -55,9 +67,12 @@ public class WhereBuilder extends AbstractFieldBuilder {
      * @param columnName
      * @param autoField
      */
-    private void processArrayArgs(StringBuilder sb, List<Object> params, String columnName, AutoField autoField) {
+    protected void processArrayArgs(StringBuilder sb, List<Object> params, String columnName, AutoField autoField, AutoField preAutoField) {
         Object[] args = (Object[]) autoField.getValue();
-        sb.append(autoField.getSqlOperator()).append(" (");
+        if (StrUtils.isNotBlank(autoField.getSqlOperator()) && !isFieldBracketBegin(preAutoField)) {
+            sb.append(autoField.getSqlOperator());
+        }
+//        sb.append(" (");
         if (StrUtils.indexOf(StrUtils.upperCase(autoField.getFieldOperator()), "IN") != -1) {
             sb.append(columnName).append(" ").append(autoField.getFieldOperator()).append(" (");
             for (int i = 0; i < args.length; i++) {
@@ -73,11 +88,22 @@ public class WhereBuilder extends AbstractFieldBuilder {
             for (int i = 0; i < args.length; i++) {
                 sb.append(columnName).append(" ").append(autoField.getFieldOperator()).append(" ").append("?");
                 if (i != args.length - 1) {
-                    sb.append(",");
+                    sb.append(" OR ");
                 }
                 params.add(args[i]);
             }
             sb.append(") ");
         }
+//        sb.append(") ");
+    }
+
+    /**
+     * 是否括号类型开始
+     *
+     * @param autoField
+     * @return
+     */
+    protected boolean isFieldBracketBegin(AutoField autoField) {
+        return (autoField != null && autoField.getType() == AutoFieldType.BRACKET_BEGIN);
     }
 }

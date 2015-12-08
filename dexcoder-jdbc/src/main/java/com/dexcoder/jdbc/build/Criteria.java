@@ -1,6 +1,9 @@
 package com.dexcoder.jdbc.build;
 
 
+import com.dexcoder.jdbc.BoundSql;
+import com.dexcoder.jdbc.NameHandler;
+
 /**
  * sql操作Criteria
  * <p/>
@@ -16,17 +19,17 @@ public class Criteria {
     /**
      * sql Builder
      */
-    private FieldBuilder fieldBuilder;
+    private SqlBuilder sqlBuilder;
 
     /**
      * constructor
      *
-     * @param clazz        the clazz
-     * @param fieldBuilder the field builder
+     * @param clazz      the clazz
+     * @param sqlBuilder the field builder
      */
-    private Criteria(Class<?> clazz, FieldBuilder fieldBuilder) {
+    private Criteria(Class<?> clazz, SqlBuilder sqlBuilder) {
         this.entityClass = clazz;
-        this.fieldBuilder = fieldBuilder;
+        this.sqlBuilder = sqlBuilder;
     }
 
     /**
@@ -49,6 +52,10 @@ public class Criteria {
 
     public static Criteria delete(Class<?> clazz) {
         return new Criteria(clazz, new DeleteBuilder());
+    }
+
+    public Criteria ofField(String fieldName, Object value) {
+        return new Criteria(this.entityClass, new FieldBuilder()).and(fieldName, value);
     }
 
 //    /**
@@ -91,7 +98,7 @@ public class Criteria {
      */
     public Criteria include(String... field) {
         for (String f : field) {
-            this.fieldBuilder.addField(f, null, null, AutoFieldType.INCLUDE, null);
+            this.sqlBuilder.addField(f, null, null, AutoFieldType.INCLUDE, null);
         }
         return this;
     }
@@ -104,7 +111,7 @@ public class Criteria {
      */
     public Criteria exclude(String... field) {
         for (String f : field) {
-            this.fieldBuilder.addField(f, null, null, AutoFieldType.EXCLUDE, null);
+            this.sqlBuilder.addField(f, null, null, AutoFieldType.EXCLUDE, null);
         }
         return this;
     }
@@ -117,7 +124,7 @@ public class Criteria {
      */
     public Criteria asc(String... field) {
         for (String f : field) {
-            this.fieldBuilder.addField(f, null, "ASC", AutoFieldType.ORDER_BY_ASC, null);
+            this.sqlBuilder.addField(f, null, "ASC", AutoFieldType.ORDER_BY_ASC, null);
         }
         return this;
     }
@@ -130,13 +137,13 @@ public class Criteria {
      */
     public Criteria desc(String... field) {
         for (String f : field) {
-            this.fieldBuilder.addField(f, null, "DESC", AutoFieldType.ORDER_BY_DESC, null);
+            this.sqlBuilder.addField(f, null, "DESC", AutoFieldType.ORDER_BY_DESC, null);
         }
         return this;
     }
 
     public Criteria into(String fieldName, Object value) {
-        this.fieldBuilder.addField(fieldName, null, null, AutoFieldType.INSERT, value);
+        this.sqlBuilder.addField(fieldName, null, null, AutoFieldType.INSERT, value);
         return this;
     }
 
@@ -148,7 +155,7 @@ public class Criteria {
      * @return
      */
     public Criteria set(String fieldName, Object value) {
-        this.fieldBuilder.addField(fieldName, null, null, AutoFieldType.UPDATE, value);
+        this.sqlBuilder.addField(fieldName, null, null, AutoFieldType.UPDATE, value);
         return this;
     }
 
@@ -187,19 +194,19 @@ public class Criteria {
      * @return
      */
     public Criteria where(String fieldName, String fieldOperator, Object... value) {
-        this.fieldBuilder.addCondition(fieldName, null, fieldOperator, AutoFieldType.WHERE, value);
+        this.sqlBuilder.addCondition(fieldName, null, fieldOperator, AutoFieldType.WHERE, value);
         return this;
     }
 
-    /**
-     * and 操作符
-     *
-     * @return
-     */
-    public Criteria and() {
-        this.and(null, null, null);
-        return this;
-    }
+//    /**
+//     * and 操作符
+//     *
+//     * @return
+//     */
+//    public Criteria and() {
+//        this.and(null, null, null);
+//        return this;
+//    }
 
     /**
      * 设置and条件
@@ -208,7 +215,7 @@ public class Criteria {
      * @param values
      * @return
      */
-    public Criteria and(String fieldName, Object[] values) {
+    public Criteria and(String fieldName, Object... values) {
         this.and(fieldName, "=", values);
         return this;
     }
@@ -222,14 +229,14 @@ public class Criteria {
      * @return
      */
     public Criteria and(String fieldName, String fieldOperator, Object[] values) {
-        this.fieldBuilder.addCondition(fieldName, "and", fieldOperator, AutoFieldType.WHERE, values);
+        this.sqlBuilder.addCondition(fieldName, "and", fieldOperator, AutoFieldType.WHERE, values);
         return this;
     }
 
-    public Criteria or() {
-        this.or(null, null, null);
-        return this;
-    }
+//    public Criteria or() {
+//        this.or(null, null, null);
+//        return this;
+//    }
 
     /**
      * 设置or条件
@@ -252,7 +259,7 @@ public class Criteria {
      * @return
      */
     public Criteria or(String fieldName, String fieldOperator, Object[] values) {
-        this.fieldBuilder.addCondition(fieldName, "or", fieldOperator, AutoFieldType.WHERE, values);
+        this.sqlBuilder.addCondition(fieldName, "or", fieldOperator, AutoFieldType.WHERE, values);
         return this;
     }
 
@@ -262,7 +269,17 @@ public class Criteria {
      * @return
      */
     public Criteria begin() {
-        this.fieldBuilder.addCondition("(", null, null, AutoFieldType.BRACKET, null);
+        this.begin("and");
+        return this;
+    }
+
+    /**
+     * 开始左括号
+     *
+     * @return
+     */
+    public Criteria begin(String sqlOperator) {
+        this.sqlBuilder.addCondition("(", sqlOperator, null, AutoFieldType.BRACKET_BEGIN, null);
         return this;
     }
 
@@ -272,7 +289,11 @@ public class Criteria {
      * @return
      */
     public Criteria end() {
-        this.fieldBuilder.addCondition(")", null, null, AutoFieldType.BRACKET, null);
+        this.sqlBuilder.addCondition(")", null, null, AutoFieldType.BRACKET_END, null);
         return this;
+    }
+
+    public BoundSql build(Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
+        return this.sqlBuilder.build(this.entityClass, entity, isIgnoreNull, nameHandler);
     }
 }

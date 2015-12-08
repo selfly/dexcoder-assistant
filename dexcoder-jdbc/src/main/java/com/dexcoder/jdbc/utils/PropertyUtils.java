@@ -1,6 +1,6 @@
 package com.dexcoder.jdbc.utils;
 
-import com.dexcoder.assistant.exceptions.AssistantException;
+import com.dexcoder.jdbc.exceptions.AssistantException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

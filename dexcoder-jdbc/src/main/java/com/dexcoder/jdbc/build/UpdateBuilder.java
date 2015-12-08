@@ -11,11 +11,11 @@ import java.util.Map;
 /**
  * Created by liyd on 2015-12-4.
  */
-public class UpdateBuilder extends AbstractFieldBuilder {
+public class UpdateBuilder extends AbstractSqlBuilder {
 
-    private static final String COMMAND_OPEN = "UPDATE ";
+    protected static final String COMMAND_OPEN = "UPDATE ";
 
-    private FieldBuilder whereBuilder;
+    private SqlBuilder whereBuilder;
 
     public UpdateBuilder() {
         whereBuilder = new WhereBuilder();
@@ -31,28 +31,28 @@ public class UpdateBuilder extends AbstractFieldBuilder {
     }
 
     public BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
-        super.mergeEntityFields(entity, AutoFieldType.UPDATE, nameHandler);
+        super.mergeEntityFields(entity, AutoFieldType.UPDATE, nameHandler, isIgnoreNull);
         if (StrUtils.isNotBlank(this.pkFieldName)) {
             //更新，主键都是在where
             AutoField pkField = getFields().get(this.pkFieldName);
             getFields().remove(this.pkFieldName);
-            this.whereBuilder.addCondition(pkField.getName(), pkField.getSqlOperator(), pkField.getFieldOperator(), pkField.getType(), pkField.getValue());
+            if (!whereBuilder.hasField(this.pkFieldName)) {
+                this.whereBuilder.addCondition(pkField.getName(), pkField.getSqlOperator(), pkField.getFieldOperator(), pkField.getType(), pkField.getValue());
+            }
         }
         String tableName = nameHandler.getTableName(clazz, this.whereBuilder.getFields());
 
         StringBuilder sql = new StringBuilder(COMMAND_OPEN);
         List<Object> params = new ArrayList<Object>();
-        sql.append(tableName);
+        sql.append(tableName).append(" SET ");
         for (Map.Entry<String, AutoField> entry : this.autoFields.entrySet()) {
             String columnName = nameHandler.getColumnName(entry.getKey());
             AutoField autoField = entry.getValue();
             if (autoField.getValue() == null) {
-                if (!isIgnoreNull) {
-                    sql.append(" SET ").append(columnName).append(" = NULL,");
-                }
+                sql.append(columnName).append(" = NULL,");
             } else {
                 //待添加解析器
-                sql.append(" SET ").append(columnName).append(" = ?,");
+                sql.append(columnName).append(" = ?,");
                 params.add(autoField.getValue());
             }
         }

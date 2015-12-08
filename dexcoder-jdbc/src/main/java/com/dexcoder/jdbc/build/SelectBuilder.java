@@ -14,14 +14,14 @@ import java.util.List;
 /**
  * Created by liyd on 2015-12-4.
  */
-public class SelectBuilder extends AbstractFieldBuilder {
+public class SelectBuilder extends AbstractSqlBuilder {
 
-    private static final String COMMAND_OPEN = "SELECT ";
+    protected static final String COMMAND_OPEN = "SELECT ";
 
     private List<String> includeFields;
     private List<String> excludeFields;
-    private FieldBuilder whereBuilder;
-    private FieldBuilder orderByBuilder;
+    private SqlBuilder whereBuilder;
+    private SqlBuilder orderByBuilder;
 
     public SelectBuilder() {
         includeFields = new ArrayList<String>();
@@ -49,7 +49,7 @@ public class SelectBuilder extends AbstractFieldBuilder {
     }
 
     public BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
-        super.mergeEntityFields(clazz, AutoFieldType.WHERE, nameHandler);
+        super.mergeEntityFields(entity, AutoFieldType.WHERE, nameHandler, isIgnoreNull);
         whereBuilder.getFields().putAll(this.getFields());
         if (columnFields.isEmpty()) {
             this.fetchClassFields(clazz);

@@ -11,9 +11,9 @@ import java.util.Map;
 /**
  * Created by liyd on 2015-12-7.
  */
-public class InsertBuilder extends AbstractFieldBuilder {
+public class InsertBuilder extends AbstractSqlBuilder {
 
-    private static final String COMMAND_OPEN = "INSERT INTO ";
+    protected static final String COMMAND_OPEN = "INSERT INTO ";
 
     public void addField(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value) {
         AutoField autoField = buildAutoField(fieldName, sqlOperator, fieldOperator, type, value);
@@ -25,7 +25,7 @@ public class InsertBuilder extends AbstractFieldBuilder {
     }
 
     public BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
-        super.mergeEntityFields(entity, AutoFieldType.INSERT, nameHandler);
+        super.mergeEntityFields(entity, AutoFieldType.INSERT, nameHandler, isIgnoreNull);
         StringBuilder sql = new StringBuilder(COMMAND_OPEN);
         StringBuilder args = new StringBuilder("(");
         List<Object> params = new ArrayList<Object>();
@@ -33,9 +33,13 @@ public class InsertBuilder extends AbstractFieldBuilder {
         sql.append(tableName).append(" (");
 
         for (Map.Entry<String, AutoField> entry : getFields().entrySet()) {
+            AutoField autoField = entry.getValue();
+            //忽略null值
+            if (autoField.getValue() == null && isIgnoreNull) {
+                continue;
+            }
             String columnName = nameHandler.getColumnName(entry.getKey());
             sql.append(columnName).append(",");
-            AutoField autoField = entry.getValue();
             if (autoField.getType() == AutoFieldType.PK_VALUE_NAME) {
                 args.append(autoField.getValue());
             } else {

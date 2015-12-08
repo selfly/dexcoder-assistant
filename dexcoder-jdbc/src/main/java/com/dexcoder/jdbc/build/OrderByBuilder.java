@@ -9,9 +9,9 @@ import java.util.Map;
 /**
  * Created by liyd on 2015-12-4.
  */
-public class OrderByBuilder extends AbstractFieldBuilder {
+public class OrderByBuilder extends AbstractSqlBuilder {
 
-    private static final String COMMAND_OPEN = " ORDER BY ";
+    protected static final String COMMAND_OPEN = " ORDER BY ";
 
     public void addField(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value) {
         AutoField autoField = buildAutoField(fieldName, null, fieldOperator, type, null);
@@ -23,16 +23,17 @@ public class OrderByBuilder extends AbstractFieldBuilder {
     }
 
     public BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
-        if (getFields().isEmpty()) {
-            return null;
-        }
         StringBuilder sb = new StringBuilder(COMMAND_OPEN);
-        for (Map.Entry<String, AutoField> entry : getFields().entrySet()) {
-            String columnName = nameHandler.getColumnName(entry.getKey());
-            sb.append(columnName).append(" ").append(entry.getValue().getFieldOperator()).append(",");
-        }
-        if (sb.length() > 10) {
-            sb.deleteCharAt(sb.length() - 1);
+        if (getFields().isEmpty()) {
+            sb.append(nameHandler.getPKName(clazz)).append(" DESC");
+        } else {
+            for (Map.Entry<String, AutoField> entry : getFields().entrySet()) {
+                String columnName = nameHandler.getColumnName(entry.getKey());
+                sb.append(columnName).append(" ").append(entry.getValue().getFieldOperator()).append(",");
+            }
+            if (sb.length() > 10) {
+                sb.deleteCharAt(sb.length() - 1);
+            }
         }
         return new CriteriaBoundSql(sb.toString(), null);
     }

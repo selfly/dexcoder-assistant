@@ -12,7 +12,7 @@ import java.util.*;
 /**
  * Created by liyd on 2015-12-7.
  */
-public abstract class AbstractFieldBuilder implements FieldBuilder {
+public abstract class AbstractSqlBuilder implements SqlBuilder {
 
     protected static final Map<Class<?>, List<String>> CLASS_FIELD_CACHE = new HashMap<Class<?>, List<String>>();
 
@@ -25,7 +25,7 @@ public abstract class AbstractFieldBuilder implements FieldBuilder {
      */
     protected Map<String, AutoField> autoFields;
 
-    public AbstractFieldBuilder() {
+    public AbstractSqlBuilder() {
         columnFields = new ArrayList<String>();
         autoFields = new LinkedHashMap<String, AutoField>();
     }
@@ -35,10 +35,14 @@ public abstract class AbstractFieldBuilder implements FieldBuilder {
     }
 
     public boolean hasFields() {
-        return (this.autoFields != null && !autoFields.isEmpty());
+        return (!autoFields.isEmpty());
     }
 
-    public void mergeEntityFields(Object entity, AutoFieldType autoFieldType, NameHandler nameHandler) {
+    public boolean hasField(String fieldName) {
+        return (this.autoFields.get(fieldName) != null);
+    }
+
+    public void mergeEntityFields(Object entity, AutoFieldType autoFieldType, NameHandler nameHandler, boolean isIgnoreNull) {
         if (entity == null) {
             return;
         }
@@ -51,8 +55,22 @@ public abstract class AbstractFieldBuilder implements FieldBuilder {
                 continue;
             }
             String fieldName = pd.getName();
+//            System.out.println(pd.getPropertyEditorClass());
+//            System.out.println(pd.getReadMethod().getDeclaringClass());
+//            if (pd.getReadMethod().getDeclaringClass().equals(entity.getClass())){
+                columnFields.add(fieldName);
+//            }
+
             Object value = ClassUtils.invokeMethod(readMethod, entity);
-            columnFields.add(fieldName);
+
+            //忽略掉null
+            if (value == null && isIgnoreNull) {
+                continue;
+            }
+            //已经有了，以Criteria中为准
+            if (this.hasField(fieldName)) {
+                continue;
+            }
             String columnName = nameHandler.getColumnName(fieldName);
             AutoField autoField = this.buildAutoField(fieldName, "and", "=", autoFieldType, value);
             this.autoFields.put(fieldName, autoField);

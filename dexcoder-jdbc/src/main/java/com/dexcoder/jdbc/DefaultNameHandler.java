@@ -1,4 +1,4 @@
-package com.dexcoder.jdbc.spring;
+package com.dexcoder.jdbc;
 
 import com.dexcoder.jdbc.NameHandler;
 import com.dexcoder.jdbc.build.AutoField;
