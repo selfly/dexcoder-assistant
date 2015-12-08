@@ -47,8 +47,6 @@ public class CriteriaTest {
         User user = new User();
         user.setEmail("selfly@dexcoder.com");
         user.setUserAge(18);
-//        user.setUserId(10000L);
-//        user.setUserType("1");
 
         Criteria criteria = Criteria.delete(User.class).where("userId", "not in", new Object[]{10000L, 100001L, 10000L}).begin().and("userType", new Object[]{1111}).or("password", new Object[]{"123456"}).end();
         BoundSql boundSql = criteria.build(user, true, new DefaultNameHandler());

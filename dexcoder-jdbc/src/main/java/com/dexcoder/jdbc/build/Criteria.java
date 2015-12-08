@@ -110,6 +110,13 @@ public class Criteria {
         return this;
     }
 
+    /**
+     * insert into属性
+     *
+     * @param fieldName
+     * @param value
+     * @return
+     */
     public Criteria into(String fieldName, Object value) {
         this.sqlBuilder.addField(fieldName, null, null, AutoFieldType.INSERT, value);
         return this;
@@ -232,7 +239,26 @@ public class Criteria {
         return this;
     }
 
+    /**
+     * 将设置的信息构建成BoundSql
+     *
+     * @param entity
+     * @param isIgnoreNull
+     * @param nameHandler
+     * @return
+     */
     public BoundSql build(Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
         return this.sqlBuilder.build(this.entityClass, entity, isIgnoreNull, nameHandler);
+    }
+
+    /**
+     * 将设置的信息构建成BoundSql
+     *
+     * @param isIgnoreNull
+     * @param nameHandler
+     * @return
+     */
+    public BoundSql build(boolean isIgnoreNull, NameHandler nameHandler) {
+        return build(null, isIgnoreNull, nameHandler);
     }
 }
