@@ -20,7 +20,7 @@ public class CriteriaTest {
         user.setUserType("1");
 
         Criteria criteria = Criteria.insert(User.class).into("userId", 10000L).into("loginName", "selfly").into("password", "123456");
-        BoundSql boundSql = criteria.build(null, true, new DefaultNameHandler());
+        BoundSql boundSql = criteria.build(user, true, new DefaultNameHandler());
         System.out.println(boundSql.getSql());
         for (Object obj : boundSql.getParameters()) {
             System.out.println(obj);
@@ -32,7 +32,6 @@ public class CriteriaTest {
         User user = new User();
         user.setEmail("selfly@dexcoder.com");
         user.setUserAge(18);
-        user.setUserId(10000L);
         user.setUserType("1");
 
         Criteria criteria = Criteria.update(User.class).set("loginName", "selfly").set("password", "123456").where("userId", "not in", new Object[]{10000L, 100001L, 10000L});

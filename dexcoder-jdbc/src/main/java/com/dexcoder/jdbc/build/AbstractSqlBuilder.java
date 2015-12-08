@@ -96,23 +96,4 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
         autoField.setType(type);
         return autoField;
     }
-
-////    /**
-////     * 构建只有主键的fieldMap
-////     *
-////     * @param fieldName
-////     * @param value
-////     * @return
-////     */
-////    @SuppressWarnings("serial")
-////    public  Map<String, AutoField> buildPkFieldMap(String fieldName, Object value) {
-////        final AutoField autoField = buildAutoField(fieldName, null, null, AutoFieldType.WHERE,
-////                value);
-////        return new LinkedHashMap<String, AutoField>() {
-////            {
-////                put(autoField.getName(), autoField);
-////            }
-////        };
-////    }
-
 }
