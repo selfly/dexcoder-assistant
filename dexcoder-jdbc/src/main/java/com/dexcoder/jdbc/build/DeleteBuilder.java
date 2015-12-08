@@ -2,7 +2,6 @@ package com.dexcoder.jdbc.build;
 
 import com.dexcoder.jdbc.BoundSql;
 import com.dexcoder.jdbc.NameHandler;
-import com.dexcoder.jdbc.exceptions.JdbcAssistantException;
 
 /**
  * Created by liyd on 2015-12-7.
@@ -18,7 +17,7 @@ public class DeleteBuilder extends AbstractSqlBuilder {
     }
 
     public void addField(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value) {
-        throw new JdbcAssistantException("DeleteBuilder不支持设置操作字段");
+        this.addCondition(fieldName, sqlOperator, fieldOperator, type, value);
     }
 
     public void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value) {

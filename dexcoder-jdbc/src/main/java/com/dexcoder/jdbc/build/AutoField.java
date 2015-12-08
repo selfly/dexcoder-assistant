@@ -1,11 +1,16 @@
 package com.dexcoder.jdbc.build;
 
+import com.dexcoder.jdbc.utils.StrUtils;
+
 /**
  * 组装sql时的列信息
  * <p/>
  * Created by liyd on 7/7/14.
  */
 public class AutoField {
+
+    public static final String NATIVE_OPEN = "[";
+    public static final String NATIVE_CLOSE = "]";
 
     /**
      * 名称
@@ -31,6 +36,15 @@ public class AutoField {
      * 类型
      */
     private AutoFieldType type;
+
+    /**
+     * 是否原生字段
+     *
+     * @return
+     */
+    public boolean isNativeField() {
+        return StrUtils.startsWith(name, NATIVE_OPEN) && StrUtils.endsWith(name, NATIVE_CLOSE);
+    }
 
     public String getName() {
         return name;

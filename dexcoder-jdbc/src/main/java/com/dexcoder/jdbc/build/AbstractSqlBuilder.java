@@ -1,6 +1,9 @@
 package com.dexcoder.jdbc.build;
 
 import com.dexcoder.jdbc.NameHandler;
+import com.dexcoder.jdbc.parser.FieldTokenHandler;
+import com.dexcoder.jdbc.parser.GenericTokenParser;
+import com.dexcoder.jdbc.parser.TokenHandler;
 import com.dexcoder.jdbc.utils.ClassUtils;
 import com.dexcoder.jdbc.utils.StrUtils;
 
@@ -43,7 +46,12 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
         return (this.autoFields.get(fieldName) != null);
     }
 
-    public void mergeEntityFields(Object entity, AutoFieldType autoFieldType, NameHandler nameHandler, boolean isIgnoreNull) {
+    protected GenericTokenParser getTokenParser(String openToken, String closeToken, NameHandler nameHandler) {
+        TokenHandler tokenHandler = new FieldTokenHandler(nameHandler);
+        return new GenericTokenParser(openToken, closeToken, tokenHandler);
+    }
+
+    protected void mergeEntityFields(Object entity, AutoFieldType autoFieldType, NameHandler nameHandler, boolean isIgnoreNull) {
         if (entity == null) {
             return;
         }

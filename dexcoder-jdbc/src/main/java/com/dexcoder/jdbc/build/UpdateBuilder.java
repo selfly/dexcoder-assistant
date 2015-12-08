@@ -2,6 +2,7 @@ package com.dexcoder.jdbc.build;
 
 import com.dexcoder.jdbc.BoundSql;
 import com.dexcoder.jdbc.NameHandler;
+import com.dexcoder.jdbc.parser.GenericTokenParser;
 import com.dexcoder.jdbc.utils.StrUtils;
 
 import java.util.ArrayList;
@@ -48,10 +49,14 @@ public class UpdateBuilder extends AbstractSqlBuilder {
         for (Map.Entry<String, AutoField> entry : this.autoFields.entrySet()) {
             String columnName = nameHandler.getColumnName(entry.getKey());
             AutoField autoField = entry.getValue();
-            if (autoField.getValue() == null) {
+            if (autoField.isNativeField()) {
+                GenericTokenParser tokenParser = super.getTokenParser(AutoField.NATIVE_OPEN, AutoField.NATIVE_CLOSE, nameHandler);
+                String nativeFieldName = tokenParser.parse(autoField.getName());
+                String nativeValue = tokenParser.parse(String.valueOf(autoField.getValue()));
+                sql.append(nativeFieldName).append(" = ").append(nativeValue).append(",");
+            } else if (autoField.getValue() == null) {
                 sql.append(columnName).append(" = NULL,");
             } else {
-                //待添加解析器
                 sql.append(columnName).append(" = ?,");
                 params.add(autoField.getValue());
             }

@@ -13,5 +13,5 @@ public enum AutoFieldType {
     ORDER_BY_DESC,
     BRACKET_BEGIN,
     BRACKET_END,
-    PK_VALUE_NAME,
+    NATIVE,
 }

@@ -42,6 +42,9 @@ public class JdbcDaoImpl implements JdbcDao {
      */
     protected String rowMapperClass;
 
+    /**
+     * 自定义sql处理
+     */
     protected SqlFactory sqlFactory;
 
     /**
@@ -86,6 +89,13 @@ public class JdbcDaoImpl implements JdbcDao {
     }
 
     public Long insert(Object entity) {
+        NameHandler handler = this.getNameHandler();
+        Criteria criteria = Criteria.insert(entity.getClass());
+        String pkValue = handler.getPKValue(entity.getClass(), this.dialect);
+        if (StrUtils.isNotBlank(pkValue)) {
+            String primaryName = handler.getPKName(entity.getClass());
+            criteria.setPKValueName(NameUtils.getCamelName(primaryName), pkValue);
+        }
         return this.insert(entity, null);
     }
 

@@ -127,20 +127,6 @@ public class Criteria {
         return this;
     }
 
-//    /**
-//     * 设置主键值名称，如oracle序列名，非直接的值
-//     *
-//     * @param pkName
-//     * @param valueName
-//     * @return
-//     */
-//    public Criteria setPKValueName(String pkName, String valueName) {
-//        AutoField autoField = AutoFieldUtils.buildAutoFields(pkName, null, "=",
-//                AutoField.PK_VALUE_NAME, valueName);
-//        this.autoFields.add(autoField);
-//        return this;
-//    }
-
     /**
      * 设置where条件属性
      *

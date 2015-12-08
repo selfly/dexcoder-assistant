@@ -65,7 +65,52 @@ public class CriteriaTest {
         user.setEmail("selfly@dexcoder.com");
         user.setUserAge(18);
 
-        BoundSql boundSql = Criteria.select(User.class).include("loginName").where("userId",new Object[]{111,333}).build(user, true, new DefaultNameHandler());
+        BoundSql boundSql = Criteria.select(User.class).include("loginName").where("userId", new Object[]{111, 333}).build(user, true, new DefaultNameHandler());
+        System.out.println(boundSql.getSql());
+        for (Object obj : boundSql.getParameters()) {
+            System.out.println(obj);
+        }
+    }
+
+    @Test
+    public void nativeUpdateSql() {
+
+        User user = new User();
+        user.setEmail("selfly@dexcoder.com");
+        user.setUserType("1");
+
+        Criteria criteria = Criteria.update(User.class).set("[userAge]", "[userAge] + 1").set("password", "123456").where("userId", "not in", new Object[]{10000L, 100001L, 10000L});
+        BoundSql boundSql = criteria.build(user, true, new DefaultNameHandler());
+        System.out.println(boundSql.getSql());
+        for (Object obj : boundSql.getParameters()) {
+            System.out.println(obj);
+        }
+    }
+
+    @Test
+    public void nativeSelectSql() {
+
+        User user = new User();
+        user.setEmail("selfly@dexcoder.com");
+        user.setUserType("1");
+
+        Criteria criteria = Criteria.select(User.class).include("userId").where("[userId]", new Object[]{"[userAge]"});
+        BoundSql boundSql = criteria.build(user, true, new DefaultNameHandler());
+        System.out.println(boundSql.getSql());
+        for (Object obj : boundSql.getParameters()) {
+            System.out.println(obj);
+        }
+    }
+
+    @Test
+    public void nativeDeleteSql() {
+
+        User user = new User();
+        user.setEmail("selfly@dexcoder.com");
+        user.setUserType("1");
+
+        Criteria criteria = Criteria.delete(User.class).where("[userId]", new Object[]{"[userAge]"});
+        BoundSql boundSql = criteria.build(user, true, new DefaultNameHandler());
         System.out.println(boundSql.getSql());
         for (Object obj : boundSql.getParameters()) {
             System.out.println(obj);

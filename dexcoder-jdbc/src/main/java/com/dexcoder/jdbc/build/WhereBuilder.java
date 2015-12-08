@@ -3,6 +3,7 @@ package com.dexcoder.jdbc.build;
 import com.dexcoder.jdbc.BoundSql;
 import com.dexcoder.jdbc.NameHandler;
 import com.dexcoder.jdbc.exceptions.JdbcAssistantException;
+import com.dexcoder.jdbc.parser.GenericTokenParser;
 import com.dexcoder.jdbc.utils.StrUtils;
 
 import java.lang.reflect.Array;
@@ -24,8 +25,8 @@ public class WhereBuilder extends AbstractSqlBuilder {
 
     public void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value) {
         Object obj = value;
-        if (value instanceof Object[] && Array.getLength(value) == 1) {
-            obj = ((Object[]) value)[0];
+        while (obj instanceof Object[] && Array.getLength(obj) == 1) {
+            obj = ((Object[]) obj)[0];
         }
         this.addField(fieldName, sqlOperator, fieldOperator, type, obj);
     }
@@ -44,7 +45,12 @@ public class WhereBuilder extends AbstractSqlBuilder {
             if (StrUtils.isNotBlank(autoField.getSqlOperator()) && sb.length() > COMMAND_OPEN.length() && !isFieldBracketBegin(preAutoFile)) {
                 sb.append(autoField.getSqlOperator()).append(" ");
             }
-            if (autoField.getType() == AutoFieldType.BRACKET_BEGIN || autoField.getType() == AutoFieldType.BRACKET_END) {
+            if (autoField.isNativeField()) {
+                GenericTokenParser tokenParser = super.getTokenParser(AutoField.NATIVE_OPEN, AutoField.NATIVE_CLOSE, nameHandler);
+                String nativeFieldName = tokenParser.parse(autoField.getName());
+                String nativeValue = tokenParser.parse(String.valueOf(autoField.getValue()));
+                sb.append(nativeFieldName).append(" ").append(autoField.getFieldOperator()).append(" ").append(nativeValue).append(" ");
+            } else if (autoField.getType() == AutoFieldType.BRACKET_BEGIN || autoField.getType() == AutoFieldType.BRACKET_END) {
                 sb.append(autoField.getName()).append(" ");
             } else if (autoField.getValue() == null) {
                 sb.append(columnName).append(" IS NULL ");
