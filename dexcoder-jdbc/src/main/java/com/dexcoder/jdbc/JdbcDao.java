@@ -187,38 +187,53 @@ public interface JdbcDao {
     /**
      * 根据sql查询
      *
-     * @param sqlId the build id
-     * @param params the params
+     * @param refSql
      * @return list
      */
-    List<Map<String, Object>> queryForSql(String sqlId, Map<String, Object> params);
+    List<Map<String, Object>> queryForSql(String refSql);
 
     /**
      * 根据sql查询
      *
-     * @param sqlId sql的id
-     * @param name 写sql时访问的参数变量名称
-     * @param object 写sql时的参数
+     * @param refSql
+     * @param params the params
      * @return list
      */
-    List<Map<String, Object>> queryForSql(String sqlId, String name, Object object);
-//
-//    /**
-//     * 执行sql
-//     *
-//     * @param sqlId
-//     * @param params
-//     */
-//    void updateForSql(String sqlId, Map<String, Object> params);
-//
-//    /**
-//     * 执行sql
-//     *
-//     * @param sqlId the build id
-//     * @param name the name
-//     * @param object the object
-//     */
-//    void updateForSql(String sqlId, String name, Object object);
+    List<Map<String, Object>> queryForSql(String refSql, Object[] params);
+
+    /**
+     * 根据sql查询
+     *
+     * @param refSql the ref sql
+     * @param name 写sql时访问的参数变量名称
+     * @param params the params
+     * @return list list
+     */
+    List<Map<String, Object>> queryForSql(String refSql, String name, Object[] params);
+
+    /**
+     * 执行sql
+     *
+     * @param refSql the ref sql
+     */
+    void updateForSql(String refSql);
+
+    /**
+     * 执行sql
+     *
+     * @param refSql the ref sql
+     * @param params the params
+     */
+    void updateForSql(String refSql, Object[] params);
+
+    /**
+     * 执行sql
+     *
+     * @param refSql the ref sql
+     * @param expectParamKey the expect param key
+     * @param params the params
+     */
+    void updateForSql(String refSql, String expectParamKey, Object[] params);
 
     /**
      * 查询blob字段值

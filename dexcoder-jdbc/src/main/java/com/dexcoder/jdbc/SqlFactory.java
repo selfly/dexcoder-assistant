@@ -10,10 +10,10 @@ public interface SqlFactory {
     /**
      * 获取BoundSql
      *
-     * @param namespace
-     * @param sqlId
-     * @param parameters
-     * @return
+     * @param refSql the ref sql
+     * @param expectParamKey the expect param key
+     * @param parameters the parameters
+     * @return bound sql
      */
-    BoundSql getBoundSql(String namespace, String sqlId, Map<String, Object> parameters);
+    BoundSql getBoundSql(String refSql, String expectParamKey, Object[] parameters);
 }

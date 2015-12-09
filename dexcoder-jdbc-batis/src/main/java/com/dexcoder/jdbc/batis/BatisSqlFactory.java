@@ -21,9 +21,9 @@ public class BatisSqlFactory implements SqlFactory {
         this.configuration = configuration;
     }
 
-    public BoundSql getBoundSql(String namespace, String sqlId, Map<String, Object> parameters) {
+    public BoundSql getBoundSql(String refSql, String expectParamKey, Object[] parameters) {
 
-        MappedStatement mappedStatement = this.configuration.getMappedStatements().get(namespace + "." + sqlId);
+        MappedStatement mappedStatement = this.configuration.getMappedStatements().get(refSql);
         BatisBoundSql boundSql = mappedStatement.getSqlSource().getBoundSql(parameters);
         String sql = boundSql.getSql();
         System.out.println(sql);

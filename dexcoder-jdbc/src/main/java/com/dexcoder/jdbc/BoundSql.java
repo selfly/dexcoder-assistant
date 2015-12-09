@@ -1,7 +1,5 @@
 package com.dexcoder.jdbc;
 
-import java.util.List;
-
 /**
  * 具体的sql、参数信息对象
  * <p/>
@@ -9,12 +7,12 @@ import java.util.List;
  */
 public interface BoundSql {
 
-//    /**
-//     * 获取主键名称
-//     *
-//     * @return
-//     */
-//    String getPkName();
+    //    /**
+    //     * 获取主键名称
+    //     *
+    //     * @return
+    //     */
+    //    String getPkName();
 
     /**
      * 获取要执行的sql，参数的地方用?号与下面参数列表对应
@@ -28,7 +26,6 @@ public interface BoundSql {
      *
      * @return
      */
-    List<Object> getParameters();
-
+    Object[] getParameters();
 
 }
