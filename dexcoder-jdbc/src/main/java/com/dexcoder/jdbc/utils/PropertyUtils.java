@@ -1,14 +1,12 @@
 package com.dexcoder.jdbc.utils;
 
-import com.dexcoder.jdbc.exceptions.AssistantException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+
+import com.dexcoder.jdbc.exceptions.AssistantException;
 
 /**
  * 属性文件操作辅助类
@@ -19,17 +17,15 @@ import java.util.Properties;
  */
 public final class PropertyUtils {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PropertyUtils.class);
-
     /**
      * 属性文件后缀
      */
-    private static final String PRO_SUFFIX = ".properties";
+    private static final String        PRO_SUFFIX = ".properties";
 
     /**
      * 配置文件保存map
      */
-    private static Map<String, String> propMap = new HashMap<String, String>();
+    private static Map<String, String> propMap    = new HashMap<String, String>();
 
     /**
      * 加载资源文件
@@ -42,17 +38,15 @@ public final class PropertyUtils {
         try {
             File configFile = getConfigFile(resourceName);
             if (configFile == null) {
-                LOG.info("从classpath加载资源文件:{}", resourceName);
-                InputStream is = Thread.currentThread().getContextClassLoader()
-                        .getResourceAsStream(resourceName);
+                //                LOG.info("从classpath加载资源文件:{}", resourceName);
+                InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceName);
                 return is;
             } else {
-                LOG.info("从目录加载资源文件:{}", configFile.getAbsolutePath());
+                //                LOG.info("从目录加载资源文件:{}", configFile.getAbsolutePath());
                 return new FileInputStream(configFile);
             }
         } catch (FileNotFoundException e) {
-            LOG.error("加载xml文件失败:" + resourceName, e);
-            throw new AssistantException(e);
+            throw new AssistantException("加载xml文件失败:" + resourceName, e);
         }
     }
 
@@ -72,14 +66,12 @@ public final class PropertyUtils {
             Iterator<Map.Entry<Object, Object>> iterator = prop.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<Object, Object> entry = iterator.next();
-                propMap.put(resourceName + String.valueOf(entry.getKey()),
-                        String.valueOf(entry.getValue()));
+                propMap.put(resourceName + String.valueOf(entry.getKey()), String.valueOf(entry.getValue()));
             }
             //为配置文件加入一个属性，用以判断该配置文件已加载过
             propMap.put(resourceName, "true");
         } catch (IOException e) {
-            LOG.error("加载配置文件失败:" + resourceName, e);
-            throw new AssistantException(e);
+            throw new AssistantException("加载配置文件失败:" + resourceName, e);
         }
     }
 

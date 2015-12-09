@@ -37,7 +37,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
     /**
      * 默认配置文件名
      */
-    private static final String DEFAULT_DS_CONFIG_FILE = "dynamic-ds.xml";
+    private static final String DEFAULT_DS_CONFIG_FILE = "src/test/resources/dynamic-ds.xml";
 
     /**
      * 数据源配置文件
