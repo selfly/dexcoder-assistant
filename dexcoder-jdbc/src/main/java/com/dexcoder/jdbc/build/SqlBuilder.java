@@ -1,7 +1,7 @@
 package com.dexcoder.jdbc.build;
 
 import com.dexcoder.jdbc.BoundSql;
-import com.dexcoder.jdbc.NameHandler;
+import com.dexcoder.jdbc.handler.NameHandler;
 
 import java.util.Map;
 

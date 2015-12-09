@@ -14,8 +14,8 @@ public class XMLLanguageDriver {
 //    public SqlSource createSqlSource(Configuration configuration, String script, Class<?> parameterType) {
 //        // issue #3
 //        if (script.startsWith("<script>")) {
-//            XPathParser parser = new XPathParser(script, false, configuration.getVariables(), new XMLMapperEntityResolver());
-//            return createSqlSource(configuration, parser.evalNode("/script"), parameterType);
+//            XPathParser handler = new XPathParser(script, false, configuration.getVariables(), new XMLMapperEntityResolver());
+//            return createSqlSource(configuration, handler.evalNode("/script"), parameterType);
 //        } else {
 //            // issue #127
 //            script = PropertyParser.parse(script, configuration.getVariables());

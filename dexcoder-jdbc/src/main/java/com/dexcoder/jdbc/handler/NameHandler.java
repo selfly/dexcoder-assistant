@@ -1,4 +1,4 @@
-package com.dexcoder.jdbc;
+package com.dexcoder.jdbc.handler;
 
 import com.dexcoder.jdbc.build.AutoField;
 
@@ -23,12 +23,20 @@ public interface NameHandler {
     String getTableName(Class<?> entityClass, Map<String, AutoField> fieldMap);
 
     /**
-     * 根据表名获取主键名
+     * 根据类名获取主键字段名
      *
      * @param entityClass the entity class
      * @return pK name
      */
-    String getPKName(Class<?> entityClass);
+    String getPkFieldName(Class<?> entityClass);
+
+    /**
+     * 根据类名获取主键列名
+     *
+     * @param entityClass the entity class
+     * @return pK name
+     */
+    String getPkColumnName(Class<?> entityClass);
 
     /**
      * 根据属性名获取列名
@@ -45,5 +53,5 @@ public interface NameHandler {
      * @param dialect     the dialect
      * @return pK value
      */
-    String getPKValue(Class<?> entityClass, String dialect);
+    String getPkNativeValue(Class<?> entityClass, String dialect);
 }

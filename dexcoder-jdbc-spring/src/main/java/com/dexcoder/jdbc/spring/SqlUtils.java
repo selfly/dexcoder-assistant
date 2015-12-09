@@ -6,7 +6,7 @@
 //import com.dexcoder.assistant.utils.StrUtils;
 //import com.dexcoder.assistant.utils.UUIDUtils;
 //import com.dexcoder.jdbc.BoundSql;
-//import com.dexcoder.jdbc.NameHandler;
+//import com.dexcoder.jdbc.handler.NameHandler;
 //import com.dexcoder.jdbc.build.AutoField;
 //import com.dexcoder.jdbc.build.Criteria;
 //import com.dexcoder.jdbc.exceptions.JdbcAssistantException;

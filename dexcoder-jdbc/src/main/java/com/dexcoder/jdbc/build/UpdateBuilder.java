@@ -1,13 +1,11 @@
 package com.dexcoder.jdbc.build;
 
-import com.dexcoder.jdbc.BoundSql;
-import com.dexcoder.jdbc.NameHandler;
-import com.dexcoder.jdbc.parser.GenericTokenParser;
-import com.dexcoder.jdbc.utils.StrUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import com.dexcoder.jdbc.BoundSql;
+import com.dexcoder.jdbc.handler.NameHandler;
 
 /**
  * Created by liyd on 2015-12-4.
@@ -16,7 +14,7 @@ public class UpdateBuilder extends AbstractSqlBuilder {
 
     protected static final String COMMAND_OPEN = "UPDATE ";
 
-    private SqlBuilder whereBuilder;
+    private SqlBuilder            whereBuilder;
 
     public UpdateBuilder() {
         whereBuilder = new WhereBuilder();
@@ -27,20 +25,24 @@ public class UpdateBuilder extends AbstractSqlBuilder {
         this.autoFields.put(fieldName, autoField);
     }
 
-    public void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value) {
+    public void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type,
+                             Object value) {
         whereBuilder.addCondition(fieldName, sqlOperator, fieldOperator, type, value);
     }
 
     public BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
         super.mergeEntityFields(entity, AutoFieldType.UPDATE, nameHandler, isIgnoreNull);
-        if (StrUtils.isNotBlank(this.pkFieldName)) {
-            //更新，主键都是在where
-            AutoField pkField = getFields().get(this.pkFieldName);
-            getFields().remove(this.pkFieldName);
-            if (!whereBuilder.hasField(this.pkFieldName)) {
-                this.whereBuilder.addCondition(pkField.getName(), pkField.getSqlOperator(), pkField.getFieldOperator(), pkField.getType(), pkField.getValue());
+        String pkFieldName = nameHandler.getPkFieldName(clazz);
+        //更新，主键都是在where
+        AutoField pkField = getFields().get(pkFieldName);
+        if (pkField != null) {
+            getFields().remove(pkFieldName);
+            if (!whereBuilder.hasField(pkFieldName)) {
+                this.whereBuilder.addCondition(pkField.getName(), pkField.getSqlOperator(), pkField.getFieldOperator(),
+                    pkField.getType(), pkField.getValue());
             }
         }
+
         String tableName = nameHandler.getTableName(clazz, this.whereBuilder.getFields());
 
         StringBuilder sql = new StringBuilder(COMMAND_OPEN);
@@ -50,9 +52,8 @@ public class UpdateBuilder extends AbstractSqlBuilder {
             String columnName = nameHandler.getColumnName(entry.getKey());
             AutoField autoField = entry.getValue();
             if (autoField.isNativeField()) {
-                GenericTokenParser tokenParser = super.getTokenParser(AutoField.NATIVE_OPEN, AutoField.NATIVE_CLOSE, nameHandler);
-                String nativeFieldName = tokenParser.parse(autoField.getName());
-                String nativeValue = tokenParser.parse(String.valueOf(autoField.getValue()));
+                String nativeFieldName = tokenParse(autoField.getName(), nameHandler);
+                String nativeValue = tokenParse(String.valueOf(autoField.getValue()), nameHandler);
                 sql.append(nativeFieldName).append(" = ").append(nativeValue).append(",");
             } else if (autoField.getValue() == null) {
                 sql.append(columnName).append(" = NULL,");

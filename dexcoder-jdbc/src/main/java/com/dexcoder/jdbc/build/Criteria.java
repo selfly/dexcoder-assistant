@@ -2,7 +2,7 @@ package com.dexcoder.jdbc.build;
 
 
 import com.dexcoder.jdbc.BoundSql;
-import com.dexcoder.jdbc.NameHandler;
+import com.dexcoder.jdbc.handler.NameHandler;
 
 /**
  * sql操作Criteria
@@ -54,9 +54,9 @@ public class Criteria {
         return new Criteria(clazz, new DeleteBuilder());
     }
 
-    public Criteria ofField(String fieldName, Object value) {
-        return new Criteria(this.entityClass, new FieldBuilder()).and(fieldName, value);
-    }
+//    public Criteria ofField(String fieldName, Object value) {
+//        return new Criteria(this.entityClass, new FieldBuilder()).and(fieldName, value);
+//    }
 
     /**
      * 添加白名单
@@ -239,6 +239,16 @@ public class Criteria {
         return this;
     }
 
+    public Criteria addSelectFunc(String func) {
+        this.addSelectFunc(func, true, false);
+        return this;
+    }
+
+    public Criteria addSelectFunc(String func, boolean isFieldExclusion, boolean isOrderBy) {
+        this.sqlBuilder.addField(func, String.valueOf(isOrderBy), String.valueOf(isFieldExclusion), AutoFieldType.FUNC, null);
+        return this;
+    }
+
     /**
      * 将设置的信息构建成BoundSql
      *
@@ -260,5 +270,9 @@ public class Criteria {
      */
     public BoundSql build(boolean isIgnoreNull, NameHandler nameHandler) {
         return build(null, isIgnoreNull, nameHandler);
+    }
+
+    public Class<?> getEntityClass() {
+        return entityClass;
     }
 }

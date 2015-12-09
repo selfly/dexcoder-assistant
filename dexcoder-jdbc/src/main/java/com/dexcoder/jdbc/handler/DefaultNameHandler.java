@@ -1,6 +1,5 @@
-package com.dexcoder.jdbc;
+package com.dexcoder.jdbc.handler;
 
-import com.dexcoder.jdbc.NameHandler;
 import com.dexcoder.jdbc.build.AutoField;
 import com.dexcoder.jdbc.utils.NameUtils;
 import com.dexcoder.jdbc.utils.StrUtils;
@@ -17,19 +16,29 @@ import java.util.Map;
 public class DefaultNameHandler implements NameHandler {
 
     /**
-     * 主键后缀
+     * 主键属性后缀
      */
-    private static final String PRI_SUFFIX = "_ID";
+    private static final String PRI_FIELD_SUFFIX = "Id";
+
+    /**
+     * 主键列后缀
+     */
+    private static final String PRI_COLUMN_SUFFIX = "_ID";
 
     public String getTableName(Class<?> entityClass, Map<String, AutoField> fieldMap) {
         //Java属性的骆驼命名法转换回数据库下划线“_”分隔的格式
         return NameUtils.getUnderlineName(entityClass.getSimpleName());
     }
 
-    public String getPKName(Class<?> entityClass) {
+    public String getPkFieldName(Class<?> entityClass) {
+        String firstLowerName = NameUtils.getFirstLowerName(entityClass.getSimpleName());
+        //主键以类名加上“Id” 如user表主键属性即userId
+        return firstLowerName + PRI_FIELD_SUFFIX;
+    }
+
+    public String getPkColumnName(Class<?> entityClass) {
         String underlineName = NameUtils.getUnderlineName(entityClass.getSimpleName());
-        //主键以表名加上“_id” 如user表主键即“user_id”
-        return underlineName + PRI_SUFFIX;
+        return underlineName + PRI_COLUMN_SUFFIX;
     }
 
     public String getColumnName(String fieldName) {
@@ -37,7 +46,7 @@ public class DefaultNameHandler implements NameHandler {
         return underlineName;
     }
 
-    public String getPKValue(Class<?> entityClass, String dialect) {
+    public String getPkNativeValue(Class<?> entityClass, String dialect) {
         if (StrUtils.equalsIgnoreCase(dialect, "oracle")) {
             //获取序列就可以了，默认seq_加上表名为序列名
             String tableName = this.getTableName(entityClass, null);

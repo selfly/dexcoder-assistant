@@ -1,12 +1,8 @@
 package com.dexcoder.jdbc.build;
 
 import com.dexcoder.jdbc.BoundSql;
-import com.dexcoder.jdbc.DefaultNameHandler;
-import com.dexcoder.jdbc.NameHandler;
+import com.dexcoder.jdbc.handler.NameHandler;
 import com.dexcoder.jdbc.exceptions.JdbcAssistantException;
-import com.dexcoder.jdbc.parser.FieldTokenHandler;
-import com.dexcoder.jdbc.parser.GenericTokenParser;
-import com.dexcoder.jdbc.parser.TokenHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +20,8 @@ public class InsertBuilder extends AbstractSqlBuilder {
         this.autoFields.put(fieldName, autoField);
     }
 
-    public void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value) {
+    public void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type,
+                             Object value) {
         throw new JdbcAssistantException("InsertBuilder不支持设置条件");
     }
 
@@ -44,9 +41,8 @@ public class InsertBuilder extends AbstractSqlBuilder {
             }
             //原生类型
             if (autoField.isNativeField()) {
-                GenericTokenParser tokenParser = super.getTokenParser(AutoField.NATIVE_OPEN, AutoField.NATIVE_CLOSE, nameHandler);
-                String nativeFieldName = tokenParser.parse(autoField.getName());
-                String nativeValue = tokenParser.parse(String.valueOf(autoField.getValue()));
+                String nativeFieldName = tokenParse(autoField.getName(), nameHandler);
+                String nativeValue = tokenParse(String.valueOf(autoField.getValue()), nameHandler);
                 sql.append(nativeFieldName).append(",");
                 args.append(nativeValue);
             } else {

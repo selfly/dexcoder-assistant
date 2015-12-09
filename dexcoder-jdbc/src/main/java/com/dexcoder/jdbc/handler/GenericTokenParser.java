@@ -1,4 +1,4 @@
-package com.dexcoder.jdbc.parser;
+package com.dexcoder.jdbc.handler;
 
 /**
  * Created by liyd on 2015-11-24.

@@ -1,7 +1,7 @@
 package com.dexcoder.jdbc.build;
 
 import com.dexcoder.jdbc.BoundSql;
-import com.dexcoder.jdbc.NameHandler;
+import com.dexcoder.jdbc.handler.NameHandler;
 import com.dexcoder.jdbc.exceptions.JdbcAssistantException;
 import com.dexcoder.jdbc.utils.ClassUtils;
 
@@ -18,14 +18,19 @@ public class SelectBuilder extends AbstractSqlBuilder {
 
     protected static final String COMMAND_OPEN = "SELECT ";
 
-    private List<String> includeFields;
-    private List<String> excludeFields;
-    private SqlBuilder whereBuilder;
-    private SqlBuilder orderByBuilder;
+    protected List<String> includeFields;
+    protected List<String> excludeFields;
+    protected List<AutoField> funcAutoFields;
+    protected SqlBuilder whereBuilder;
+    protected SqlBuilder orderByBuilder;
+
+    protected boolean isFieldExclusion = false;
+    protected boolean isOrderBy = true;
 
     public SelectBuilder() {
         includeFields = new ArrayList<String>();
         excludeFields = new ArrayList<String>();
+        funcAutoFields = new ArrayList<AutoField>();
         whereBuilder = new WhereBuilder();
         orderByBuilder = new OrderByBuilder();
     }
@@ -39,6 +44,11 @@ public class SelectBuilder extends AbstractSqlBuilder {
             orderByBuilder.addField(fieldName, sqlOperator, "ASC", type, value);
         } else if (type == AutoFieldType.ORDER_BY_DESC) {
             orderByBuilder.addField(fieldName, sqlOperator, "DESC", type, value);
+        } else if (type == AutoFieldType.FUNC) {
+            this.isFieldExclusion = Boolean.valueOf(fieldOperator);
+            this.isOrderBy = Boolean.valueOf(sqlOperator);
+            AutoField autoField = buildAutoField(fieldName, sqlOperator, fieldOperator, type, value);
+            this.funcAutoFields.add(autoField);
         } else {
             throw new JdbcAssistantException("不支持的字段设置类型");
         }
@@ -51,28 +61,37 @@ public class SelectBuilder extends AbstractSqlBuilder {
     public BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
         super.mergeEntityFields(entity, AutoFieldType.WHERE, nameHandler, isIgnoreNull);
         whereBuilder.getFields().putAll(this.getFields());
-        if (columnFields.isEmpty()) {
-            this.fetchClassFields(clazz);
-        }
         String tableName = nameHandler.getTableName(clazz, whereBuilder.getFields());
         StringBuilder sb = new StringBuilder(COMMAND_OPEN);
-        for (String columnField : columnFields) {
-            //白名单 黑名单
-            if (!includeFields.isEmpty() && !includeFields.contains(columnField)) {
-                continue;
-            } else if (!excludeFields.isEmpty() && excludeFields.contains(columnField)) {
-                continue;
+        if (columnFields.isEmpty() && !isFieldExclusion) {
+            this.fetchClassFields(clazz);
+        }
+        if (!funcAutoFields.isEmpty()) {
+            for (AutoField autoField : funcAutoFields) {
+                sb.append(autoField.getName()).append(",");
             }
-            String columnName = nameHandler.getColumnName(columnField);
-            sb.append(columnName);
-            sb.append(",");
+        }
+        if (!isFieldExclusion) {
+            for (String columnField : columnFields) {
+                //白名单 黑名单
+                if (!includeFields.isEmpty() && !includeFields.contains(columnField)) {
+                    continue;
+                } else if (!excludeFields.isEmpty() && excludeFields.contains(columnField)) {
+                    continue;
+                }
+                String columnName = nameHandler.getColumnName(columnField);
+                sb.append(columnName);
+                sb.append(",");
+            }
         }
         sb.deleteCharAt(sb.length() - 1);
         sb.append(" FROM ").append(tableName).append(" ");
         BoundSql whereBoundSql = whereBuilder.build(clazz, entity, isIgnoreNull, nameHandler);
         sb.append(whereBoundSql.getSql());
-        BoundSql orderByBoundSql = orderByBuilder.build(clazz, entity, isIgnoreNull, nameHandler);
-        sb.append(orderByBoundSql.getSql());
+        if (isOrderBy) {
+            BoundSql orderByBoundSql = orderByBuilder.build(clazz, entity, isIgnoreNull, nameHandler);
+            sb.append(orderByBoundSql.getSql());
+        }
         return new CriteriaBoundSql(sb.toString(), whereBoundSql.getParameters());
     }
 
@@ -81,7 +100,7 @@ public class SelectBuilder extends AbstractSqlBuilder {
      *
      * @param clazz
      */
-    private void fetchClassFields(Class<?> clazz) {
+    protected void fetchClassFields(Class<?> clazz) {
         //ClassUtils已经使用了缓存，此处就不用了
         BeanInfo selfBeanInfo = ClassUtils.getSelfBeanInfo(clazz);
         PropertyDescriptor[] propertyDescriptors = selfBeanInfo.getPropertyDescriptors();

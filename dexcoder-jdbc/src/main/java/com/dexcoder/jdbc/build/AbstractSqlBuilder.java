@@ -1,37 +1,53 @@
 package com.dexcoder.jdbc.build;
 
-import com.dexcoder.jdbc.NameHandler;
-import com.dexcoder.jdbc.parser.FieldTokenHandler;
-import com.dexcoder.jdbc.parser.GenericTokenParser;
-import com.dexcoder.jdbc.parser.TokenHandler;
-import com.dexcoder.jdbc.utils.ClassUtils;
-import com.dexcoder.jdbc.utils.StrUtils;
-
 import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import com.dexcoder.jdbc.handler.NameHandler;
+import com.dexcoder.jdbc.handler.GenericTokenParser;
+import com.dexcoder.jdbc.handler.NativeTokenHandler;
+import com.dexcoder.jdbc.handler.NoneNameHandler;
+import com.dexcoder.jdbc.handler.TokenHandler;
+import com.dexcoder.jdbc.utils.ClassUtils;
 
 /**
  * Created by liyd on 2015-12-7.
  */
 public abstract class AbstractSqlBuilder implements SqlBuilder {
 
-    protected String pkFieldName;
+    //    protected String pkFieldName;
 
-    protected List<String> columnFields;
+    protected List<String>            columnFields;
 
     /**
      * 操作的字段
      */
-    protected Map<String, AutoField> autoFields;
+    protected Map<String, AutoField>  autoFields;
+
+    /**
+     * parser map
+     */
+    protected Set<GenericTokenParser> tokenParsers;
 
     public AbstractSqlBuilder() {
         columnFields = new ArrayList<String>();
         autoFields = new LinkedHashMap<String, AutoField>();
+
+    }
+
+    protected Set<GenericTokenParser> initTokenParsers(NameHandler nameHandler) {
+        if (tokenParsers == null) {
+            tokenParsers = new HashSet<GenericTokenParser>(2);
+            TokenHandler tokenHandler = new NativeTokenHandler(nameHandler);
+            tokenParsers.add(new GenericTokenParser(AutoField.NATIVE_FIELD_TOKEN[0], AutoField.NATIVE_FIELD_TOKEN[1],
+                tokenHandler));
+            tokenHandler = new NativeTokenHandler(new NoneNameHandler());
+            tokenParsers.add(new GenericTokenParser(AutoField.NATIVE_CODE_TOKEN[0], AutoField.NATIVE_CODE_TOKEN[1],
+                tokenHandler));
+        }
+        return tokenParsers;
     }
 
     public Map<String, AutoField> getFields() {
@@ -46,16 +62,21 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
         return (this.autoFields.get(fieldName) != null);
     }
 
-    protected GenericTokenParser getTokenParser(String openToken, String closeToken, NameHandler nameHandler) {
-        TokenHandler tokenHandler = new FieldTokenHandler(nameHandler);
-        return new GenericTokenParser(openToken, closeToken, tokenHandler);
+    protected String tokenParse(String content, NameHandler nameHandler) {
+        Set<GenericTokenParser> tokenParsers = initTokenParsers(nameHandler);
+        String result = content;
+        for (GenericTokenParser tokenParser : tokenParsers) {
+            result = tokenParser.parse(result);
+        }
+        return result;
     }
 
-    protected void mergeEntityFields(Object entity, AutoFieldType autoFieldType, NameHandler nameHandler, boolean isIgnoreNull) {
+    protected void mergeEntityFields(Object entity, AutoFieldType autoFieldType, NameHandler nameHandler,
+                                     boolean isIgnoreNull) {
         if (entity == null) {
             return;
         }
-        String pkName = nameHandler.getPKName(entity.getClass());
+        //        String pkColumnName = NameUtils.getUnderlineName(nameHandler.getPkCamelName(entity.getClass()));
         BeanInfo selfBeanInfo = ClassUtils.getSelfBeanInfo(entity.getClass());
         PropertyDescriptor[] propertyDescriptors = selfBeanInfo.getPropertyDescriptors();
         for (PropertyDescriptor pd : propertyDescriptors) {
@@ -75,12 +96,12 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
             if (this.hasField(fieldName)) {
                 continue;
             }
-            String columnName = nameHandler.getColumnName(fieldName);
+            //            String columnName = nameHandler.getColumnName(fieldName);
             AutoField autoField = this.buildAutoField(fieldName, "and", "=", autoFieldType, value);
             this.autoFields.put(fieldName, autoField);
-            if (StrUtils.equals(pkName, columnName)) {
-                this.pkFieldName = fieldName;
-            }
+            //            if (StrUtils.equals(pkColumnName, columnName)) {
+            //                this.pkFieldName = fieldName;
+            //            }
         }
     }
 
@@ -94,8 +115,8 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
      * @param value         the values
      * @return auto field
      */
-    protected AutoField buildAutoField(String fieldName, String sqlOperator,
-                                       String fieldOperator, AutoFieldType type, Object value) {
+    protected AutoField buildAutoField(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type,
+                                       Object value) {
         AutoField autoField = new AutoField();
         autoField.setName(fieldName);
         autoField.setSqlOperator(sqlOperator);

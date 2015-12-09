@@ -1,15 +1,13 @@
-package com.dexcoder.jdbc.parser;
-
-import com.dexcoder.jdbc.NameHandler;
+package com.dexcoder.jdbc.handler;
 
 /**
  * Created by liyd on 2015-12-8.
  */
-public class FieldTokenHandler implements TokenHandler {
+public class NativeTokenHandler implements TokenHandler {
 
     private NameHandler nameHandler;
 
-    public FieldTokenHandler(NameHandler nameHandler) {
+    public NativeTokenHandler(NameHandler nameHandler) {
         this.nameHandler = nameHandler;
     }
 

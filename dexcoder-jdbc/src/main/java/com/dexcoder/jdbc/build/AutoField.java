@@ -9,33 +9,40 @@ import com.dexcoder.jdbc.utils.StrUtils;
  */
 public class AutoField {
 
-    public static final String NATIVE_OPEN = "[";
-    public static final String NATIVE_CLOSE = "]";
+    /**
+     * 不以传参方式构建，符号中内容不会被转换
+     */
+    public static final String[] NATIVE_CODE_TOKEN  = { "{", "}" };
+
+    /**
+     * 不以传参方式构建，符号中内容会被转换(field -> column)
+     */
+    public static final String[] NATIVE_FIELD_TOKEN = { "[", "]" };
 
     /**
      * 名称
      */
-    private String name;
+    private String               name;
 
     /**
      * 操作符 and or
      */
-    private String sqlOperator;
+    private String               sqlOperator;
 
     /**
      * 本身操作符 值大于、小于、in等
      */
-    private String fieldOperator;
+    private String               fieldOperator;
 
     /**
      * 值
      */
-    private Object value;
+    private Object               value;
 
     /**
      * 类型
      */
-    private AutoFieldType type;
+    private AutoFieldType        type;
 
     /**
      * 是否原生字段
@@ -43,7 +50,8 @@ public class AutoField {
      * @return
      */
     public boolean isNativeField() {
-        return StrUtils.startsWith(name, NATIVE_OPEN) && StrUtils.endsWith(name, NATIVE_CLOSE);
+        return (StrUtils.startsWith(name, NATIVE_CODE_TOKEN[0]) && StrUtils.endsWith(name, NATIVE_CODE_TOKEN[1]) || StrUtils
+            .startsWith(name, NATIVE_FIELD_TOKEN[0]) && StrUtils.endsWith(name, NATIVE_FIELD_TOKEN[1]));
     }
 
     public String getName() {
