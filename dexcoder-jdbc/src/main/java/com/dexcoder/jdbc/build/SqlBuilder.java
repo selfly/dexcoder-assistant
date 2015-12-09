@@ -14,7 +14,7 @@ public interface SqlBuilder {
      * 添加操作字段
      *
      * @param fieldName     the field name
-     * @param sqlOperator   the sql operator
+     * @param sqlOperator   the build operator
      * @param fieldOperator the field operator
      * @param type          the type
      * @param value         the value

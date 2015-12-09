@@ -8,17 +8,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.dexcoder.jdbc.handler.DefaultNameHandler;
-import com.dexcoder.jdbc.handler.NameHandler;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.util.CollectionUtils;
 
-import com.dexcoder.jdbc.*;
+import com.dexcoder.jdbc.BoundSql;
+import com.dexcoder.jdbc.JdbcDao;
+import com.dexcoder.jdbc.SqlFactory;
 import com.dexcoder.jdbc.build.AutoField;
 import com.dexcoder.jdbc.build.Criteria;
+import com.dexcoder.jdbc.handler.DefaultNameHandler;
+import com.dexcoder.jdbc.handler.NameHandler;
 import com.dexcoder.jdbc.utils.ClassUtils;
 import com.dexcoder.jdbc.utils.StrUtils;
 
@@ -58,7 +60,7 @@ public class JdbcDaoImpl implements JdbcDao {
     /**
      * 插入数据
      *
-     * @param boundSql the bound sql
+     * @param boundSql the bound build
      * @return long long
      */
     private Long insert(final BoundSql boundSql, Class<?> clazz) {

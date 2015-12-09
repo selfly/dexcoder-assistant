@@ -1,5 +1,8 @@
 package com.dexcoder.jdbc.batis;
 
+import com.dexcoder.jdbc.batis.BatisSqlFactory;
+import com.dexcoder.jdbc.batis.build.Configuration;
+import com.dexcoder.jdbc.batis.xml.XMLMapperBuilder;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
@@ -12,13 +15,13 @@ import com.dexcoder.jdbc.utils.StrUtils;
 /**
  * Created by liyd on 2015-11-24.
  */
-public class SqlFactoryBean implements FactoryBean<SqlFactory>, InitializingBean {
+public class SqlFactoryBean implements FactoryBean<BatisSqlFactory>, InitializingBean {
 
     private String        sqlLocation;
 
     private Configuration configuration;
 
-    private SqlFactory    sqlFactory;
+    private BatisSqlFactory sqlFactory;
 
     public void afterPropertiesSet() throws Exception {
         this.configuration = new Configuration();
@@ -51,13 +54,13 @@ public class SqlFactoryBean implements FactoryBean<SqlFactory>, InitializingBean
         }
     }
 
-    public SqlFactory getObject() throws Exception {
-        this.sqlFactory = new SqlFactory(this.configuration);
+    public BatisSqlFactory getObject() throws Exception {
+        this.sqlFactory = new BatisSqlFactory(this.configuration);
         return this.sqlFactory;
     }
 
     public Class<?> getObjectType() {
-        return SqlFactory.class;
+        return BatisSqlFactory.class;
     }
 
     public boolean isSingleton() {

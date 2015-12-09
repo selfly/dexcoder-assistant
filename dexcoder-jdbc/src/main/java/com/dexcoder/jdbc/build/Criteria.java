@@ -17,7 +17,7 @@ public class Criteria {
     private Class<?> entityClass;
 
     /**
-     * sql Builder
+     * build Builder
      */
     private SqlBuilder sqlBuilder;
 
