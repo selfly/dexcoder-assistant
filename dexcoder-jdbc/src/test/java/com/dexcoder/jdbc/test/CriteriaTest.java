@@ -98,8 +98,8 @@ public class CriteriaTest {
         }
 
         System.out.println("---------------含native处理-----------------------");
-        criteria = Criteria.delete(User.class).where("userId", new Object[] { 10000L }).and("{userType}", "1")
-            .or("[userAge]", new Object[] { "max([userAge])" });
+        criteria = Criteria.delete(User.class).where("userId", new Object[] { 10000L })
+            .and("{userType}", new Object[] { "1" }).or("[userAge]", new Object[] { "max([userAge])" });
         boundSql = criteria.build(null, true, new DefaultNameHandler());
         System.out.println(boundSql.getSql());
         for (Object obj : boundSql.getParameters()) {

@@ -6,10 +6,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcOperations;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.RowMapper;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.util.CollectionUtils;
@@ -99,38 +97,38 @@ public class JdbcDaoImpl implements JdbcDao {
 
     public void save(Object entity) {
         final BoundSql boundSql = Criteria.insert(entity.getClass()).build(entity, true, getNameHandler());
-        jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters());
+        jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
     public void save(Criteria criteria) {
         final BoundSql boundSql = criteria.build(true, getNameHandler());
-        jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters());
+        jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
-    public void update(Criteria criteria) {
+    public int update(Criteria criteria) {
         BoundSql boundSql = criteria.build(true, getNameHandler());
-        jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters());
+        return jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
-    public void update(Object entity) {
+    public int update(Object entity) {
         BoundSql boundSql = Criteria.update(entity.getClass()).build(entity, true, getNameHandler());
-        jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters());
+        return jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
-    public void delete(Criteria criteria) {
+    public int delete(Criteria criteria) {
         BoundSql boundSql = criteria.build(true, getNameHandler());
-        jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters());
+        return jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
-    public void delete(Object entity) {
+    public int delete(Object entity) {
         BoundSql boundSql = Criteria.delete(entity.getClass()).build(entity, true, getNameHandler());
-        jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters());
+        return jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
-    public void delete(Class<?> clazz, Long id) {
+    public int delete(Class<?> clazz, Long id) {
         BoundSql boundSql = Criteria.delete(clazz).where(getNameHandler().getPkFieldName(clazz), new Object[] { id })
             .build(true, getNameHandler());
-        jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters());
+        return jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
     public void deleteAll(Class<?> clazz) {
@@ -169,25 +167,26 @@ public class JdbcDaoImpl implements JdbcDao {
 
     public int queryCount(Object entity, Criteria criteria) {
         BoundSql boundSql = criteria.addSelectFunc("count(*)").build(entity, true, getNameHandler());
-        return jdbcTemplate.queryForInt(boundSql.getSql(), boundSql.getParameters());
+        return jdbcTemplate.queryForInt(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
     public int queryCount(Object entity) {
         BoundSql boundSql = Criteria.select(entity.getClass()).addSelectFunc("count(*)")
             .build(entity, true, getNameHandler());
-        return jdbcTemplate.queryForInt(boundSql.getSql(), boundSql.getParameters());
+        return jdbcTemplate.queryForInt(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
     public int queryCount(Criteria criteria) {
         BoundSql boundSql = criteria.addSelectFunc("count(*)").build(true, getNameHandler());
-        return jdbcTemplate.queryForInt(boundSql.getSql(), boundSql.getParameters());
+        return jdbcTemplate.queryForInt(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
     public <T> T get(Class<T> clazz, Long id) {
         BoundSql boundSql = Criteria.select(clazz).where(getNameHandler().getPkFieldName(clazz), new Object[] { id })
             .build(true, getNameHandler());
         //采用list方式查询，当记录不存在时返回null而不会抛出异常
-        List<T> list = jdbcTemplate.query(boundSql.getSql(), this.getRowMapper(clazz), boundSql.getParameters());
+        List<T> list = jdbcTemplate.query(boundSql.getSql(), this.getRowMapper(clazz), boundSql.getParameters()
+            .toArray());
         if (CollectionUtils.isEmpty(list)) {
             return null;
         }
@@ -235,27 +234,27 @@ public class JdbcDaoImpl implements JdbcDao {
 
     public List<Map<String, Object>> queryForSql(String refSql, Object[] params) {
         BoundSql boundSql = this.sqlFactory.getBoundSql(refSql, null, params);
-        return jdbcTemplate.queryForList(boundSql.getSql(), boundSql.getParameters());
+        return jdbcTemplate.queryForList(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
     public List<Map<String, Object>> queryForSql(String refSql, String expectParamKey, Object[] params) {
         BoundSql boundSql = this.sqlFactory.getBoundSql(refSql, expectParamKey, params);
-        return jdbcTemplate.queryForList(boundSql.getSql(), boundSql.getParameters());
+        return jdbcTemplate.queryForList(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
-    public void updateForSql(String refSql) {
+    public int updateForSql(String refSql) {
         BoundSql boundSql = this.sqlFactory.getBoundSql(refSql, null, null);
-        jdbcTemplate.update(boundSql.getSql());
+        return jdbcTemplate.update(boundSql.getSql());
     }
 
-    public void updateForSql(String refSql, Object[] params) {
+    public int updateForSql(String refSql, Object[] params) {
         BoundSql boundSql = this.sqlFactory.getBoundSql(refSql, null, params);
-        jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters());
+        return jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
-    public void updateForSql(String refSql, String expectParamKey, Object[] params) {
+    public int updateForSql(String refSql, String expectParamKey, Object[] params) {
         BoundSql boundSql = this.sqlFactory.getBoundSql(refSql, expectParamKey, params);
-        jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters());
+        return jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
     //    public byte[] getBlobValue(Class<?> clazz, String fieldName, Long id) {
@@ -302,6 +301,17 @@ public class JdbcDaoImpl implements JdbcDao {
         return this.nameHandler;
     }
 
+    public String getDialect() {
+        if (StrUtils.isBlank(dialect)) {
+            dialect = jdbcTemplate.execute(new ConnectionCallback<String>() {
+                public String doInConnection(Connection con) throws SQLException, DataAccessException {
+                    return con.getMetaData().getDatabaseProductName().toUpperCase();
+                }
+            });
+        }
+        return dialect;
+    }
+
     public void setJdbcTemplate(JdbcOperations jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -312,10 +322,6 @@ public class JdbcDaoImpl implements JdbcDao {
 
     public void setRowMapperClass(String rowMapperClass) {
         this.rowMapperClass = rowMapperClass;
-    }
-
-    public String getDialect() {
-        return dialect;
     }
 
     public void setDialect(String dialect) {

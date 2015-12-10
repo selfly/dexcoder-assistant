@@ -138,11 +138,11 @@ public class Criteria {
      * 设置where条件属性
      *
      * @param fieldName
-     * @param value
+     * @param values
      * @return
      */
-    public Criteria where(String fieldName, Object value) {
-        this.where(fieldName, "=", value);
+    public Criteria where(String fieldName, Object[] values) {
+        this.where(fieldName, "=", values);
         return this;
     }
 
@@ -151,11 +151,11 @@ public class Criteria {
      *
      * @param fieldName     the field name
      * @param fieldOperator the operator
-     * @param value         the values
+     * @param values         the values
      * @return
      */
-    public Criteria where(String fieldName, String fieldOperator, Object... value) {
-        this.sqlBuilder.addCondition(fieldName, null, fieldOperator, AutoFieldType.WHERE, value);
+    public Criteria where(String fieldName, String fieldOperator, Object[] values) {
+        this.sqlBuilder.addCondition(fieldName, null, fieldOperator, AutoFieldType.WHERE, values);
         return this;
     }
 
@@ -166,7 +166,7 @@ public class Criteria {
      * @param values
      * @return
      */
-    public Criteria and(String fieldName, Object... values) {
+    public Criteria and(String fieldName, Object[] values) {
         this.and(fieldName, "=", values);
         return this;
     }

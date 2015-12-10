@@ -3,8 +3,6 @@ package com.dexcoder.commons.pager;
 import java.io.Serializable;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
-
 import com.dexcoder.commons.bean.BeanConverter;
 
 /**
@@ -163,10 +161,10 @@ public class Pager implements Serializable {
         if (clazz == null) {
             throw new IllegalArgumentException("Conversion failed,Parameter class can not be null!");
         }
-        if (CollectionUtils.isEmpty(this.list)) {
+        if (this.list == null || this.list.isEmpty()) {
             return null;
         }
-        if (this.list.get(0).getClass().equals(clazz)) {
+        if (this.list.iterator().next().getClass().equals(clazz)) {
             return (List<E>) this.list;
         }
         return BeanConverter.convert(clazz, list);

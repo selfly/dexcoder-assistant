@@ -18,7 +18,7 @@ public interface JdbcDao {
      * @param entity
      * @return
      */
-    public Long insert(Object entity);
+    Long insert(Object entity);
 
     /**
      * 插入一条记录 自动处理主键
@@ -26,49 +26,49 @@ public interface JdbcDao {
      * @param criteria the criteria
      * @return long long
      */
-    public Long insert(Criteria criteria);
+    Long insert(Criteria criteria);
 
     /**
      * 保存一条记录，不处理主键
      *
      * @param entity
      */
-    public void save(Object entity);
+    void save(Object entity);
 
     /**
      * 保存一条记录，不处理主键
      *
      * @param criteria the criteria
      */
-    public void save(Criteria criteria);
+    void save(Criteria criteria);
 
     /**
      * 根据Criteria更新
      *
      * @param criteria the criteria
      */
-    public void update(Criteria criteria);
+    int update(Criteria criteria);
 
     /**
      * 根据实体更新
      *
      * @param entity the entity
      */
-    public void update(Object entity);
+    int update(Object entity);
 
     /**
      * 根据Criteria删除
      *
      * @param criteria the criteria
      */
-    public void delete(Criteria criteria);
+    int delete(Criteria criteria);
 
     /**
      * 删除记录 此方法会以实体中不为空的字段为条件
      *
      * @param entity
      */
-    public void delete(Object entity);
+    int delete(Object entity);
 
     /**
      * 删除记录
@@ -76,7 +76,7 @@ public interface JdbcDao {
      * @param clazz the clazz
      * @param id the id
      */
-    public void delete(Class<?> clazz, Long id);
+    int delete(Class<?> clazz, Long id);
 
     /**
      * 删除所有记录(TRUNCATE ddl权限)
@@ -216,7 +216,7 @@ public interface JdbcDao {
      *
      * @param refSql the ref sql
      */
-    void updateForSql(String refSql);
+    int updateForSql(String refSql);
 
     /**
      * 执行sql
@@ -224,7 +224,7 @@ public interface JdbcDao {
      * @param refSql the ref sql
      * @param params the params
      */
-    void updateForSql(String refSql, Object[] params);
+    int updateForSql(String refSql, Object[] params);
 
     /**
      * 执行sql
@@ -233,7 +233,7 @@ public interface JdbcDao {
      * @param expectParamKey the expect param key
      * @param params the params
      */
-    void updateForSql(String refSql, String expectParamKey, Object[] params);
+    int updateForSql(String refSql, String expectParamKey, Object[] params);
 
     //    /**
     //     * 查询blob字段值

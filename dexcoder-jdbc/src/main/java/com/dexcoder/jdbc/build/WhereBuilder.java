@@ -7,7 +7,6 @@ import java.util.Map;
 
 import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.jdbc.BoundSql;
-import com.dexcoder.jdbc.exceptions.JdbcAssistantException;
 import com.dexcoder.jdbc.handler.NameHandler;
 
 /**
@@ -32,10 +31,10 @@ public class WhereBuilder extends AbstractSqlBuilder {
     }
 
     public BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
-        if (!hasFields()) {
-            throw new JdbcAssistantException("where条件不能为空");
+        StringBuilder sb = new StringBuilder();
+        if (hasFields()) {
+            sb.append(COMMAND_OPEN);
         }
-        StringBuilder sb = new StringBuilder(COMMAND_OPEN);
         List<Object> params = new ArrayList<Object>();
         AutoField preAutoFile = null;
         for (Map.Entry<String, AutoField> entry : getFields().entrySet()) {
