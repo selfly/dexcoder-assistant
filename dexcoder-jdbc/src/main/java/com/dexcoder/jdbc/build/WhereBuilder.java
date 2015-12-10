@@ -39,15 +39,15 @@ public class WhereBuilder extends AbstractSqlBuilder {
         List<Object> params = new ArrayList<Object>();
         AutoField preAutoFile = null;
         for (Map.Entry<String, AutoField> entry : getFields().entrySet()) {
-            String columnName = nameHandler.getColumnName(entry.getKey());
+            String columnName = nameHandler.getColumnName(clazz, entry.getKey());
             AutoField autoField = entry.getValue();
             if (StrUtils.isNotBlank(autoField.getSqlOperator()) && sb.length() > COMMAND_OPEN.length()
                 && !isFieldBracketBegin(preAutoFile)) {
                 sb.append(autoField.getSqlOperator()).append(" ");
             }
             if (autoField.isNativeField()) {
-                String nativeFieldName = tokenParse(autoField.getName(), nameHandler);
-                String nativeValue = tokenParse(String.valueOf(autoField.getValue()), nameHandler);
+                String nativeFieldName = tokenParse(autoField.getName(), clazz, nameHandler);
+                String nativeValue = tokenParse(String.valueOf(autoField.getValue()), clazz, nameHandler);
                 sb.append(nativeFieldName).append(" ").append(autoField.getFieldOperator()).append(" ")
                     .append(nativeValue).append(" ");
             } else if (autoField.getType() == AutoFieldType.BRACKET_BEGIN

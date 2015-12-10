@@ -13,13 +13,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * Time: 5:33 PM
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:src/test/resources/applicationContext.xml"})
+@ContextConfiguration(locations = {"classpath:applicationContext.xml"})
 //@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
 //@Transactional()
 public class BaseTest {
 
-    @Test
-    public void init() {
-        System.out.println("init...");
-    }
+
 }

@@ -33,13 +33,13 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
 
     }
 
-    protected Set<GenericTokenParser> initTokenParsers(NameHandler nameHandler) {
+    protected Set<GenericTokenParser> initTokenParsers(Class<?> clazz, NameHandler nameHandler) {
         if (tokenParsers == null) {
             tokenParsers = new HashSet<GenericTokenParser>(2);
-            TokenHandler tokenHandler = new NativeTokenHandler(nameHandler);
+            TokenHandler tokenHandler = new NativeTokenHandler(clazz, nameHandler);
             tokenParsers.add(new GenericTokenParser(AutoField.NATIVE_FIELD_TOKEN[0], AutoField.NATIVE_FIELD_TOKEN[1],
                 tokenHandler));
-            tokenHandler = new NativeTokenHandler(new NoneNameHandler());
+            tokenHandler = new NativeTokenHandler(clazz, new NoneNameHandler());
             tokenParsers.add(new GenericTokenParser(AutoField.NATIVE_CODE_TOKEN[0], AutoField.NATIVE_CODE_TOKEN[1],
                 tokenHandler));
         }
@@ -58,8 +58,8 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
         return (this.autoFields.get(fieldName) != null);
     }
 
-    protected String tokenParse(String content, NameHandler nameHandler) {
-        Set<GenericTokenParser> tokenParsers = initTokenParsers(nameHandler);
+    protected String tokenParse(String content, Class<?> clazz, NameHandler nameHandler) {
+        Set<GenericTokenParser> tokenParsers = initTokenParsers(clazz, nameHandler);
         String result = content;
         for (GenericTokenParser tokenParser : tokenParsers) {
             result = tokenParser.parse(result);

@@ -80,7 +80,7 @@ public class SelectBuilder extends AbstractSqlBuilder {
                 } else if (!excludeFields.isEmpty() && excludeFields.contains(columnField)) {
                     continue;
                 }
-                String columnName = nameHandler.getColumnName(columnField);
+                String columnName = nameHandler.getColumnName(clazz, columnField);
                 sb.append(columnName);
                 sb.append(",");
             }

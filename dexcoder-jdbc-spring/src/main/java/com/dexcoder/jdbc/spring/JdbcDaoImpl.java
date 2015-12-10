@@ -2,13 +2,14 @@ package com.dexcoder.jdbc.spring;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.*;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.util.CollectionUtils;
@@ -83,9 +84,9 @@ public class JdbcDaoImpl implements JdbcDao {
         Criteria criteria = Criteria.insert(entity.getClass());
         String nativePKValue = handler.getPkNativeValue(entity.getClass(), getDialect());
         if (StrUtils.isNotBlank(nativePKValue)) {
-            String pkColumnName = handler.getPkColumnName(entity.getClass());
-            criteria
-                .into(AutoField.NATIVE_CODE_TOKEN[0] + pkColumnName + AutoField.NATIVE_CODE_TOKEN[1], nativePKValue);
+            String pkColumnName = handler.getPkFieldName(entity.getClass());
+            criteria.into(AutoField.NATIVE_FIELD_TOKEN[0] + pkColumnName + AutoField.NATIVE_FIELD_TOKEN[1],
+                nativePKValue);
         }
         final BoundSql boundSql = criteria.build(entity, true, getNameHandler());
         return this.insert(boundSql, entity.getClass());
@@ -127,11 +128,8 @@ public class JdbcDaoImpl implements JdbcDao {
     }
 
     public void delete(Class<?> clazz, Long id) {
-        BoundSql boundSql = Criteria
-            .delete(clazz)
-            .where(
-                AutoField.NATIVE_CODE_TOKEN[0] + getNameHandler().getPkColumnName(clazz)
-                        + AutoField.NATIVE_CODE_TOKEN[1], new Object[] { id }).build(true, getNameHandler());
+        BoundSql boundSql = Criteria.delete(clazz).where(getNameHandler().getPkFieldName(clazz), new Object[] { id })
+            .build(true, getNameHandler());
         jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters());
     }
 
@@ -186,11 +184,8 @@ public class JdbcDaoImpl implements JdbcDao {
     }
 
     public <T> T get(Class<T> clazz, Long id) {
-        BoundSql boundSql = Criteria
-            .select(clazz)
-            .where(
-                AutoField.NATIVE_CODE_TOKEN[0] + getNameHandler().getPkColumnName(clazz)
-                        + AutoField.NATIVE_CODE_TOKEN[1], new Object[] { id }).build(true, getNameHandler());
+        BoundSql boundSql = Criteria.select(clazz).where(getNameHandler().getPkFieldName(clazz), new Object[] { id })
+            .build(true, getNameHandler());
         //采用list方式查询，当记录不存在时返回null而不会抛出异常
         List<T> list = jdbcTemplate.query(boundSql.getSql(), this.getRowMapper(clazz), boundSql.getParameters());
         if (CollectionUtils.isEmpty(list)) {
@@ -200,9 +195,8 @@ public class JdbcDaoImpl implements JdbcDao {
     }
 
     public <T> T get(Criteria criteria, Long id) {
-        BoundSql boundSql = criteria.where(
-            AutoField.NATIVE_CODE_TOKEN[0] + getNameHandler().getPkColumnName(criteria.getEntityClass())
-                    + AutoField.NATIVE_CODE_TOKEN[1], new Object[] { id }).build(true, getNameHandler());
+        BoundSql boundSql = criteria.where(getNameHandler().getPkFieldName(criteria.getEntityClass()),
+            new Object[] { id }).build(true, getNameHandler());
         //采用list方式查询，当记录不存在时返回null而不会抛出异常
         List<T> list = (List<T>) jdbcTemplate
             .query(boundSql.getSql(), this.getRowMapper(criteria.getEntityClass()), id);
@@ -264,21 +258,21 @@ public class JdbcDaoImpl implements JdbcDao {
         jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters());
     }
 
-    public byte[] getBlobValue(Class<?> clazz, String fieldName, Long id) {
-        String primaryName = nameHandler.getPkColumnName(clazz);
-        String columnName = nameHandler.getColumnName(fieldName);
-        String tableName = nameHandler.getTableName(clazz, null);
-        String tmp_sql = "select t.%s from %s t where t.%s = ?";
-        String sql = String.format(tmp_sql, columnName, tableName, primaryName);
-        return jdbcTemplate.query(sql, new Object[] { id }, new ResultSetExtractor<byte[]>() {
-            public byte[] extractData(ResultSet rs) throws SQLException, DataAccessException {
-                if (rs.next()) {
-                    return rs.getBytes(1);
-                }
-                return null;
-            }
-        });
-    }
+    //    public byte[] getBlobValue(Class<?> clazz, String fieldName, Long id) {
+    //        String primaryName = nameHandler.getPkColumnName(clazz);
+    //        String columnName = nameHandler.getColumnName(fieldName);
+    //        String tableName = nameHandler.getTableName(clazz, null);
+    //        String tmp_sql = "select t.%s from %s t where t.%s = ?";
+    //        String sql = String.format(tmp_sql, columnName, tableName, primaryName);
+    //        return jdbcTemplate.query(sql, new Object[] { id }, new ResultSetExtractor<byte[]>() {
+    //            public byte[] extractData(ResultSet rs) throws SQLException, DataAccessException {
+    //                if (rs.next()) {
+    //                    return rs.getBytes(1);
+    //                }
+    //                return null;
+    //            }
+    //        });
+    //    }
 
     /**
      * 获取rowMapper对象

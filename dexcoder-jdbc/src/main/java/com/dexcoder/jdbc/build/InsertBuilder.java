@@ -1,12 +1,12 @@
 package com.dexcoder.jdbc.build;
 
-import com.dexcoder.jdbc.BoundSql;
-import com.dexcoder.jdbc.handler.NameHandler;
-import com.dexcoder.jdbc.exceptions.JdbcAssistantException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import com.dexcoder.jdbc.BoundSql;
+import com.dexcoder.jdbc.exceptions.JdbcAssistantException;
+import com.dexcoder.jdbc.handler.NameHandler;
 
 /**
  * Created by liyd on 2015-12-7.
@@ -41,12 +41,12 @@ public class InsertBuilder extends AbstractSqlBuilder {
             }
             //原生类型
             if (autoField.isNativeField()) {
-                String nativeFieldName = tokenParse(autoField.getName(), nameHandler);
-                String nativeValue = tokenParse(String.valueOf(autoField.getValue()), nameHandler);
+                String nativeFieldName = tokenParse(autoField.getName(), clazz, nameHandler);
+                String nativeValue = tokenParse(String.valueOf(autoField.getValue()), clazz, nameHandler);
                 sql.append(nativeFieldName).append(",");
                 args.append(nativeValue);
             } else {
-                String columnName = nameHandler.getColumnName(entry.getKey());
+                String columnName = nameHandler.getColumnName(clazz, entry.getKey());
                 sql.append(columnName).append(",");
                 args.append("?");
             }

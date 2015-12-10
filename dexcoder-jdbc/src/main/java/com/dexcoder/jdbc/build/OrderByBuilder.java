@@ -3,8 +3,8 @@ package com.dexcoder.jdbc.build;
 import java.util.Map;
 
 import com.dexcoder.jdbc.BoundSql;
-import com.dexcoder.jdbc.handler.NameHandler;
 import com.dexcoder.jdbc.exceptions.JdbcAssistantException;
+import com.dexcoder.jdbc.handler.NameHandler;
 
 /**
  * Created by liyd on 2015-12-4.
@@ -29,7 +29,7 @@ public class OrderByBuilder extends AbstractSqlBuilder {
             sb.append(nameHandler.getPkColumnName(clazz)).append(" DESC");
         } else {
             for (Map.Entry<String, AutoField> entry : getFields().entrySet()) {
-                String columnName = nameHandler.getColumnName(entry.getKey());
+                String columnName = nameHandler.getColumnName(clazz, entry.getKey());
                 sb.append(columnName).append(" ").append(entry.getValue().getFieldOperator()).append(",");
             }
             if (sb.length() > 10) {

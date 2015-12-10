@@ -23,7 +23,7 @@ public class NoneNameHandler implements NameHandler {
         return entityClass.getSimpleName() + "Id";
     }
 
-    public String getColumnName(String fieldName) {
+    public String getColumnName(Class<?> entityClass, String fieldName) {
         return fieldName;
     }
 

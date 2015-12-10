@@ -1,8 +1,8 @@
 package com.dexcoder.jdbc.handler;
 
-import com.dexcoder.jdbc.build.AutoField;
-
 import java.util.Map;
+
+import com.dexcoder.jdbc.build.AutoField;
 
 /**
  * 名称处理接口
@@ -41,10 +41,11 @@ public interface NameHandler {
     /**
      * 根据属性名获取列名
      *
-     * @param fieldName
-     * @return
+     * @param entityClass the entity class
+     * @param fieldName the field name
+     * @return column name
      */
-    String getColumnName(String fieldName);
+    String getColumnName(Class<?> entityClass, String fieldName);
 
     /**
      * 根据实体名获取主键序列名 oracle才有用 自增类主键数据库直接返回null即可

@@ -5,13 +5,15 @@ package com.dexcoder.jdbc.handler;
  */
 public class NativeTokenHandler implements TokenHandler {
 
+    private Class<?>    clazz;
     private NameHandler nameHandler;
 
-    public NativeTokenHandler(NameHandler nameHandler) {
+    public NativeTokenHandler(Class<?> clazz, NameHandler nameHandler) {
+        this.clazz = clazz;
         this.nameHandler = nameHandler;
     }
 
     public String handleToken(String content) {
-        return nameHandler.getColumnName(content);
+        return nameHandler.getColumnName(this.clazz, content);
     }
 }

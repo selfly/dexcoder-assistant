@@ -49,11 +49,11 @@ public class UpdateBuilder extends AbstractSqlBuilder {
         List<Object> params = new ArrayList<Object>();
         sql.append(tableName).append(" SET ");
         for (Map.Entry<String, AutoField> entry : this.autoFields.entrySet()) {
-            String columnName = nameHandler.getColumnName(entry.getKey());
+            String columnName = nameHandler.getColumnName(clazz, entry.getKey());
             AutoField autoField = entry.getValue();
             if (autoField.isNativeField()) {
-                String nativeFieldName = tokenParse(autoField.getName(), nameHandler);
-                String nativeValue = tokenParse(String.valueOf(autoField.getValue()), nameHandler);
+                String nativeFieldName = tokenParse(autoField.getName(), clazz, nameHandler);
+                String nativeValue = tokenParse(String.valueOf(autoField.getValue()), clazz, nameHandler);
                 sql.append(nativeFieldName).append(" = ").append(nativeValue).append(",");
             } else if (autoField.getValue() == null) {
                 sql.append(columnName).append(" = NULL,");

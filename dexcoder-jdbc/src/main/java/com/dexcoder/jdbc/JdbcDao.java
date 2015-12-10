@@ -1,9 +1,9 @@
 package com.dexcoder.jdbc;
 
-import com.dexcoder.jdbc.build.Criteria;
-
 import java.util.List;
 import java.util.Map;
+
+import com.dexcoder.jdbc.build.Criteria;
 
 /**
  * jdbc操作dao
@@ -235,13 +235,13 @@ public interface JdbcDao {
      */
     void updateForSql(String refSql, String expectParamKey, Object[] params);
 
-    /**
-     * 查询blob字段值
-     *
-     * @param clazz
-     * @param fieldName
-     * @param id
-     * @return
-     */
-    public byte[] getBlobValue(Class<?> clazz, String fieldName, Long id);
+    //    /**
+    //     * 查询blob字段值
+    //     *
+    //     * @param clazz
+    //     * @param fieldName
+    //     * @param id
+    //     * @return
+    //     */
+    //    public byte[] getBlobValue(Class<?> clazz, String fieldName, Long id);
 }

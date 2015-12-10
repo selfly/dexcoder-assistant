@@ -41,7 +41,12 @@ public class DefaultNameHandler implements NameHandler {
         return underlineName + PRI_COLUMN_SUFFIX;
     }
 
-    public String getColumnName(String fieldName) {
+    public String getColumnName(Class<?> entityClass, String fieldName) {
+        //主键field跟column不一致的情况
+        String pkFieldName = this.getPkFieldName(entityClass);
+        if (StrUtils.equals(pkFieldName, fieldName)) {
+            return this.getPkColumnName(entityClass);
+        }
         String underlineName = NameUtils.getUnderlineName(fieldName);
         return underlineName;
     }
