@@ -1,11 +1,12 @@
 package com.dexcoder.jdbc.spring.datasource;
 
-import com.dexcoder.jdbc.utils.StrUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
+
+import com.dexcoder.commons.utils.StrUtils;
 
 /**
  * 动态数据源拦截器

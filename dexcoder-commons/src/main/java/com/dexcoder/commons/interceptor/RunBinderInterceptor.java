@@ -1,4 +1,4 @@
-package com.dexcoder.jdbc.spring.interceptor;
+package com.dexcoder.commons.interceptor;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;

@@ -1,4 +1,4 @@
-package com.dexcoder.jdbc.utils;
+package com.dexcoder.commons.utils;
 
 import java.io.*;
 import java.util.HashMap;
@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
-import com.dexcoder.jdbc.exceptions.AssistantException;
+import com.dexcoder.commons.exceptions.CommonsAssistantException;
 
 /**
  * 属性文件操作辅助类
@@ -46,7 +46,7 @@ public final class PropertyUtils {
                 return new FileInputStream(configFile);
             }
         } catch (FileNotFoundException e) {
-            throw new AssistantException("加载xml文件失败:" + resourceName, e);
+            throw new CommonsAssistantException("加载xml文件失败:" + resourceName, e);
         }
     }
 
@@ -71,7 +71,7 @@ public final class PropertyUtils {
             //为配置文件加入一个属性，用以判断该配置文件已加载过
             propMap.put(resourceName, "true");
         } catch (IOException e) {
-            throw new AssistantException("加载配置文件失败:" + resourceName, e);
+            throw new CommonsAssistantException("加载配置文件失败:" + resourceName, e);
         }
     }
 

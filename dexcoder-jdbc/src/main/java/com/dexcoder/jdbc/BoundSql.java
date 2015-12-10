@@ -1,5 +1,7 @@
 package com.dexcoder.jdbc;
 
+import java.util.List;
+
 /**
  * 具体的sql、参数信息对象
  * <p/>
@@ -26,6 +28,6 @@ public interface BoundSql {
      *
      * @return
      */
-    Object[] getParameters();
+    List<Object> getParameters();
 
 }

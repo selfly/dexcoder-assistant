@@ -1,4 +1,4 @@
-package com.dexcoder.jdbc.utils;
+package com.dexcoder.commons.utils;
 
 import java.util.UUID;
 

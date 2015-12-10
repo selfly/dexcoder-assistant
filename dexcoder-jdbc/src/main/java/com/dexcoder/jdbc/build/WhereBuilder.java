@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.jdbc.BoundSql;
-import com.dexcoder.jdbc.handler.NameHandler;
 import com.dexcoder.jdbc.exceptions.JdbcAssistantException;
-import com.dexcoder.jdbc.utils.StrUtils;
+import com.dexcoder.jdbc.handler.NameHandler;
 
 /**
  * Created by liyd on 2015-12-4.

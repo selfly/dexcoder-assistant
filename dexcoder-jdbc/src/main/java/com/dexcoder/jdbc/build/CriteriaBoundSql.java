@@ -22,7 +22,7 @@ public class CriteriaBoundSql implements BoundSql {
         return this.sql;
     }
 
-    public Object[] getParameters() {
-        return this.parameters == null ? null : this.parameters.toArray();
+    public List<Object> getParameters() {
+        return this.parameters;
     }
 }

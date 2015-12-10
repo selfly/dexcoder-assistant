@@ -1,4 +1,4 @@
-package com.dexcoder.jdbc.utils;
+package com.dexcoder.commons.utils;
 
 /**
  * 名称操作辅助类

@@ -5,12 +5,8 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.*;
 
-import com.dexcoder.jdbc.handler.NameHandler;
-import com.dexcoder.jdbc.handler.GenericTokenParser;
-import com.dexcoder.jdbc.handler.NativeTokenHandler;
-import com.dexcoder.jdbc.handler.NoneNameHandler;
-import com.dexcoder.jdbc.handler.TokenHandler;
-import com.dexcoder.jdbc.utils.ClassUtils;
+import com.dexcoder.commons.utils.ClassUtils;
+import com.dexcoder.jdbc.handler.*;
 
 /**
  * Created by liyd on 2015-12-7.

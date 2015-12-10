@@ -1,4 +1,4 @@
-package com.dexcoder.jdbc.spring.interceptor;
+package com.dexcoder.jdbc.spring.page;
 
 import java.sql.DatabaseMetaData;
 import java.util.List;

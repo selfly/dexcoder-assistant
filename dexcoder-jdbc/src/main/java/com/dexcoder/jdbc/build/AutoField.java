@@ -1,6 +1,6 @@
 package com.dexcoder.jdbc.build;
 
-import com.dexcoder.jdbc.utils.StrUtils;
+import com.dexcoder.commons.utils.StrUtils;
 
 /**
  * 组装sql时的列信息

@@ -1,31 +1,31 @@
 package com.dexcoder.jdbc.build;
 
-import com.dexcoder.jdbc.BoundSql;
-import com.dexcoder.jdbc.handler.NameHandler;
-import com.dexcoder.jdbc.exceptions.JdbcAssistantException;
-import com.dexcoder.jdbc.utils.ClassUtils;
-
 import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.dexcoder.commons.utils.ClassUtils;
+import com.dexcoder.jdbc.BoundSql;
+import com.dexcoder.jdbc.exceptions.JdbcAssistantException;
+import com.dexcoder.jdbc.handler.NameHandler;
+
 /**
  * Created by liyd on 2015-12-4.
  */
 public class SelectBuilder extends AbstractSqlBuilder {
 
-    protected static final String COMMAND_OPEN = "SELECT ";
+    protected static final String COMMAND_OPEN     = "SELECT ";
 
-    protected List<String> includeFields;
-    protected List<String> excludeFields;
-    protected List<AutoField> funcAutoFields;
-    protected SqlBuilder whereBuilder;
-    protected SqlBuilder orderByBuilder;
+    protected List<String>        includeFields;
+    protected List<String>        excludeFields;
+    protected List<AutoField>     funcAutoFields;
+    protected SqlBuilder          whereBuilder;
+    protected SqlBuilder          orderByBuilder;
 
-    protected boolean isFieldExclusion = false;
-    protected boolean isOrderBy = true;
+    protected boolean             isFieldExclusion = false;
+    protected boolean             isOrderBy        = true;
 
     public SelectBuilder() {
         includeFields = new ArrayList<String>();
@@ -54,7 +54,8 @@ public class SelectBuilder extends AbstractSqlBuilder {
         }
     }
 
-    public void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value) {
+    public void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type,
+                             Object value) {
         whereBuilder.addCondition(fieldName, sqlOperator, fieldOperator, type, value);
     }
 

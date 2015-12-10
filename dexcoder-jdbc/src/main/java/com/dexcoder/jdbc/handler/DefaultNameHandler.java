@@ -1,10 +1,10 @@
 package com.dexcoder.jdbc.handler;
 
-import com.dexcoder.jdbc.build.AutoField;
-import com.dexcoder.jdbc.utils.NameUtils;
-import com.dexcoder.jdbc.utils.StrUtils;
-
 import java.util.Map;
+
+import com.dexcoder.commons.utils.NameUtils;
+import com.dexcoder.commons.utils.StrUtils;
+import com.dexcoder.jdbc.build.AutoField;
 
 /**
  * 默认名称处理handler
@@ -18,7 +18,7 @@ public class DefaultNameHandler implements NameHandler {
     /**
      * 主键属性后缀
      */
-    private static final String PRI_FIELD_SUFFIX = "Id";
+    private static final String PRI_FIELD_SUFFIX  = "Id";
 
     /**
      * 主键列后缀

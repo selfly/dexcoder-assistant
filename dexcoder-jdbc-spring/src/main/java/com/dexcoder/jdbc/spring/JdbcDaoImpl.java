@@ -13,6 +13,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.util.CollectionUtils;
 
+import com.dexcoder.commons.utils.ClassUtils;
+import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.jdbc.BoundSql;
 import com.dexcoder.jdbc.JdbcDao;
 import com.dexcoder.jdbc.SqlFactory;
@@ -20,8 +22,6 @@ import com.dexcoder.jdbc.build.AutoField;
 import com.dexcoder.jdbc.build.Criteria;
 import com.dexcoder.jdbc.handler.DefaultNameHandler;
 import com.dexcoder.jdbc.handler.NameHandler;
-import com.dexcoder.jdbc.utils.ClassUtils;
-import com.dexcoder.jdbc.utils.StrUtils;
 
 /**
  * jdbc操作dao
@@ -143,27 +143,28 @@ public class JdbcDaoImpl implements JdbcDao {
 
     public <T> List<T> queryList(Criteria criteria) {
         BoundSql boundSql = criteria.build(true, getNameHandler());
-        List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParameters(),
+        List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParameters().toArray(),
             this.getRowMapper(criteria.getEntityClass()));
         return (List<T>) list;
     }
 
     public <T> List<T> queryList(Class<?> clazz) {
         BoundSql boundSql = Criteria.select(clazz).build(true, getNameHandler());
-        List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParameters(), this.getRowMapper(clazz));
+        List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParameters().toArray(),
+            this.getRowMapper(clazz));
         return (List<T>) list;
     }
 
     public <T> List<T> queryList(T entity) {
         BoundSql boundSql = Criteria.select(entity.getClass()).build(entity, true, getNameHandler());
-        List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParameters(),
+        List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParameters().toArray(),
             this.getRowMapper(entity.getClass()));
         return (List<T>) list;
     }
 
     public <T> List<T> queryList(T entity, Criteria criteria) {
         BoundSql boundSql = criteria.build(entity, true, getNameHandler());
-        List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParameters(),
+        List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParameters().toArray(),
             this.getRowMapper(entity.getClass()));
         return (List<T>) list;
     }
@@ -214,7 +215,7 @@ public class JdbcDaoImpl implements JdbcDao {
     public <T> T querySingleResult(T entity) {
         BoundSql boundSql = Criteria.select(entity.getClass()).build(entity, true, getNameHandler());
         //采用list方式查询，当记录不存在时返回null而不会抛出异常
-        List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParameters(),
+        List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParameters().toArray(),
             this.getRowMapper(entity.getClass()));
         if (CollectionUtils.isEmpty(list)) {
             return null;
@@ -225,7 +226,7 @@ public class JdbcDaoImpl implements JdbcDao {
     public <T> T querySingleResult(Criteria criteria) {
         BoundSql boundSql = criteria.build(true, getNameHandler());
         //采用list方式查询，当记录不存在时返回null而不会抛出异常
-        List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParameters(),
+        List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParameters().toArray(),
             this.getRowMapper(criteria.getEntityClass()));
         if (CollectionUtils.isEmpty(list)) {
             return null;

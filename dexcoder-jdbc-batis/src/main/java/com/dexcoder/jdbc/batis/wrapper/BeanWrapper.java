@@ -3,10 +3,10 @@ package com.dexcoder.jdbc.batis.wrapper;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import com.dexcoder.commons.utils.ClassUtils;
+import com.dexcoder.jdbc.batis.build.PropertyTokenizer;
 import com.dexcoder.jdbc.batis.reflection.MetaClass;
 import com.dexcoder.jdbc.batis.reflection.MetaObject;
-import com.dexcoder.jdbc.batis.build.PropertyTokenizer;
-import com.dexcoder.jdbc.utils.ClassUtils;
 
 /**
  * Created by liyd on 2015-12-1.

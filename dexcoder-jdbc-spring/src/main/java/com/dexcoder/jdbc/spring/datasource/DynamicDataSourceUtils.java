@@ -1,18 +1,20 @@
 package com.dexcoder.jdbc.spring.datasource;
 
-import com.dexcoder.jdbc.exceptions.JdbcAssistantException;
-import com.dexcoder.jdbc.utils.ClassUtils;
-import com.dexcoder.jdbc.utils.PropertyUtils;
-import com.dexcoder.jdbc.utils.StrUtils;
-import org.w3c.dom.*;
-
-import javax.sql.DataSource;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
+
+import javax.sql.DataSource;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.*;
+
+import com.dexcoder.commons.utils.ClassUtils;
+import com.dexcoder.commons.utils.PropertyUtils;
+import com.dexcoder.commons.utils.StrUtils;
+import com.dexcoder.jdbc.exceptions.JdbcAssistantException;
 
 /**
  * Created by liyd on 2015-10-30.
@@ -27,8 +29,8 @@ public class DynamicDataSourceUtils {
      * @param dsId        the ds id
      * @param weight      the weight
      */
-    public static void addWeightDataSource(List<String> readDsList, List<String> writeDsList,
-                                           String dsId, int weight, String mode) {
+    public static void addWeightDataSource(List<String> readDsList, List<String> writeDsList, String dsId, int weight,
+                                           String mode) {
 
         if (StrUtils.equalsIgnoreCase(mode, DynamicDataSource.DS_MODE_R)) {
             for (int i = 0; i < weight; i++) {
@@ -60,8 +62,7 @@ public class DynamicDataSourceUtils {
         for (Map.Entry<String, String> entry : entries) {
 
             String name = entry.getKey();
-            PropertyDescriptor propertyDescriptor = ClassUtils.getPropertyDescriptor(
-                    dataSource.getClass(), name);
+            PropertyDescriptor propertyDescriptor = ClassUtils.getPropertyDescriptor(dataSource.getClass(), name);
             if (propertyDescriptor == null || propertyDescriptor.getWriteMethod() == null) {
                 continue;
             }
@@ -97,8 +98,7 @@ public class DynamicDataSourceUtils {
      */
     public static List<Map<String, String>> parseDataSources(String dsConfigFile) {
         try {
-            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance()
-                    .newDocumentBuilder();
+            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = documentBuilder.parse(PropertyUtils.loadResource(dsConfigFile));
             Element dataSources = doc.getDocumentElement();
             NodeList datasourceNodes = dataSources.getChildNodes();

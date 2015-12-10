@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.dexcoder.commons.utils.ClassUtils;
 import com.dexcoder.jdbc.exceptions.JdbcAssistantException;
-import com.dexcoder.jdbc.utils.ClassUtils;
 
 /**
  * Created by liyd on 2015-12-1.

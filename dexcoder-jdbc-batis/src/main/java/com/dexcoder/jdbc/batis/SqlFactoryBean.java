@@ -1,25 +1,24 @@
 package com.dexcoder.jdbc.batis;
 
-import com.dexcoder.jdbc.batis.BatisSqlFactory;
-import com.dexcoder.jdbc.batis.build.Configuration;
-import com.dexcoder.jdbc.batis.xml.XMLMapperBuilder;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
+import com.dexcoder.commons.utils.StrUtils;
+import com.dexcoder.jdbc.batis.build.Configuration;
+import com.dexcoder.jdbc.batis.xml.XMLMapperBuilder;
 import com.dexcoder.jdbc.exceptions.JdbcAssistantException;
-import com.dexcoder.jdbc.utils.StrUtils;
 
 /**
  * Created by liyd on 2015-11-24.
  */
 public class SqlFactoryBean implements FactoryBean<BatisSqlFactory>, InitializingBean {
 
-    private String        sqlLocation;
+    private String          sqlLocation;
 
-    private Configuration configuration;
+    private Configuration   configuration;
 
     private BatisSqlFactory sqlFactory;
 
