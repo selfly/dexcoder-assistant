@@ -10,16 +10,9 @@ public class MapperBuilderAssistant extends BaseBuilder {
     private String currentNamespace;
     private String resource;
 
-    //    private Cache currentCache;
-    //    private boolean unresolvedCacheRef;
-
     public MapperBuilderAssistant(Configuration configuration, String resource) {
         super(configuration);
         this.resource = resource;
-    }
-
-    public String getCurrentNamespace() {
-        return currentNamespace;
     }
 
     public void setCurrentNamespace(String currentNamespace) {
@@ -64,9 +57,4 @@ public class MapperBuilderAssistant extends BaseBuilder {
         configuration.addMappedStatement(statement);
         return statement;
     }
-
-    public String getResource() {
-        return resource;
-    }
-
 }

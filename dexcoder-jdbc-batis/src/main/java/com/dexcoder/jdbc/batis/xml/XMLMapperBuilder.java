@@ -16,7 +16,7 @@ import com.dexcoder.jdbc.exceptions.JdbcAssistantException;
  */
 public class XMLMapperBuilder extends BaseBuilder {
 
-    private XPathParser parser;
+    private XPathParser            parser;
     private MapperBuilderAssistant builderAssistant;
     private Map<String, XNode>     sqlFragments;
     private String                 resource;
@@ -43,7 +43,7 @@ public class XMLMapperBuilder extends BaseBuilder {
                 throw new JdbcAssistantException("Mapper's namespace cannot be empty");
             }
             builderAssistant.setCurrentNamespace(namespace);
-            sqlElement(context.evalNodes("/mapper/build"));
+            sqlElement(context.evalNodes("/mapper/sql"));
             buildStatementFromContext(context.evalNodes("select|insert|update|delete"));
         } catch (Exception e) {
             throw new JdbcAssistantException("Error parsing Mapper XML. Cause: " + e, e);

@@ -13,6 +13,7 @@
         <module>dexcoder-jdbc-spring</module>
         <module>dexcoder-commons</module>
         <module>dexcoder-jdbc-batis</module>
+        <module>dexcoder-test</module>
     </modules>
 
     <properties>

@@ -11,7 +11,7 @@ import com.dexcoder.jdbc.batis.build.SqlSource;
 public class XMLStatementBuilder extends BaseBuilder {
 
     private MapperBuilderAssistant builderAssistant;
-    private XNode xNode;
+    private XNode                  xNode;
 
     public XMLStatementBuilder(Configuration configuration, MapperBuilderAssistant builderAssistant, XNode xNode) {
         super(configuration);
@@ -27,8 +27,11 @@ public class XMLStatementBuilder extends BaseBuilder {
         includeParser.applyIncludes(xNode.getNode());
 
         // Parse the SQL (pre: <selectKey> and <include> were parsed and removed)
-        SqlSource sqlSource = new XMLLanguageDriver().createSqlSource(configuration, xNode);
-//        SqlSource sqlSource = langDriver.createSqlSource(configuration, context, parameterTypeClass);
+        //        SqlSource sqlSource = new XMLLanguageDriver().createSqlSource(configuration, xNode);
+
+        XMLScriptBuilder builder = new XMLScriptBuilder(configuration, xNode);
+        SqlSource sqlSource = builder.parseScriptNode();
+        //        SqlSource sqlSource = langDriver.createSqlSource(configuration, context, parameterTypeClass);
         builderAssistant.addMappedStatement(id, sqlSource);
     }
 }

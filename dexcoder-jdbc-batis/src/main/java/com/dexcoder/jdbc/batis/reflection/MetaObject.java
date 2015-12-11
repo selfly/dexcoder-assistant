@@ -57,13 +57,13 @@ public class MetaObject {
         return objectWrapper.getSetterNames();
     }
 
-    public Class<?> getSetterType(String name) {
-        return objectWrapper.getSetterType(name);
-    }
-
-    public Class<?> getGetterType(String name) {
-        return objectWrapper.getGetterType(name);
-    }
+//    public Class<?> getSetterType(String name) {
+//        return objectWrapper.getSetterType(name);
+//    }
+//
+//    public Class<?> getGetterType(String name) {
+//        return objectWrapper.getGetterType(name);
+//    }
 
     public boolean hasSetter(String name) {
         return objectWrapper.hasSetter(name);

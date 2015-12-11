@@ -1,14 +1,14 @@
 package com.dexcoder.jdbc.batis;
 
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
+import com.dexcoder.commons.utils.ArrUtils;
+import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.jdbc.BoundSql;
 import com.dexcoder.jdbc.SqlFactory;
-import com.dexcoder.jdbc.batis.build.BatisBoundSql;
 import com.dexcoder.jdbc.batis.build.Configuration;
 import com.dexcoder.jdbc.batis.build.MappedStatement;
-import com.dexcoder.jdbc.batis.build.ParameterMapping;
 
 /**
  * Created by liyd on 2015-11-24.
@@ -23,21 +23,34 @@ public class BatisSqlFactory implements SqlFactory {
 
     public BoundSql getBoundSql(String refSql, String expectParamKey, Object[] parameters) {
 
+        Map<String, Object> params = this.processParameters(expectParamKey, parameters);
         MappedStatement mappedStatement = this.configuration.getMappedStatements().get(refSql);
-        BatisBoundSql boundSql = mappedStatement.getSqlSource().getBoundSql(parameters);
-        String sql = boundSql.getSql();
-        System.out.println(sql);
+        return mappedStatement.getSqlSource().getBoundSql(params);
+    }
 
-        List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
-        for (ParameterMapping parameterMapping : parameterMappings) {
+    /**
+     * 处理转换参数
+     * 
+     * @param expectParamKey
+     * @param parameters
+     * @return
+     */
+    private Map<String, Object> processParameters(String expectParamKey, Object[] parameters) {
 
-            String property = parameterMapping.getProperty();
-
-            Object value = boundSql.getAdditionalParameter(property);
-
-            System.out.println(value);
+        if (ArrUtils.isEmpty(parameters)) {
+            return null;
         }
-
-        return null;
+        String paramKey = StrUtils.isBlank(expectParamKey) ? "item" : expectParamKey;
+        Map<String, Object> map = new HashMap<String, Object>();
+        if (parameters.length == 1) {
+            map.put(paramKey, parameters[0]);
+            return map;
+        }
+        map.put(expectParamKey, parameters);
+        for (int i = 0; i < parameters.length; i++) {
+            //            String key = new StringBuilder(expectParamKey).append("[").append(i).append("]").toString();
+            //            map.put(ex, parameters[i]);
+        }
+        return map;
     }
 }

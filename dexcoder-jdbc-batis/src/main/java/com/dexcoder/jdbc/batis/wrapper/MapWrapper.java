@@ -50,41 +50,41 @@ public class MapWrapper extends BaseWrapper {
         return map.keySet().toArray(new String[map.keySet().size()]);
     }
 
-    public Class<?> getSetterType(String name) {
-        PropertyTokenizer prop = new PropertyTokenizer(name);
-        if (prop.hasNext()) {
-            MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
-            if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
-                return Object.class;
-            } else {
-                return metaValue.getSetterType(prop.getChildren());
-            }
-        } else {
-            if (map.get(name) != null) {
-                return map.get(name).getClass();
-            } else {
-                return Object.class;
-            }
-        }
-    }
-
-    public Class<?> getGetterType(String name) {
-        PropertyTokenizer prop = new PropertyTokenizer(name);
-        if (prop.hasNext()) {
-            MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
-            if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
-                return Object.class;
-            } else {
-                return metaValue.getGetterType(prop.getChildren());
-            }
-        } else {
-            if (map.get(name) != null) {
-                return map.get(name).getClass();
-            } else {
-                return Object.class;
-            }
-        }
-    }
+//    public Class<?> getSetterType(String name) {
+//        PropertyTokenizer prop = new PropertyTokenizer(name);
+//        if (prop.hasNext()) {
+//            MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
+//            if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
+//                return Object.class;
+//            } else {
+//                return metaValue.getSetterType(prop.getChildren());
+//            }
+//        } else {
+//            if (map.get(name) != null) {
+//                return map.get(name).getClass();
+//            } else {
+//                return Object.class;
+//            }
+//        }
+//    }
+//
+//    public Class<?> getGetterType(String name) {
+//        PropertyTokenizer prop = new PropertyTokenizer(name);
+//        if (prop.hasNext()) {
+//            MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
+//            if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
+//                return Object.class;
+//            } else {
+//                return metaValue.getGetterType(prop.getChildren());
+//            }
+//        } else {
+//            if (map.get(name) != null) {
+//                return map.get(name).getClass();
+//            } else {
+//                return Object.class;
+//            }
+//        }
+//    }
 
     public boolean hasSetter(String name) {
         return true;

@@ -33,22 +33,4 @@ public class ParameterMapping {
         return property;
     }
 
-    /**
-     * Not used
-     *
-     * @return
-     */
-    public String getExpression() {
-        return expression;
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("ParameterMapping{");
-        //sb.append("configuration=").append(configuration); // configuration doesn't have a useful .toString()
-        sb.append("property='").append(property).append('\'');
-        sb.append(", expression='").append(expression).append('\'');
-        sb.append('}');
-        return sb.toString();
-    }
 }
