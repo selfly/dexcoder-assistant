@@ -304,6 +304,16 @@ public class JdbcDaoTest extends BaseTest {
         }
     }
 
+    @Test
+    public void testBatisSql3() {
+        List<Map<String, Object>> mapList = jdbcDao.queryForSql("User.getUser3", "names", new Object[] { "selfly_a93",
+                "selfly_a94", "selfly_a95" });
+        for (Map<String, Object> map : mapList) {
+            System.out.println(map.get("user_id"));
+            System.out.println(map.get("login_name"));
+        }
+    }
+
     //    @Test
     //    public void multiTableBook() {
     //        for (int i = 1; i < 51; i++) {

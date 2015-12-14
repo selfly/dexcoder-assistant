@@ -33,7 +33,14 @@
         select
         <include refid="columns"/>
         from user
-
+        <where>
+            <if test="names != null">
+                login_name in
+                <foreach collection="names" index="index" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
     </select>
 
 </mapper>

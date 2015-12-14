@@ -1,6 +1,8 @@
 package com.dexcoder.jdbc.spring;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -257,14 +259,6 @@ public class JdbcDaoImpl implements JdbcDao {
 
     public int updateForSql(String refSql, String expectParamKey, Object[] params) {
         BoundSql boundSql = this.sqlFactory.getBoundSql(refSql, expectParamKey, params);
-
-        jdbcTemplate.execute("", new CallableStatementCallback<Object>() {
-            public Object doInCallableStatement(CallableStatement cs) throws SQLException, DataAccessException {
-                cs.registerOutParameter(1, Types.VARCHAR);
-                return null;
-            }
-        });
-
         return jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
