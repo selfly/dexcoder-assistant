@@ -184,6 +184,8 @@ public interface JdbcDao {
      */
     public <T> T querySingleResult(Criteria criteria);
 
+    Object queryForObject(Criteria criteria);
+
     /**
      * 根据sql查询
      *

@@ -227,6 +227,11 @@ public class JdbcDaoImpl implements JdbcDao {
         return (T) list.iterator().next();
     }
 
+    public Object queryForObject(Criteria criteria) {
+        final BoundSql boundSql = criteria.build(true, getNameHandler());
+        return jdbcTemplate.queryForObject(boundSql.getSql(), boundSql.getParameters().toArray(), Object.class);
+    }
+
     public List<Map<String, Object>> queryForSql(String refSql) {
         BoundSql boundSql = this.sqlFactory.getBoundSql(refSql, null, null);
         return jdbcTemplate.queryForList(boundSql.getSql());

@@ -240,6 +240,14 @@ public class JdbcDaoTest extends BaseTest {
     }
 
     @Test
+    public void queryForObject() {
+        Criteria criteria = Criteria.select(User.class).addSelectFunc("max([userId])");
+        Long userId = (Long) jdbcDao.queryForObject(criteria);
+        Assert.assertNotNull(userId);
+        System.out.println(userId);
+    }
+
+    @Test
     public void testBracket() {
 
         Criteria criteria = Criteria.select(User.class).where("userType", new Object[] { "1" }).begin()

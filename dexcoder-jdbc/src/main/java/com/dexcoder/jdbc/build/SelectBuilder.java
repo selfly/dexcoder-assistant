@@ -69,7 +69,8 @@ public class SelectBuilder extends AbstractSqlBuilder {
         }
         if (!funcAutoFields.isEmpty()) {
             for (AutoField autoField : funcAutoFields) {
-                sb.append(autoField.getName()).append(",");
+                String nativeFieldName = tokenParse(autoField.getName(), clazz, nameHandler);
+                sb.append(nativeFieldName).append(",");
             }
         }
         if (!isFieldExclusion) {
