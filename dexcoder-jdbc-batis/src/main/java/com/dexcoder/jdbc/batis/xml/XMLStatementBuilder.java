@@ -31,7 +31,6 @@ public class XMLStatementBuilder extends BaseBuilder {
 
         XMLScriptBuilder builder = new XMLScriptBuilder(configuration, xNode);
         SqlSource sqlSource = builder.parseScriptNode();
-        //        SqlSource sqlSource = langDriver.createSqlSource(configuration, context, parameterTypeClass);
         builderAssistant.addMappedStatement(id, sqlSource);
     }
 }

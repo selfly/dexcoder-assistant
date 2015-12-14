@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.core.io.Resource;
+
 import com.dexcoder.jdbc.batis.build.BaseBuilder;
 import com.dexcoder.jdbc.batis.build.Configuration;
 import com.dexcoder.jdbc.batis.build.MapperBuilderAssistant;
-import org.springframework.core.io.Resource;
-
 import com.dexcoder.jdbc.exceptions.JdbcAssistantException;
 
 /**
@@ -26,7 +26,8 @@ public class XMLMapperBuilder extends BaseBuilder {
         this.builderAssistant = new MapperBuilderAssistant(configuration, resource.getFilename());
         this.sqlFragments = configuration.getSqlFragments();
         this.resource = resource.getFilename();
-        this.parser = new XPathParser(resource.getInputStream());
+        this.parser = new XPathParser(resource.getInputStream(), true, configuration.getVariables(),
+            new XMLMapperEntityResolver());
     }
 
     public void parse() {

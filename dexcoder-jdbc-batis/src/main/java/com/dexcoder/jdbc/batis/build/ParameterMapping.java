@@ -6,7 +6,7 @@ package com.dexcoder.jdbc.batis.build;
 public class ParameterMapping {
 
     private String property;
-    private String expression;
+//    private String expression;
 
     private ParameterMapping() {
     }
@@ -17,11 +17,6 @@ public class ParameterMapping {
 
         public Builder(String property) {
             parameterMapping.property = property;
-        }
-
-        public Builder expression(String expression) {
-            parameterMapping.expression = expression;
-            return this;
         }
 
         public ParameterMapping build() {

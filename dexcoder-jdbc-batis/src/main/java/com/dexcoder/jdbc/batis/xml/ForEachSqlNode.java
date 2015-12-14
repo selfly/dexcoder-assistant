@@ -1,30 +1,31 @@
 package com.dexcoder.jdbc.batis.xml;
 
+import java.util.Map;
+
 import com.dexcoder.jdbc.batis.build.Configuration;
+import com.dexcoder.jdbc.batis.build.DynamicContext;
 import com.dexcoder.jdbc.batis.build.TokenHandler;
 import com.dexcoder.jdbc.batis.ognl.ExpressionEvaluator;
 import com.dexcoder.jdbc.batis.parser.GenericTokenParser;
-import com.dexcoder.jdbc.batis.build.DynamicContext;
-
-import java.util.Map;
 
 /**
  * Created by liyd on 2015-11-30.
  */
 public class ForEachSqlNode implements SqlNode {
-    public static final String ITEM_PREFIX = "__frch_";
+    public static final String  ITEM_PREFIX = "__frch_";
 
     private ExpressionEvaluator evaluator;
-    private String collectionExpression;
-    private SqlNode contents;
-    private String open;
-    private String close;
-    private String separator;
-    private String item;
-    private String index;
-    private Configuration configuration;
+    private String              collectionExpression;
+    private SqlNode             contents;
+    private String              open;
+    private String              close;
+    private String              separator;
+    private String              item;
+    private String              index;
+    private Configuration       configuration;
 
-    public ForEachSqlNode(Configuration configuration, SqlNode contents, String collectionExpression, String index, String item, String open, String close, String separator) {
+    public ForEachSqlNode(Configuration configuration, SqlNode contents, String collectionExpression, String index,
+                          String item, String open, String close, String separator) {
         this.evaluator = new ExpressionEvaluator();
         this.collectionExpression = collectionExpression;
         this.contents = contents;
@@ -65,7 +66,7 @@ public class ForEachSqlNode implements SqlNode {
                 applyIndex(context, i, uniqueNumber);
                 applyItem(context, o, uniqueNumber);
             }
-            contents.apply(new FilteredDynamicContext(configuration, context, index, item, uniqueNumber));
+            contents.apply(new FilteredDynamicContext(context, index, item, uniqueNumber));
             if (first) {
                 first = !((PrefixedContext) context).isPrefixApplied();
             }
@@ -108,12 +109,12 @@ public class ForEachSqlNode implements SqlNode {
 
     private static class FilteredDynamicContext extends DynamicContext {
         private DynamicContext delegate;
-        private int index;
-        private String itemIndex;
-        private String item;
+        private int            index;
+        private String         itemIndex;
+        private String         item;
 
-        public FilteredDynamicContext(Configuration configuration, DynamicContext delegate, String itemIndex, String item, int i) {
-            super(configuration, null);
+        public FilteredDynamicContext(DynamicContext delegate, String itemIndex, String item, int i) {
+            super(null);
             this.delegate = delegate;
             this.index = i;
             this.itemIndex = itemIndex;
@@ -139,9 +140,11 @@ public class ForEachSqlNode implements SqlNode {
         public void appendSql(String sql) {
             GenericTokenParser parser = new GenericTokenParser("#{", "}", new TokenHandler() {
                 public String handleToken(String content) {
-                    String newContent = content.replaceFirst("^\\s*" + item + "(?![^.,:\\s])", itemizeItem(item, index));
+                    String newContent = content
+                        .replaceFirst("^\\s*" + item + "(?![^.,:\\s])", itemizeItem(item, index));
                     if (itemIndex != null && newContent.equals(content)) {
-                        newContent = content.replaceFirst("^\\s*" + itemIndex + "(?![^.,:\\s])", itemizeItem(itemIndex, index));
+                        newContent = content.replaceFirst("^\\s*" + itemIndex + "(?![^.,:\\s])",
+                            itemizeItem(itemIndex, index));
                     }
                     return new StringBuilder("#{").append(newContent).append("}").toString();
                 }
@@ -157,14 +160,13 @@ public class ForEachSqlNode implements SqlNode {
 
     }
 
-
     private class PrefixedContext extends DynamicContext {
         private DynamicContext delegate;
-        private String prefix;
-        private boolean prefixApplied;
+        private String         prefix;
+        private boolean        prefixApplied;
 
         public PrefixedContext(DynamicContext delegate, String prefix) {
-            super(configuration, null);
+            super(null);
             this.delegate = delegate;
             this.prefix = prefix;
             this.prefixApplied = false;

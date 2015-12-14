@@ -7,22 +7,20 @@ import java.util.List;
  */
 public class StaticSqlSource implements SqlSource {
 
-    private String sql;
+    private String                 sql;
     private List<ParameterMapping> parameterMappings;
-    private Configuration configuration;
 
-    public StaticSqlSource(Configuration configuration, String sql) {
-        this(configuration, sql, null);
+    public StaticSqlSource(String sql) {
+        this(sql, null);
     }
 
-    public StaticSqlSource(Configuration configuration, String sql, List<ParameterMapping> parameterMappings) {
+    public StaticSqlSource(String sql, List<ParameterMapping> parameterMappings) {
         this.sql = sql;
         this.parameterMappings = parameterMappings;
-        this.configuration = configuration;
     }
 
     public BatisBoundSql getBoundSql(Object parameterObject) {
-        return new BatisBoundSql(configuration, sql, parameterMappings, parameterObject);
+        return new BatisBoundSql(sql, parameterMappings);
     }
 
 }

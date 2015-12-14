@@ -1,8 +1,6 @@
 package com.dexcoder.jdbc.spring;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 import java.util.Map;
 
@@ -82,8 +80,8 @@ public class JdbcDaoImpl implements JdbcDao {
         Criteria criteria = Criteria.insert(entity.getClass());
         String nativePKValue = handler.getPkNativeValue(entity.getClass(), getDialect());
         if (StrUtils.isNotBlank(nativePKValue)) {
-            String pkColumnName = handler.getPkFieldName(entity.getClass());
-            criteria.into(AutoField.NATIVE_FIELD_TOKEN[0] + pkColumnName + AutoField.NATIVE_FIELD_TOKEN[1],
+            String pkFieldName = handler.getPkFieldName(entity.getClass());
+            criteria.into(AutoField.NATIVE_FIELD_TOKEN[0] + pkFieldName + AutoField.NATIVE_FIELD_TOKEN[1],
                 nativePKValue);
         }
         final BoundSql boundSql = criteria.build(entity, true, getNameHandler());
@@ -259,24 +257,16 @@ public class JdbcDaoImpl implements JdbcDao {
 
     public int updateForSql(String refSql, String expectParamKey, Object[] params) {
         BoundSql boundSql = this.sqlFactory.getBoundSql(refSql, expectParamKey, params);
+
+        jdbcTemplate.execute("", new CallableStatementCallback<Object>() {
+            public Object doInCallableStatement(CallableStatement cs) throws SQLException, DataAccessException {
+                cs.registerOutParameter(1, Types.VARCHAR);
+                return null;
+            }
+        });
+
         return jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
     }
-
-    //    public byte[] getBlobValue(Class<?> clazz, String fieldName, Long id) {
-    //        String primaryName = nameHandler.getPkColumnName(clazz);
-    //        String columnName = nameHandler.getColumnName(fieldName);
-    //        String tableName = nameHandler.getTableName(clazz, null);
-    //        String tmp_sql = "select t.%s from %s t where t.%s = ?";
-    //        String sql = String.format(tmp_sql, columnName, tableName, primaryName);
-    //        return jdbcTemplate.query(sql, new Object[] { id }, new ResultSetExtractor<byte[]>() {
-    //            public byte[] extractData(ResultSet rs) throws SQLException, DataAccessException {
-    //                if (rs.next()) {
-    //                    return rs.getBytes(1);
-    //                }
-    //                return null;
-    //            }
-    //        });
-    //    }
 
     /**
      * 获取rowMapper对象

@@ -1,9 +1,9 @@
 package com.dexcoder.jdbc.batis.wrapper;
 
-import com.dexcoder.jdbc.batis.reflection.MetaObject;
-import com.dexcoder.jdbc.batis.build.PropertyTokenizer;
-
 import java.util.List;
+
+import com.dexcoder.jdbc.batis.build.PropertyTokenizer;
+import com.dexcoder.jdbc.batis.reflection.MetaObject;
 
 /**
  * Created by liyd on 2015-11-30.
@@ -14,26 +14,26 @@ public interface ObjectWrapper {
 
     void set(PropertyTokenizer prop, Object value);
 
-    String findProperty(String name, boolean useCamelCaseMapping);
+    //    String findProperty(String name, boolean useCamelCaseMapping);
+    //
+    //    String[] getGetterNames();
+    //
+    //    String[] getSetterNames();
 
-    String[] getGetterNames();
+    //    Class<?> getSetterType(String name);
+    //
+    //    Class<?> getGetterType(String name);
 
-    String[] getSetterNames();
+    //    boolean hasSetter(String name);
 
-//    Class<?> getSetterType(String name);
-//
-//    Class<?> getGetterType(String name);
-
-    boolean hasSetter(String name);
-
-    boolean hasGetter(String name);
+//    boolean hasGetter(String name);
 
     MetaObject instantiatePropertyValue(String name, PropertyTokenizer prop);
 
-    boolean isCollection();
+    //    boolean isCollection();
 
-    public void add(Object element);
+//    void add(Object element);
 
-    public <E> void addAll(List<E> element);
+    //    <E> void addAll(List<E> element);
 
 }

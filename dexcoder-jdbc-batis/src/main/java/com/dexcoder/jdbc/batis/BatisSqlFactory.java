@@ -44,12 +44,8 @@ public class BatisSqlFactory implements SqlFactory {
         Map<String, Object> map = new HashMap<String, Object>();
         if (parameters.length == 1) {
             map.put(paramKey, parameters[0]);
-            return map;
-        }
-        map.put(expectParamKey, parameters);
-        for (int i = 0; i < parameters.length; i++) {
-            //            String key = new StringBuilder(expectParamKey).append("[").append(i).append("]").toString();
-            //            map.put(ex, parameters[i]);
+        } else {
+            map.put(paramKey, parameters);
         }
         return map;
     }

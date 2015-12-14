@@ -2,7 +2,6 @@ package com.dexcoder.jdbc.batis.build;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.dexcoder.jdbc.batis.parser.GenericTokenParser;
 
@@ -15,11 +14,11 @@ public class SqlSourceBuilder extends BaseBuilder {
         super(configuration);
     }
 
-    public SqlSource parse(String originalSql, Map<String, Object> additionalParameters) {
+    public SqlSource parse(String originalSql) {
         ParameterMappingTokenHandler handler = new ParameterMappingTokenHandler();
         GenericTokenParser parser = new GenericTokenParser("#{", "}", handler);
         String sql = parser.parse(originalSql);
-        return new StaticSqlSource(configuration, sql, handler.getParameterMappings());
+        return new StaticSqlSource(sql, handler.getParameterMappings());
     }
 
     private static class ParameterMappingTokenHandler implements TokenHandler {

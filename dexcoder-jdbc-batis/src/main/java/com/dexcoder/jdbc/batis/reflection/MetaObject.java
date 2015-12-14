@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class MetaObject {
 
-    private Object originalObject;
+    private Object        originalObject;
     private ObjectWrapper objectWrapper;
 
     private MetaObject(Object object) {
@@ -45,33 +45,33 @@ public class MetaObject {
         return originalObject;
     }
 
-    public String findProperty(String propName, boolean useCamelCaseMapping) {
-        return objectWrapper.findProperty(propName, useCamelCaseMapping);
-    }
+    //    public String findProperty(String propName, boolean useCamelCaseMapping) {
+    //        return objectWrapper.findProperty(propName, useCamelCaseMapping);
+    //    }
 
-    public String[] getGetterNames() {
-        return objectWrapper.getGetterNames();
-    }
+    //    public String[] getGetterNames() {
+    //        return objectWrapper.getGetterNames();
+    //    }
+    //
+    //    public String[] getSetterNames() {
+    //        return objectWrapper.getSetterNames();
+    //    }
 
-    public String[] getSetterNames() {
-        return objectWrapper.getSetterNames();
-    }
+    //    public Class<?> getSetterType(String name) {
+    //        return objectWrapper.getSetterType(name);
+    //    }
+    //
+    //    public Class<?> getGetterType(String name) {
+    //        return objectWrapper.getGetterType(name);
+    //    }
 
-//    public Class<?> getSetterType(String name) {
-//        return objectWrapper.getSetterType(name);
+    //    public boolean hasSetter(String name) {
+    //        return objectWrapper.hasSetter(name);
+    //    }
+
+//    public boolean hasGetter(String name) {
+//        return objectWrapper.hasGetter(name);
 //    }
-//
-//    public Class<?> getGetterType(String name) {
-//        return objectWrapper.getGetterType(name);
-//    }
-
-    public boolean hasSetter(String name) {
-        return objectWrapper.hasSetter(name);
-    }
-
-    public boolean hasGetter(String name) {
-        return objectWrapper.hasGetter(name);
-    }
 
     public Object getValue(String name) {
         PropertyTokenizer prop = new PropertyTokenizer(name);
@@ -110,20 +110,20 @@ public class MetaObject {
         return MetaObject.forObject(value);
     }
 
-    public ObjectWrapper getObjectWrapper() {
-        return objectWrapper;
-    }
+//    public ObjectWrapper getObjectWrapper() {
+//        return objectWrapper;
+//    }
+//
+//    public boolean isCollection() {
+//        return objectWrapper.isCollection();
+//    }
 
-    public boolean isCollection() {
-        return objectWrapper.isCollection();
-    }
+//    public void add(Object element) {
+//        objectWrapper.add(element);
+//    }
 
-    public void add(Object element) {
-        objectWrapper.add(element);
-    }
-
-    public <E> void addAll(List<E> list) {
-        objectWrapper.addAll(list);
-    }
+//    public <E> void addAll(List<E> list) {
+//        objectWrapper.addAll(list);
+//    }
 
 }

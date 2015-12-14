@@ -16,8 +16,4 @@ public final class SystemMetaObject {
     private static class NullObject {
     }
 
-    public static MetaObject forObject(Object object) {
-        return MetaObject.forObject(object);
-    }
-
 }

@@ -56,7 +56,7 @@ public class TrimSqlNode implements SqlNode {
         private StringBuilder sqlBuffer;
 
         public FilteredDynamicContext(DynamicContext delegate) {
-            super(configuration, null);
+            super(null);
             this.delegate = delegate;
             this.prefixApplied = false;
             this.suffixApplied = false;

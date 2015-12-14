@@ -14,7 +14,7 @@ public class DynamicContext {
     private final StringBuilder       sqlBuilder   = new StringBuilder();
     private int                       uniqueNumber = 0;
 
-    public DynamicContext(Configuration configuration, Object parameterObject) {
+    public DynamicContext(Object parameterObject) {
         bindings = new HashMap<String, Object>();
         if (parameterObject != null && !(parameterObject instanceof Map)) {
             throw new JdbcAssistantException("参数错误");

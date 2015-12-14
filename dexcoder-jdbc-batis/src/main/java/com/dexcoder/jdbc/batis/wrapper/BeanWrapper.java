@@ -50,10 +50,10 @@ public class BeanWrapper extends BaseWrapper {
         ClassUtils.invokeMethod(writeMethod, object, value);
     }
 
-    public String findProperty(String name, boolean useCamelCaseMapping) {
-        return null;
-    }
-
+    //    public String findProperty(String name, boolean useCamelCaseMapping) {
+    //        return null;
+    //    }
+    //
     public MetaObject instantiatePropertyValue(String name, PropertyTokenizer prop) {
         Object newObject = ClassUtils.newInstance(object.getClass());
         MetaObject metaValue = MetaObject.forObject(newObject);
@@ -61,40 +61,41 @@ public class BeanWrapper extends BaseWrapper {
         return metaValue;
     }
 
-    public String[] getGetterNames() {
-        return new String[0];
-    }
+    //
+    //    public String[] getGetterNames() {
+    //        return new String[0];
+    //    }
+    //
+    //    public String[] getSetterNames() {
+    //        return new String[0];
+    //    }
 
-    public String[] getSetterNames() {
-        return new String[0];
-    }
+    //    public Class<?> getSetterType(String name) {
+    //        return null;
+    //    }
+    //
+    //    public Class<?> getGetterType(String name) {
+    //        return null;
+    //    }
 
-    public Class<?> getSetterType(String name) {
-        return null;
-    }
+    //    public boolean hasSetter(String name) {
+    //        return false;
+    //    }
 
-    public Class<?> getGetterType(String name) {
-        return null;
-    }
+//    public boolean hasGetter(String name) {
+//        return false;
+//    }
 
-    public boolean hasSetter(String name) {
-        return false;
-    }
+//    public boolean isCollection() {
+//        return false;
+//    }
 
-    public boolean hasGetter(String name) {
-        return false;
-    }
-
-    public boolean isCollection() {
-        return false;
-    }
-
-    public void add(Object element) {
-        throw new UnsupportedOperationException();
-    }
-
-    public <E> void addAll(List<E> list) {
-        throw new UnsupportedOperationException();
-    }
+//    public void add(Object element) {
+//        throw new UnsupportedOperationException();
+//    }
+//
+//    public <E> void addAll(List<E> list) {
+//        throw new UnsupportedOperationException();
+//    }
 
 }

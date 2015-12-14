@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//dexcoder.com//DTD Mapper 2.0//EN"
+        "http://www.dexcoder.com/dtd/batis-mapper.dtd">
 <mapper namespace="User">
 
     <sql id="columns">
@@ -13,11 +13,6 @@
         <include refid="columns"/>
         from user
 
-        <where>
-            <if test="user[1] != null">
-                login_name=#{user[1].loginName}
-            </if>
-        </where>
     </select>
 
 
@@ -27,24 +22,18 @@
         from user
 
         <where>
-            <if test="user.loginName != null">
-                login_name = #{user.loginName}
+            <if test="user[0] != null">
+                login_name=#{user[0].loginName}
             </if>
-            <if test="user.userId > 10">
-                and userId = #{user.userId}
-            </if>
-
-            <if test="list != null">
-                and login_name in
-                <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
-                    #{item}
-                </foreach>
-            </if>
-
         </where>
-
 
     </select>
 
+    <select id="getUser3">
+        select
+        <include refid="columns"/>
+        from user
+
+    </select>
 
 </mapper>

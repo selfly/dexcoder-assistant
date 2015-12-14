@@ -3,8 +3,8 @@ package com.dexcoder.jdbc.batis.wrapper;
 import java.util.List;
 import java.util.Map;
 
-import com.dexcoder.jdbc.batis.reflection.MetaObject;
 import com.dexcoder.jdbc.batis.build.PropertyTokenizer;
+import com.dexcoder.jdbc.batis.reflection.MetaObject;
 import com.dexcoder.jdbc.exceptions.JdbcAssistantException;
 
 /**
@@ -12,7 +12,6 @@ import com.dexcoder.jdbc.exceptions.JdbcAssistantException;
  */
 public abstract class BaseWrapper implements ObjectWrapper {
 
-    protected static final Object[] NO_ARGUMENTS = new Object[0];
     protected MetaObject metaObject;
 
     protected BaseWrapper(MetaObject metaObject) {

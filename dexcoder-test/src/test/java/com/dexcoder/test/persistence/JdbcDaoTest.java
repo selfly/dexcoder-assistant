@@ -51,17 +51,15 @@ public class JdbcDaoTest extends BaseTest {
 
     @Test
     public void insert() {
-        for (int i = 0; i < 100; i++) {
-            User user = new User();
-            user.setLoginName("selfly_a" + i);
-            user.setPassword("123456");
-            user.setEmail("javaer@live.com");
-            user.setUserAge(18);
-            user.setUserType("1");
-            user.setGmtCreate(new Date());
-            Long id = jdbcDao.insert(user);
-            System.out.println("insert:" + id);
-        }
+        User user = new User();
+        user.setLoginName("selfly_a");
+        user.setPassword("123456");
+        user.setEmail("javaer@live.com");
+        user.setUserAge(18);
+        user.setUserType("1");
+        user.setGmtCreate(new Date());
+        Long id = jdbcDao.insert(user);
+        System.out.println("insert:" + id);
 
     }
 
@@ -287,9 +285,19 @@ public class JdbcDaoTest extends BaseTest {
 
     @Test
     public void testBatisSql() {
+        List<Map<String, Object>> mapList = jdbcDao.queryForSql("User.getUser");
+        for (Map<String, Object> map : mapList) {
+            System.out.println(map.get("user_id"));
+            System.out.println(map.get("login_name"));
+        }
+    }
+
+    @Test
+    public void testBatisSql2() {
         User user = new User();
         user.setLoginName("selfly_a93");
-        List<Map<String, Object>> mapList = jdbcDao.queryForSql("User.getUser", "user", new Object[] { user, user });
+        List<Map<String, Object>> mapList = jdbcDao.queryForSql("User.getUser2", "user", new Object[] { user,
+                "selfly_a93" });
         for (Map<String, Object> map : mapList) {
             System.out.println(map.get("user_id"));
             System.out.println(map.get("login_name"));
