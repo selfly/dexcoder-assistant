@@ -2,9 +2,13 @@
 
 最近更新：
 
-版本：v2.0.0-beta1
+版本：v2.0.0-beta1 更新时间：2015-12-15
 
+本版本进行了彻底的重构，并且api做了一些细微的改变，具体可以看使用说明对比和原来的区别。
 
+需要旧版请看这里：[通用dao v1.2.4](https://github.com/selfly/dexcoder-assistant/tree/v1.2.4)
+
+[详细更新日志](update_log.md)
 
 ##核心组件dexcoder-dal使用说明
 
