@@ -1,4 +1,4 @@
-package com.dexcoder.test.persistence;//package com.dexcoder.jdbc.test.persistence;
+package com.dexcoder.test.persistence;//package com.dexcoder.dal.test.persistence;
 //
 //import java.util.Map;
 //
@@ -7,11 +7,11 @@ package com.dexcoder.test.persistence;//package com.dexcoder.jdbc.test.persisten
 //import com.dexcoder.assistant.model.Chapter;
 //import com.dexcoder.assistant.utils.ArrUtils;
 //import com.dexcoder.assistant.utils.NameUtils;
-//import com.dexcoder.jdbc.build.AutoField;
-//import com.dexcoder.jdbc.handler.NameHandler;
-//import com.dexcoder.jdbc.test.model.Book;
-//import com.dexcoder.jdbc.utils.ArrUtils;
-//import com.dexcoder.jdbc.utils.NameUtils;
+//import com.dexcoder.dal.build.AutoField;
+//import com.dexcoder.dal.handler.NameHandler;
+//import com.dexcoder.dal.test.model.Book;
+//import com.dexcoder.dal.utils.ArrUtils;
+//import com.dexcoder.dal.utils.NameUtils;
 //
 ///**
 // * 默认名称处理handler

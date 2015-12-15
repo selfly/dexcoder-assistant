@@ -2,9 +2,9 @@ package com.dexcoder.test.persistence;
 
 import org.junit.Test;
 
-import com.dexcoder.jdbc.BoundSql;
-import com.dexcoder.jdbc.build.Criteria;
-import com.dexcoder.jdbc.handler.DefaultNameHandler;
+import com.dexcoder.dal.BoundSql;
+import com.dexcoder.dal.build.Criteria;
+import com.dexcoder.dal.handler.DefaultNameHandler;
 import com.dexcoder.test.model.User;
 
 /**

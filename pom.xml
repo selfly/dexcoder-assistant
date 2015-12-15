@@ -9,10 +9,10 @@
     <packaging>pom</packaging>
     <version>1.2.3</version>
     <modules>
-        <module>dexcoder-jdbc</module>
-        <module>dexcoder-jdbc-spring</module>
+        <module>dexcoder-dal</module>
+        <module>dexcoder-dal-spring</module>
         <module>dexcoder-commons</module>
-        <module>dexcoder-jdbc-batis</module>
+        <module>dexcoder-dal-batis</module>
         <module>dexcoder-test</module>
     </modules>
 
@@ -83,10 +83,10 @@
                 <version>${slf4j-api.version}</version>
             </dependency>
             <!--<dependency>-->
-                <!--<groupId>org.slf4j</groupId>-->
-                <!--<artifactId>slf4j-log4j12</artifactId>-->
-                <!--<version>${slf4j-log4j12.version}</version>-->
-                <!--<scope>${jar.scope}</scope>-->
+            <!--<groupId>org.slf4j</groupId>-->
+            <!--<artifactId>slf4j-log4j12</artifactId>-->
+            <!--<version>${slf4j-log4j12.version}</version>-->
+            <!--<scope>${jar.scope}</scope>-->
             <!--</dependency>-->
             <!--<dependency>-->
             <!--<groupId>commons-lang</groupId>-->
@@ -147,10 +147,10 @@
                 <version>${jaxen.version}</version>
             </dependency>
             <!--<dependency>-->
-                <!--<groupId>dom4j</groupId>-->
-                <!--<artifactId>dom4j</artifactId>-->
-                <!--<version>${dom4j.version}</version>-->
-                <!--<scope>${jar.scope}</scope>-->
+            <!--<groupId>dom4j</groupId>-->
+            <!--<artifactId>dom4j</artifactId>-->
+            <!--<version>${dom4j.version}</version>-->
+            <!--<scope>${jar.scope}</scope>-->
             <!--</dependency>-->
             <dependency>
                 <groupId>ognl</groupId>

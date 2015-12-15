@@ -23,11 +23,11 @@
 
     <task:annotation-driven/>
 
-    <!--<bean id="dynamicDataSource" class="com.dexcoder.jdbc.spring.datasource.DynamicDataSource">-->
+    <!--<bean id="dynamicDataSource" class="com.dexcoder.dalspring.datasource.DynamicDataSource">-->
     <!--<property name="dsConfigFile" value="dynamic-ds.xml"/>-->
     <!--</bean>-->
 
-    <!--<bean id="dynamicDsInterceptor" class="com.dexcoder.jdbc.spring.datasource.DynamicDsInterceptor"></bean>-->
+    <!--<bean id="dynamicDsInterceptor" class="com.dexcoder.dalspring.datasource.DynamicDsInterceptor"></bean>-->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
           destroy-method="close">
         <property name="driverClassName">
@@ -57,7 +57,7 @@
     </bean>
 
     <!-- 事务管理器配置,单数据源事务 -->
-    <!--<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">-->
+    <!--<bean id="transactionManager" class="org.springframework.dal.datasource.DataSourceTransactionManager">-->
     <!--<property name="dataSource" ref="dataSource"/>-->
     <!--</bean>-->
 
@@ -89,13 +89,13 @@
         </property>
     </bean>
 
-    <bean id="jdbcDao" class="com.dexcoder.jdbc.spring.JdbcDaoImpl">
+    <bean id="jdbcDao" class="com.dexcoder.dal.spring.JdbcDaoImpl">
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
         <property name="sqlFactory" ref="sqlFactory"/>
     </bean>
-    <bean id="sqlFactory" class="com.dexcoder.jdbc.batis.SqlFactoryBean">
+    <bean id="sqlFactory" class="com.dexcoder.dal.batis.SqlFactoryBean">
         <property name="sqlLocation" value="user-sql.xml"/>
     </bean>
-    <bean id="pageControl" class="com.dexcoder.jdbc.spring.page.PageControl"></bean>
+    <bean id="pageControl" class="com.dexcoder.dal.spring.page.PageControl"></bean>
 
 </beans>

@@ -7,7 +7,7 @@
 //import org.junit.Test;
 //import org.springframework.beans.factory.annotation.Autowired;
 //
-//import com.dexcoder.jdbc.JdbcDao;
+//import com.dexcoder.dal.JdbcDao;
 //import com.dexcoder.test.BaseTest;
 //import com.dexcoder.test.transaction.JdbcDaoTransactionService;
 //

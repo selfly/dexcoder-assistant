@@ -1,4 +1,4 @@
-package com.dexcoder.test.model;//package com.dexcoder.jdbc.test.model;
+package com.dexcoder.test.model;//package com.dexcoder.dal.test.model;
 
 import java.util.Date;
 

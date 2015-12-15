@@ -10,10 +10,10 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.dexcoder.commons.pager.Pager;
-import com.dexcoder.jdbc.JdbcDao;
-import com.dexcoder.jdbc.build.Criteria;
-import com.dexcoder.jdbc.spring.datasource.DynamicDataSource;
-import com.dexcoder.jdbc.spring.page.PageControl;
+import com.dexcoder.dal.JdbcDao;
+import com.dexcoder.dal.build.Criteria;
+import com.dexcoder.dal.spring.datasource.DynamicDataSource;
+import com.dexcoder.dal.spring.page.PageControl;
 import com.dexcoder.test.BaseTest;
 import com.dexcoder.test.model.User;
 
@@ -415,9 +415,9 @@ public class JdbcDaoTest extends BaseTest {
     //        map.put("default", "true");
     //        map.put("weight", "10");
     //        map.put("mode", "rw");
-    //        map.put("driverClassName", "com.mysql.jdbc.Driver");
+    //        map.put("driverClassName", "com.mysql.dal.Driver");
     //        map.put("url",
-    //                "jdbc:mysql://localhost:3306/db1?useUnicode=true&amp;characterEncoding=utf-8");
+    //                "dal:mysql://localhost:3306/db1?useUnicode=true&amp;characterEncoding=utf-8");
     //        map.put("username", "root");
     //        map.put("password", "");
     //        dsList.add(map);

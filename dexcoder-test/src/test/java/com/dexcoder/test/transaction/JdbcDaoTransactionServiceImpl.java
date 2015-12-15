@@ -6,9 +6,9 @@
 //import org.slf4j.LoggerFactory;
 //import org.springframework.beans.factory.annotation.Autowired;
 //
-//import com.dexcoder.jdbc.JdbcDao;
-//import com.dexcoder.jdbc.test.model.Book;
-//import com.dexcoder.jdbc.test.model.Chapter;
+//import com.dexcoder.dal.JdbcDao;
+//import com.dexcoder.dal.test.model.Book;
+//import com.dexcoder.dal.test.model.Chapter;
 //
 ///**
 // * Created by liyd on 2015-11-6.

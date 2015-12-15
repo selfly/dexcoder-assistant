@@ -25,7 +25,7 @@
 
 要在项目中使用通用dao十分简单，只需要在spring的配置文件中声明如下bean：
 
-    <bean id="jdbcDao" class="com.dexcoder.jdbc.spring.JdbcDaoImpl">
+    <bean id="jdbcDao" class="com.dexcoder.dal.spring.JdbcDaoImpl">
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
     <!--需要分页时声明-->
@@ -248,7 +248,7 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
 
 JdbcDao在声明时可以根据需要注入其它几个参数：
 
-    <bean id="jdbcDao" class="com.dexcoder.jdbc.spring.JdbcDaoImpl">
+    <bean id="jdbcDao" class="com.dexcoder.dal.spring.JdbcDaoImpl">
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
         <property name="nameHandler" ref="..."/>
         <property name="rowMapperClass" value="..."/>

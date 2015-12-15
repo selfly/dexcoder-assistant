@@ -19,17 +19,17 @@
         </dependency>
         <dependency>
             <groupId>com.dexcoder</groupId>
-            <artifactId>dexcoder-jdbc</artifactId>
+            <artifactId>dexcoder-dal</artifactId>
             <version>1.2.3</version>
         </dependency>
         <dependency>
             <groupId>com.dexcoder</groupId>
-            <artifactId>dexcoder-jdbc-spring</artifactId>
+            <artifactId>dexcoder-dal-spring</artifactId>
             <version>1.2.3</version>
         </dependency>
         <dependency>
             <groupId>com.dexcoder</groupId>
-            <artifactId>dexcoder-jdbc-batis</artifactId>
+            <artifactId>dexcoder-dal-batis</artifactId>
             <version>1.2.3</version>
         </dependency>
         <dependency>
