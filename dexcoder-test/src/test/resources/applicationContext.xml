@@ -93,7 +93,7 @@
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
         <property name="sqlFactory" ref="sqlFactory"/>
     </bean>
-    <bean id="sqlFactory" class="com.dexcoder.dal.batis.SqlFactoryBean">
+    <bean id="sqlFactory" class="com.dexcoder.dal.batis.BatisSqlFactoryBean">
         <property name="sqlLocation" value="user-sql.xml"/>
     </bean>
     <bean id="pageControl" class="com.dexcoder.dal.spring.page.PageControl"></bean>

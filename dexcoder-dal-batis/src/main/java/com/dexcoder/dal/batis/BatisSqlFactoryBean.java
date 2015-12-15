@@ -14,7 +14,7 @@ import com.dexcoder.dal.exceptions.JdbcAssistantException;
 /**
  * Created by liyd on 2015-11-24.
  */
-public class SqlFactoryBean implements FactoryBean<BatisSqlFactory>, InitializingBean {
+public class BatisSqlFactoryBean implements FactoryBean<BatisSqlFactory>, InitializingBean {
 
     private String          sqlLocation;
 
