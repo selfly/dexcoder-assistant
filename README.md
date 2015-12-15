@@ -357,7 +357,7 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
 
 #### mybatis方式执行
 
-同样注入`sqlFactory`，这里把上面的`SimpleSqlFactory`替换成`SimpleSqlFactory`：
+同样注入`sqlFactory`，这里把上面的`SimpleSqlFactory`替换成`BatisSqlFactoryBean`：
 
     <bean id="jdbcDao" class="com.dexcoder.dal.spring.JdbcDaoImpl">
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
