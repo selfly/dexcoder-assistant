@@ -27,10 +27,6 @@ public class NoneNameHandler implements NameHandler {
         return fieldName;
     }
 
-    public String getFieldName(Class<?> entityClass, String columnName) {
-        return columnName;
-    }
-
     public String getPkNativeValue(Class<?> entityClass, String dialect) {
         return null;
     }

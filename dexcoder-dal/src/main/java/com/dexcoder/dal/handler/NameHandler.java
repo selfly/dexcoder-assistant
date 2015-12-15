@@ -48,15 +48,6 @@ public interface NameHandler {
     String getColumnName(Class<?> entityClass, String fieldName);
 
     /**
-     * 根据列名获取属性名
-     *
-     * @param entityClass the entity class
-     * @param columnName the field name
-     * @return column name
-     */
-    String getFieldName(Class<?> entityClass, String columnName);
-
-    /**
      * 根据实体名获取主键序列名 oracle才有用 自增类主键数据库直接返回null即可
      *
      * @param entityClass the entity class

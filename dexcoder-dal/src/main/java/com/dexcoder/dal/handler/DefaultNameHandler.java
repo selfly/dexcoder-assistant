@@ -50,14 +50,6 @@ public class DefaultNameHandler implements NameHandler {
         return NameUtils.getUnderlineName(fieldName);
     }
 
-    public String getFieldName(Class<?> entityClass, String columnName) {
-        String pkColumnName = this.getPkColumnName(entityClass);
-        if (StrUtils.equalsIgnoreCase(pkColumnName, columnName)) {
-            return this.getPkFieldName(entityClass);
-        }
-        return NameUtils.getCamelName(columnName);
-    }
-
     public String getPkNativeValue(Class<?> entityClass, String dialect) {
         if (StrUtils.equalsIgnoreCase(dialect, "oracle")) {
             //获取序列就可以了，默认seq_加上表名为序列名
