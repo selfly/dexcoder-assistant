@@ -10,10 +10,10 @@ import com.dexcoder.dal.batis.reflection.MetaObject;
  */
 public class CollectionWrapper implements ObjectWrapper {
 
-    private Collection<Object> object;
+//    private Collection<Object> object;
 
     public CollectionWrapper(MetaObject metaObject, Collection<Object> object) {
-        this.object = object;
+//        this.object = object;
     }
 
     public Object get(PropertyTokenizer prop) {
@@ -23,7 +23,7 @@ public class CollectionWrapper implements ObjectWrapper {
     public void set(PropertyTokenizer prop, Object value) {
         throw new UnsupportedOperationException();
     }
-
+    
 //    public boolean hasGetter(String name) {
 //        throw new UnsupportedOperationException();
 //    }

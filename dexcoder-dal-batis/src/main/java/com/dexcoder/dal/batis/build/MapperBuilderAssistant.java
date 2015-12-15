@@ -57,4 +57,8 @@ public class MapperBuilderAssistant extends BaseBuilder {
         configuration.addMappedStatement(statement);
         return statement;
     }
+    
+    public String getResource(){
+    	return resource;
+    }
 }

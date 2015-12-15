@@ -15,7 +15,7 @@ public class TrimSqlNode implements SqlNode {
     private String suffix;
     private List<String> prefixesToOverride;
     private List<String> suffixesToOverride;
-    private Configuration configuration;
+//    private Configuration configuration;
 
     public TrimSqlNode(Configuration configuration, SqlNode contents, String prefix, String prefixesToOverride, String suffix, String suffixesToOverride) {
         this(configuration, contents, prefix, parseOverrides(prefixesToOverride), suffix, parseOverrides(suffixesToOverride));
@@ -27,7 +27,7 @@ public class TrimSqlNode implements SqlNode {
         this.prefixesToOverride = prefixesToOverride;
         this.suffix = suffix;
         this.suffixesToOverride = suffixesToOverride;
-        this.configuration = configuration;
+//        this.configuration = configuration;
     }
 
     public boolean apply(DynamicContext context) {

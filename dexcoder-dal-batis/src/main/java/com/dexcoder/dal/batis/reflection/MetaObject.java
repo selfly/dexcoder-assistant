@@ -18,7 +18,8 @@ public class MetaObject {
     private Object        originalObject;
     private ObjectWrapper objectWrapper;
 
-    private MetaObject(Object object) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	private MetaObject(Object object) {
         this.originalObject = object;
 
         if (object instanceof ObjectWrapper) {

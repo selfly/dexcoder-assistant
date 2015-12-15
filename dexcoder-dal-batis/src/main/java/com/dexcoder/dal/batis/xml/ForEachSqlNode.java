@@ -22,7 +22,7 @@ public class ForEachSqlNode implements SqlNode {
     private String              separator;
     private String              item;
     private String              index;
-    private Configuration       configuration;
+//    private Configuration       configuration;
 
     public ForEachSqlNode(Configuration configuration, SqlNode contents, String collectionExpression, String index,
                           String item, String open, String close, String separator) {
@@ -34,7 +34,7 @@ public class ForEachSqlNode implements SqlNode {
         this.separator = separator;
         this.index = index;
         this.item = item;
-        this.configuration = configuration;
+//        this.configuration = configuration;
     }
 
     public boolean apply(DynamicContext context) {

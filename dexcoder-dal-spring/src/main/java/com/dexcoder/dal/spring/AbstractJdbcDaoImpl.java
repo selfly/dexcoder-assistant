@@ -102,7 +102,8 @@ public abstract class AbstractJdbcDaoImpl {
      * @param clazz
      * @return
      */
-    protected <T> RowMapper<T> getRowMapper(Class<T> clazz) {
+    @SuppressWarnings("unchecked")
+	protected <T> RowMapper<T> getRowMapper(Class<T> clazz) {
 
         if (StrUtils.isBlank(rowMapperClass)) {
             return BeanPropertyRowMapper.newInstance(clazz);

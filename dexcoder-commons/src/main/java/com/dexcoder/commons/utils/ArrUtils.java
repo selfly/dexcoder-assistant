@@ -17,7 +17,8 @@ public class ArrUtils {
     /**
      * An empty immutable <code>Class</code> array.
      */
-    public static final Class[] EMPTY_CLASS_ARRAY = new Class[0];
+    @SuppressWarnings("rawtypes")
+	public static final Class[] EMPTY_CLASS_ARRAY = new Class[0];
     /**
      * An empty immutable <code>String</code> array.
      */
@@ -133,15 +134,16 @@ public class ArrUtils {
      * @throws IllegalArgumentException if the array contains elements other
      *                                  than {@link Map.Entry} and an Array
      */
-    public static Map toMap(Object[] array) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public static Map<Object,Object> toMap(Object[] array) {
         if (array == null) {
             return null;
         }
-        final Map map = new HashMap((int) (array.length * 1.5));
+        final Map<Object, Object> map = new HashMap<Object, Object>((int) (array.length * 1.5));
         for (int i = 0; i < array.length; i++) {
             Object object = array[i];
             if (object instanceof Map.Entry) {
-                Map.Entry entry = (Map.Entry) object;
+                Map.Entry<Object,Object> entry = (Map.Entry) object;
                 map.put(entry.getKey(), entry.getValue());
             } else if (object instanceof Object[]) {
                 Object[] entry = (Object[]) object;
@@ -351,7 +353,7 @@ public class ArrUtils {
             endIndexExclusive = array.length;
         }
         int newSize = endIndexExclusive - startIndexInclusive;
-        Class type = array.getClass().getComponentType();
+        Class<?> type = array.getClass().getComponentType();
         if (newSize <= 0) {
             return (Object[]) Array.newInstance(type, 0);
         }
@@ -3152,7 +3154,7 @@ public class ArrUtils {
      * @since 2.1
      */
     public static Object[] add(Object[] array, Object element) {
-        Class type = array != null ? array.getClass() : (element != null ? element.getClass() : Object.class);
+        Class<?> type = array != null ? array.getClass() : (element != null ? element.getClass() : Object.class);
         Object[] newArray = (Object[]) copyArrayGrow1(array, type);
         newArray[newArray.length - 1] = element;
         return newArray;
@@ -3383,7 +3385,7 @@ public class ArrUtils {
      *                              size 1 array of this type.
      * @return A new copy of the array of size 1 greater than the input.
      */
-    private static Object copyArrayGrow1(Object array, Class newArrayComponentType) {
+    private static Object copyArrayGrow1(Object array, Class<?> newArrayComponentType) {
         if (array != null) {
             int arrayLength = Array.getLength(array);
             Object newArray = Array.newInstance(array.getClass().getComponentType(), arrayLength + 1);
@@ -3422,7 +3424,7 @@ public class ArrUtils {
      *                                   (index < 0 || index > array.length).
      */
     public static Object[] add(Object[] array, int index, Object element) {
-        Class clss = null;
+        Class<?> clss = null;
         if (array != null) {
             clss = array.getClass().getComponentType();
         } else if (element != null) {
@@ -3662,7 +3664,7 @@ public class ArrUtils {
      * @param clss    the type of the element being added
      * @return A new array containing the existing elements and the new element
      */
-    private static Object add(Object array, int index, Object element, Class clss) {
+    private static Object add(Object array, int index, Object element, Class<?> clss) {
         if (array == null) {
             if (index != 0) {
                 throw new IndexOutOfBoundsException("Index: " + index + ", Length: 0");

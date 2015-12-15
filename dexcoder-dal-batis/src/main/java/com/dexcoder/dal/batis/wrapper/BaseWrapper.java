@@ -26,7 +26,8 @@ public abstract class BaseWrapper implements ObjectWrapper {
         }
     }
 
-    protected Object getCollectionValue(PropertyTokenizer prop, Object collection) {
+    @SuppressWarnings("rawtypes")
+	protected Object getCollectionValue(PropertyTokenizer prop, Object collection) {
         if (collection instanceof Map) {
             return ((Map) collection).get(prop.getIndex());
         } else {
@@ -58,7 +59,8 @@ public abstract class BaseWrapper implements ObjectWrapper {
         }
     }
 
-    protected void setCollectionValue(PropertyTokenizer prop, Object collection, Object value) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	protected void setCollectionValue(PropertyTokenizer prop, Object collection, Object value) {
         if (collection instanceof Map) {
             ((Map) collection).put(prop.getIndex(), value);
         } else {

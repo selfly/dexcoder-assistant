@@ -24,7 +24,8 @@ public class ExpressionEvaluator {
         return value != null;
     }
 
-    public Iterable<?> evaluateIterable(String expression, Object parameterObject) {
+    @SuppressWarnings("rawtypes")
+	public Iterable<?> evaluateIterable(String expression, Object parameterObject) {
         Object value = OgnlCache.getValue(expression, parameterObject);
         if (value == null) {
             throw new JdbcAssistantException("The expression '" + expression + "' evaluated to a null value.");

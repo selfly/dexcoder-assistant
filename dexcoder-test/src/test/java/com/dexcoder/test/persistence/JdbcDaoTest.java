@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.dexcoder.commons.pager.Pager;
 import com.dexcoder.dal.JdbcDao;
 import com.dexcoder.dal.build.Criteria;
-import com.dexcoder.dal.spring.datasource.DynamicDataSource;
 import com.dexcoder.dal.spring.page.PageControl;
 import com.dexcoder.test.BaseTest;
 import com.dexcoder.test.model.User;
@@ -26,7 +25,7 @@ public class JdbcDaoTest extends BaseTest {
     private JdbcDao           jdbcDao;
 
     //    @Autowired
-    private DynamicDataSource dynamicDataSource;
+//    private DynamicDataSource dynamicDataSource;
 
     @BeforeClass
     public static void before() {
@@ -260,6 +259,7 @@ public class JdbcDaoTest extends BaseTest {
     public void queryForObject() {
         Criteria criteria = Criteria.select(User.class).addSelectFunc("max([userId])");
         Long userId = jdbcDao.queryForObject(criteria);
+        System.out.println(userId);
     }
 
     @Test
