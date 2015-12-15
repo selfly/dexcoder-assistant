@@ -8,7 +8,7 @@
 
 需要旧版请看这里：[通用dao v1.2.4](https://github.com/selfly/dexcoder-assistant/tree/v1.2.4)
 
-[详细更新日志](update_log.md)
+[详细更新日志](md/update_log.md)
 
 ##核心组件dexcoder-dal使用说明
 
