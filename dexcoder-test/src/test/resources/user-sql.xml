@@ -12,6 +12,23 @@
         select
         <include refid="columns"/>
         from user
+        <where>
+            <if test="params[0] != null">
+                user_type = #{params[0].userType}
+            </if>
+            <if test="params[1] != null">
+                and login_name in
+                <foreach collection="params[1]" index="index" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="getUser3">
+        select
+        <include refid="columns"/>
+        from user
 
     </select>
 
