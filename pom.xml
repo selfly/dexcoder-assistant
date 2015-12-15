@@ -7,7 +7,7 @@
     <groupId>com.dexcoder</groupId>
     <artifactId>dexcoder-assistant</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.3</version>
+    <version>v2.0.0-beta1</version>
     <modules>
         <module>dexcoder-dal</module>
         <module>dexcoder-dal-spring</module>

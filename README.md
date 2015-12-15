@@ -1,5 +1,9 @@
 #Dexcoder快速开发辅助工具包
 
+最近更新：
+
+版本：v2.0.0-beta1
+
 
 
 ##核心组件dexcoder-dal使用说明
@@ -411,6 +415,18 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
 除了传入的参数为Object数组并使用`item[0]`这种方式访问相应的元素外，其它的和mybatis可以说是一样的，mybatis支持的动态sql方式这里也可以支持,因为他本身就是来源于mybatis。
 
 另外返回结果中map的key做了`LOGIN_NAME`到骆驼命名法`loginName`的转换。
+
+###项目结构说明
+
+dexcoder-commons 一些通用的工具类，里面的maven依赖可以按需添加。
+
+dexcoder-dal 通用dal的接口，这里对于数据库访问没有具体的实现。具体的数据库操作取决于选择的实现方式(目前只有Spring JdbcTemplate)。
+
+dexcoder-dal-spring	Spring JdbcTemplate的dal实现。
+
+dexcoder-dal-batis	mybatis方式执行sql实现。
+
+dexcoder-test 测试工程
 
 ###一些说明
 

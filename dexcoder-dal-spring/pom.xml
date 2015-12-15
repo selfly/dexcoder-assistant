@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dexcoder-assistant</artifactId>
         <groupId>com.dexcoder</groupId>
-        <version>1.2.3</version>
+        <version>v2.0.0-beta1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -14,12 +14,12 @@
         <dependency>
             <groupId>com.dexcoder</groupId>
             <artifactId>dexcoder-commons</artifactId>
-            <version>1.2.3</version>
+            <version>v2.0.0-beta1</version>
         </dependency>
         <dependency>
             <groupId>com.dexcoder</groupId>
             <artifactId>dexcoder-dal</artifactId>
-            <version>1.2.3</version>
+            <version>v2.0.0-beta1</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
