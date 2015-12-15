@@ -240,9 +240,18 @@ public class JdbcDaoTest extends BaseTest {
     @Test
     public void queryForObject() {
         Criteria criteria = Criteria.select(User.class).addSelectFunc("max([userId])");
-        Long userId = (Long) jdbcDao.queryForObject(criteria);
+        Long userId = jdbcDao.queryForObject(criteria);
         Assert.assertNotNull(userId);
         System.out.println(userId);
+    }
+
+    @Test
+    public void queryForList() {
+        Criteria criteria = Criteria.select(User.class).addSelectFunc("distinct [loginName]");
+        List<Map<String, Object>> mapList = jdbcDao.queryForList(criteria);
+        for (Map<String, Object> map : mapList) {
+            System.out.println(map.get("LOGIN_NAME"));
+        }
     }
 
     @Test

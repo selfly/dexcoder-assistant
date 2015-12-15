@@ -47,8 +47,15 @@ public class DefaultNameHandler implements NameHandler {
         if (StrUtils.equals(pkFieldName, fieldName)) {
             return this.getPkColumnName(entityClass);
         }
-        String underlineName = NameUtils.getUnderlineName(fieldName);
-        return underlineName;
+        return NameUtils.getUnderlineName(fieldName);
+    }
+
+    public String getFieldName(Class<?> entityClass, String columnName) {
+        String pkColumnName = this.getPkColumnName(entityClass);
+        if (StrUtils.equalsIgnoreCase(pkColumnName, columnName)) {
+            return this.getPkFieldName(entityClass);
+        }
+        return NameUtils.getCamelName(columnName);
     }
 
     public String getPkNativeValue(Class<?> entityClass, String dialect) {

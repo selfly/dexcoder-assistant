@@ -1,25 +1,15 @@
 package com.dexcoder.dal.spring;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.*;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.util.CollectionUtils;
 
-import com.dexcoder.commons.utils.ClassUtils;
 import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.dal.BoundSql;
 import com.dexcoder.dal.JdbcDao;
-import com.dexcoder.dal.SqlFactory;
 import com.dexcoder.dal.build.AutoField;
 import com.dexcoder.dal.build.Criteria;
-import com.dexcoder.dal.handler.DefaultNameHandler;
 import com.dexcoder.dal.handler.NameHandler;
 
 /**
@@ -28,54 +18,7 @@ import com.dexcoder.dal.handler.NameHandler;
  * Created by liyd on 3/3/15.
  */
 @SuppressWarnings("unchecked")
-public class JdbcDaoImpl implements JdbcDao {
-
-    /**
-     * spring jdbcTemplate 对象
-     */
-    protected JdbcOperations jdbcTemplate;
-
-    /**
-     * 名称处理器，为空按默认执行
-     */
-    protected NameHandler    nameHandler;
-
-    /**
-     * rowMapper，为空按默认执行
-     */
-    protected String         rowMapperClass;
-
-    /**
-     * 自定义sql处理
-     */
-    protected SqlFactory     sqlFactory;
-
-    /**
-     * 数据库方言
-     */
-    protected String         dialect;
-
-    /**
-     * 插入数据
-     *
-     * @param boundSql the bound build
-     * @return long long
-     */
-    private Long insert(final BoundSql boundSql, Class<?> clazz) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(new PreparedStatementCreator() {
-            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                PreparedStatement ps = con.prepareStatement(boundSql.getSql(), new String[] { "ID" });
-                int index = 0;
-                for (Object param : boundSql.getParameters()) {
-                    index++;
-                    ps.setObject(index, param);
-                }
-                return ps;
-            }
-        }, keyHolder);
-        return keyHolder.getKey().longValue();
-    }
+public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
 
     public Long insert(Object entity) {
         NameHandler handler = this.getNameHandler();
@@ -227,34 +170,39 @@ public class JdbcDaoImpl implements JdbcDao {
         return (T) list.iterator().next();
     }
 
-    public Object queryForObject(Criteria criteria) {
+    public <T> T queryForObject(Criteria criteria) {
         final BoundSql boundSql = criteria.build(true, getNameHandler());
-        return jdbcTemplate.queryForObject(boundSql.getSql(), boundSql.getParameters().toArray(), Object.class);
+        return (T) jdbcTemplate.queryForObject(boundSql.getSql(), boundSql.getParameters().toArray(), Object.class);
+    }
+
+    public List<Map<String, Object>> queryForList(Criteria criteria) {
+        BoundSql boundSql = criteria.build(true, getNameHandler());
+        List<Map<String, Object>> mapList = jdbcTemplate.queryForList(boundSql.getSql(), boundSql.getParameters()
+            .toArray());
+        return convertMapKeyToCamel(mapList);
     }
 
     public List<Map<String, Object>> queryForSql(String refSql) {
-        BoundSql boundSql = this.sqlFactory.getBoundSql(refSql, null, null);
-        return jdbcTemplate.queryForList(boundSql.getSql());
+        return this.queryForSql(refSql, null, null);
     }
 
     public List<Map<String, Object>> queryForSql(String refSql, Object[] params) {
-        BoundSql boundSql = this.sqlFactory.getBoundSql(refSql, null, params);
-        return jdbcTemplate.queryForList(boundSql.getSql(), boundSql.getParameters().toArray());
+        return this.queryForSql(refSql, null, params);
     }
 
     public List<Map<String, Object>> queryForSql(String refSql, String expectParamKey, Object[] params) {
         BoundSql boundSql = this.sqlFactory.getBoundSql(refSql, expectParamKey, params);
-        return jdbcTemplate.queryForList(boundSql.getSql(), boundSql.getParameters().toArray());
+        List<Map<String, Object>> mapList = jdbcTemplate.queryForList(boundSql.getSql(), boundSql.getParameters()
+            .toArray());
+        return convertMapKeyToCamel(mapList);
     }
 
     public int updateForSql(String refSql) {
-        BoundSql boundSql = this.sqlFactory.getBoundSql(refSql, null, null);
-        return jdbcTemplate.update(boundSql.getSql());
+        return this.updateForSql(refSql, null, null);
     }
 
     public int updateForSql(String refSql, Object[] params) {
-        BoundSql boundSql = this.sqlFactory.getBoundSql(refSql, null, params);
-        return jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
+        return this.updateForSql(refSql, null, params);
     }
 
     public int updateForSql(String refSql, String expectParamKey, Object[] params) {
@@ -262,62 +210,4 @@ public class JdbcDaoImpl implements JdbcDao {
         return jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
-    /**
-     * 获取rowMapper对象
-     *
-     * @param clazz
-     * @return
-     */
-    protected <T> RowMapper<T> getRowMapper(Class<T> clazz) {
-
-        if (StrUtils.isBlank(rowMapperClass)) {
-            return BeanPropertyRowMapper.newInstance(clazz);
-        } else {
-            return (RowMapper<T>) ClassUtils.newInstance(rowMapperClass);
-        }
-    }
-
-    /**
-     * 获取名称处理器
-     *
-     * @return
-     */
-    protected NameHandler getNameHandler() {
-
-        if (this.nameHandler == null) {
-            this.nameHandler = new DefaultNameHandler();
-        }
-        return this.nameHandler;
-    }
-
-    public String getDialect() {
-        if (StrUtils.isBlank(dialect)) {
-            dialect = jdbcTemplate.execute(new ConnectionCallback<String>() {
-                public String doInConnection(Connection con) throws SQLException, DataAccessException {
-                    return con.getMetaData().getDatabaseProductName().toUpperCase();
-                }
-            });
-        }
-        return dialect;
-    }
-
-    public void setJdbcTemplate(JdbcOperations jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
-    public void setNameHandler(NameHandler nameHandler) {
-        this.nameHandler = nameHandler;
-    }
-
-    public void setRowMapperClass(String rowMapperClass) {
-        this.rowMapperClass = rowMapperClass;
-    }
-
-    public void setDialect(String dialect) {
-        this.dialect = dialect;
-    }
-
-    public void setSqlFactory(SqlFactory sqlFactory) {
-        this.sqlFactory = sqlFactory;
-    }
 }
