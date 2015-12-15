@@ -294,7 +294,7 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
 
     //count()
     Criteria criteria = Criteria.select(User.class).addSelectFunc("count(*)");
-    Long userId = jdbcDao.queryForObject(criteria);
+    Long count = jdbcDao.queryForObject(criteria);
 
     //distinct
     Criteria criteria = Criteria.select(User.class).addSelectFunc("distinct [loginName]");
