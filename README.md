@@ -92,8 +92,8 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
     }
 
 	public void insert2() {
-        Criteria criteria = Criteria.insert(User.class).set("loginName", "selfly_b").set("password", "12345678")
-            .set("email", "selflly@foxmail.com").set("userAge", 22).set("userType", "2").set("gmtCreate", new Date());
+        Criteria criteria = Criteria.insert(User.class).into("loginName", "selfly_b").into("password", "12345678")
+            .into("email", "selflly@foxmail.com").into("userAge", 22).into("userType", "2").into("gmtCreate", new Date());
         Long id = jdbcDao.insert(criteria);
         System.out.println("insert:" + id);
     }
@@ -113,9 +113,9 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
     }
 
 	public void save2() {
-        Criteria criteria = Criteria.insert(User.class).set("userId", -2L).set("loginName", "selfly-2")
-            .set("password", "12345678").set("email", "selflly@foxmail.com").set("userAge", 22).set("userType", "2")
-            .set("gmtCreate", new Date());
+        Criteria criteria = Criteria.insert(User.class).into("userId", -2L).into("loginName", "selfly-2")
+            .into("password", "12345678").into("email", "selflly@foxmail.com").into("userAge", 22).into("userType", "2")
+            .into("gmtCreate", new Date());
         jdbcDao.save(criteria);
     }
 
