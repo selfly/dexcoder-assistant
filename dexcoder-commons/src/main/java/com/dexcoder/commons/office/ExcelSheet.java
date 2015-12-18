@@ -47,6 +47,18 @@ public class ExcelSheet {
         this.rowTitles = rowTitles;
     }
 
+    public int getTotalRowsNum() {
+        return rows == null ? 0 : rows.size();
+    }
+
+    public ExcelRow getRow(int i) {
+        return rows == null ? null : rows.get(i);
+    }
+
+    public boolean hasRows() {
+        return (rows != null && !rows.isEmpty());
+    }
+
     public String getSheetName() {
         return sheetName;
     }

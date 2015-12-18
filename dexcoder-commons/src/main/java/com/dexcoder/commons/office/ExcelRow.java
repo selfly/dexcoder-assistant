@@ -20,6 +20,26 @@ public class ExcelRow {
         this.cells = cells;
     }
 
+    public int getTotalCellsNum() {
+        return cells == null ? 0 : cells.size();
+    }
+
+    public boolean hasCells() {
+        return (cells != null && !cells.isEmpty());
+    }
+
+    public ExcelCell getCell(int i) {
+        return cells == null ? null : cells.get(i);
+    }
+
+    public Object getCellValue(int i) {
+        return cells == null ? null : cells.get(i).getValue();
+    }
+
+    public String getCellStringValue(int i) {
+        return cells == null ? null : cells.get(i).getStringValue();
+    }
+
     @Override
     public String toString() {
 

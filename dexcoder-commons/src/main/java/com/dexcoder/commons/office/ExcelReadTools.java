@@ -122,10 +122,10 @@ public class ExcelReadTools {
      */
     private static ExcelRow readRow(Row row) {
 
+        ExcelRow excelRow = new ExcelRow();
         if (row == null) {
-            return null;
+            return excelRow;
         }
-
         int cellCount = row.getLastCellNum();
         List<ExcelCell> excelCells = new ArrayList<ExcelCell>(cellCount);
         for (int i = 0; i < cellCount; i++) {
@@ -136,7 +136,7 @@ public class ExcelReadTools {
 
             excelCells.add(excelCell);
         }
-        ExcelRow excelRow = new ExcelRow();
+
         excelRow.setCells(excelCells);
         return excelRow;
     }
@@ -149,8 +149,9 @@ public class ExcelReadTools {
      */
     private static ExcelCell readCell(Cell cell) {
 
+        ExcelCell excelCell = new ExcelCell();
         if (cell == null) {
-            return null;
+            return excelCell;
         }
         int type = cell.getCellType();
         Object value;
@@ -180,8 +181,6 @@ public class ExcelReadTools {
                 value = cell.getStringCellValue();
                 break;
         }
-
-        ExcelCell excelCell = new ExcelCell();
         excelCell.setValue(value);
         return excelCell;
     }
