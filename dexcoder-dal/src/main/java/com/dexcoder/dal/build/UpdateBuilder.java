@@ -44,12 +44,14 @@ public class UpdateBuilder extends AbstractSqlBuilder {
         }
 
         String tableName = nameHandler.getTableName(clazz, this.whereBuilder.getFields());
+        tableName = applyTableAlias(tableName);
 
         StringBuilder sql = new StringBuilder(COMMAND_OPEN);
         List<Object> params = new ArrayList<Object>();
         sql.append(tableName).append(" SET ");
         for (Map.Entry<String, AutoField> entry : this.autoFields.entrySet()) {
             String columnName = nameHandler.getColumnName(clazz, entry.getKey());
+            columnName = applyColumnAlias(columnName);
             AutoField autoField = entry.getValue();
             if (autoField.isNativeField()) {
                 String nativeFieldName = tokenParse(autoField.getName(), clazz, nameHandler);
@@ -63,7 +65,8 @@ public class UpdateBuilder extends AbstractSqlBuilder {
             }
         }
         sql.deleteCharAt(sql.length() - 1);
-        BoundSql boundSql = this.whereBuilder.build(clazz, entity, isIgnoreNull, nameHandler);
+        whereBuilder.setTableAlias(getTableAlias());
+        BoundSql boundSql = whereBuilder.build(clazz, entity, isIgnoreNull, nameHandler);
         sql.append(" ").append(boundSql.getSql());
         params.addAll(boundSql.getParameters());
         return new CriteriaBoundSql(sql.toString(), params);

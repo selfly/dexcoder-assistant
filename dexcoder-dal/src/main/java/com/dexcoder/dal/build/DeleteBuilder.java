@@ -10,7 +10,7 @@ public class DeleteBuilder extends AbstractSqlBuilder {
 
     protected static final String COMMAND_OPEN = "DELETE FROM ";
 
-    private SqlBuilder whereBuilder;
+    private SqlBuilder            whereBuilder;
 
     public DeleteBuilder() {
         whereBuilder = new WhereBuilder();
@@ -20,16 +20,18 @@ public class DeleteBuilder extends AbstractSqlBuilder {
         this.addCondition(fieldName, sqlOperator, fieldOperator, type, value);
     }
 
-    public void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value) {
+    public void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type,
+                             Object value) {
         whereBuilder.addCondition(fieldName, sqlOperator, fieldOperator, type, value);
     }
 
     public BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
         super.mergeEntityFields(entity, AutoFieldType.WHERE, nameHandler, isIgnoreNull);
+        whereBuilder.setTableAlias(getTableAlias());
         whereBuilder.getFields().putAll(this.getFields());
         String tableName = nameHandler.getTableName(clazz, whereBuilder.getFields());
         StringBuilder sb = new StringBuilder(COMMAND_OPEN);
-        sb.append(tableName).append(" ");
+        sb.append(applyTableAlias(tableName)).append(" ");
         BoundSql boundSql = whereBuilder.build(clazz, entity, isIgnoreNull, nameHandler);
         sb.append(boundSql.getSql());
         return new CriteriaBoundSql(sb.toString(), boundSql.getParameters());

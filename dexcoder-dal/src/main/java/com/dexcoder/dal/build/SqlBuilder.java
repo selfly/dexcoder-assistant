@@ -1,9 +1,9 @@
 package com.dexcoder.dal.build;
 
+import java.util.Map;
+
 import com.dexcoder.dal.BoundSql;
 import com.dexcoder.dal.handler.NameHandler;
-
-import java.util.Map;
 
 /**
  * Created by liyd on 2015-12-4.
@@ -23,6 +23,10 @@ public interface SqlBuilder {
 
     void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value);
 
+    void setTableAlias(String alias);
+
+    String getTableAlias();
+
     boolean hasFields();
 
     boolean hasField(String fieldName);
@@ -30,6 +34,5 @@ public interface SqlBuilder {
     Map<String, AutoField> getFields();
 
     BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler);
-
 
 }

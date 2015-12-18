@@ -26,10 +26,10 @@ public class OrderByBuilder extends AbstractSqlBuilder {
     public BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
         StringBuilder sb = new StringBuilder(COMMAND_OPEN);
         if (getFields().isEmpty()) {
-            sb.append(nameHandler.getPkColumnName(clazz)).append(" DESC");
+            sb.append(applyColumnAlias(nameHandler.getPkColumnName(clazz))).append(" DESC");
         } else {
             for (Map.Entry<String, AutoField> entry : getFields().entrySet()) {
-                String columnName = nameHandler.getColumnName(clazz, entry.getKey());
+                String columnName = applyColumnAlias(nameHandler.getColumnName(clazz, entry.getKey()));
                 sb.append(columnName).append(" ").append(entry.getValue().getFieldOperator()).append(",");
             }
             if (sb.length() > 10) {

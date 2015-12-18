@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 import com.dexcoder.commons.utils.ClassUtils;
+import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.dal.handler.*;
 
 /**
@@ -13,7 +14,7 @@ import com.dexcoder.dal.handler.*;
  */
 public abstract class AbstractSqlBuilder implements SqlBuilder {
 
-    //    protected String pkFieldName;
+    protected String                  tableAlias;
 
     protected List<String>            columnFields;
 
@@ -33,17 +34,12 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
 
     }
 
-    protected Set<GenericTokenParser> initTokenParsers(Class<?> clazz, NameHandler nameHandler) {
-        if (tokenParsers == null) {
-            tokenParsers = new HashSet<GenericTokenParser>(2);
-            TokenHandler tokenHandler = new NativeTokenHandler(clazz, nameHandler);
-            tokenParsers.add(new GenericTokenParser(AutoField.NATIVE_FIELD_TOKEN[0], AutoField.NATIVE_FIELD_TOKEN[1],
-                tokenHandler));
-            tokenHandler = new NativeTokenHandler(clazz, new NoneNameHandler());
-            tokenParsers.add(new GenericTokenParser(AutoField.NATIVE_CODE_TOKEN[0], AutoField.NATIVE_CODE_TOKEN[1],
-                tokenHandler));
-        }
-        return tokenParsers;
+    public void setTableAlias(String alias) {
+        this.tableAlias = alias;
+    }
+
+    public String getTableAlias() {
+        return this.tableAlias;
     }
 
     public Map<String, AutoField> getFields() {
@@ -56,6 +52,19 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
 
     public boolean hasField(String fieldName) {
         return (this.autoFields.get(fieldName) != null);
+    }
+
+    protected Set<GenericTokenParser> initTokenParsers(Class<?> clazz, NameHandler nameHandler) {
+        if (tokenParsers == null) {
+            tokenParsers = new HashSet<GenericTokenParser>(2);
+            TokenHandler tokenHandler = new NativeTokenHandler(clazz, getTableAlias(), nameHandler);
+            tokenParsers.add(new GenericTokenParser(AutoField.NATIVE_FIELD_TOKEN[0], AutoField.NATIVE_FIELD_TOKEN[1],
+                tokenHandler));
+            tokenHandler = new NativeTokenHandler(clazz, null, new NoneNameHandler());
+            tokenParsers.add(new GenericTokenParser(AutoField.NATIVE_CODE_TOKEN[0], AutoField.NATIVE_CODE_TOKEN[1],
+                tokenHandler));
+        }
+        return tokenParsers;
     }
 
     protected String tokenParse(String content, Class<?> clazz, NameHandler nameHandler) {
@@ -120,5 +129,30 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
         autoField.setValue(value);
         autoField.setType(type);
         return autoField;
+    }
+
+    /**
+     * 处理column别名
+     * 
+     * @param columnName
+     * @return
+     */
+    protected String applyColumnAlias(String columnName) {
+        if (StrUtils.isBlank(getTableAlias())) {
+            return columnName;
+        }
+        return new StringBuilder(getTableAlias()).append(".").append(columnName).toString();
+    }
+
+    /**
+     * 处理table别名
+     * @param tableName
+     * @return
+     */
+    protected String applyTableAlias(String tableName) {
+        if (StrUtils.isBlank(getTableAlias())) {
+            return tableName;
+        }
+        return new StringBuilder(tableName).append(" ").append(getTableAlias()).toString();
     }
 }

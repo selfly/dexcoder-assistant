@@ -1,6 +1,5 @@
 package com.dexcoder.dal.build;
 
-
 import com.dexcoder.dal.BoundSql;
 import com.dexcoder.dal.handler.NameHandler;
 
@@ -14,7 +13,7 @@ public class Criteria {
     /**
      * 操作的实体类
      */
-    private Class<?> entityClass;
+    private Class<?>   entityClass;
 
     /**
      * build Builder
@@ -54,9 +53,14 @@ public class Criteria {
         return new Criteria(clazz, new DeleteBuilder());
     }
 
-//    public Criteria ofField(String fieldName, Object value) {
-//        return new Criteria(this.entityClass, new FieldBuilder()).and(fieldName, value);
-//    }
+    public Criteria tableAlias(String alias) {
+        this.sqlBuilder.setTableAlias(alias);
+        return this;
+    }
+
+    //    public Criteria ofField(String fieldName, Object value) {
+    //        return new Criteria(this.entityClass, new FieldBuilder()).and(fieldName, value);
+    //    }
 
     /**
      * 添加白名单
@@ -245,7 +249,8 @@ public class Criteria {
     }
 
     public Criteria addSelectFunc(String func, boolean isFieldExclusion, boolean isOrderBy) {
-        this.sqlBuilder.addField(func, String.valueOf(isOrderBy), String.valueOf(isFieldExclusion), AutoFieldType.FUNC, null);
+        this.sqlBuilder.addField(func, String.valueOf(isOrderBy), String.valueOf(isFieldExclusion), AutoFieldType.FUNC,
+            null);
         return this;
     }
 

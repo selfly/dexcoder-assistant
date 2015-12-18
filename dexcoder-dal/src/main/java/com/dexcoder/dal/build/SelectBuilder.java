@@ -82,15 +82,17 @@ public class SelectBuilder extends AbstractSqlBuilder {
                     continue;
                 }
                 String columnName = nameHandler.getColumnName(clazz, columnField);
-                sb.append(columnName);
+                sb.append(applyColumnAlias(columnName));
                 sb.append(",");
             }
         }
         sb.deleteCharAt(sb.length() - 1);
-        sb.append(" FROM ").append(tableName).append(" ");
+        sb.append(" FROM ").append(applyTableAlias(tableName)).append(" ");
+        whereBuilder.setTableAlias(getTableAlias());
         BoundSql whereBoundSql = whereBuilder.build(clazz, entity, isIgnoreNull, nameHandler);
         sb.append(whereBoundSql.getSql());
         if (isOrderBy) {
+            orderByBuilder.setTableAlias(getTableAlias());
             BoundSql orderByBoundSql = orderByBuilder.build(clazz, entity, isIgnoreNull, nameHandler);
             sb.append(orderByBoundSql.getSql());
         }

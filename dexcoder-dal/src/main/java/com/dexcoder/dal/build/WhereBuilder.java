@@ -39,6 +39,7 @@ public class WhereBuilder extends AbstractSqlBuilder {
         AutoField preAutoFile = null;
         for (Map.Entry<String, AutoField> entry : getFields().entrySet()) {
             String columnName = nameHandler.getColumnName(clazz, entry.getKey());
+            columnName = applyColumnAlias(columnName);
             AutoField autoField = entry.getValue();
             if (StrUtils.isNotBlank(autoField.getSqlOperator()) && sb.length() > COMMAND_OPEN.length()
                 && !isFieldBracketBegin(preAutoFile)) {

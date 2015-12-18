@@ -1,6 +1,5 @@
 package com.dexcoder.test.utils;
 
-import com.dexcoder.commons.utils.SiteMapUtils;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ public class SiteMapUtilsTest {
         map.put("loc", "http://www.oschina.net/code/explore/.repo");
         map.put("priority", "0.6");
         mapList.add(map);
-        SiteMapUtils.createSiteMapXml(mapList, "d:/aaa.xml");
+//        SiteMapUtils.createSiteMapXml(mapList, "d:/aaa.xml");
 
     }
 
