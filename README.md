@@ -2,7 +2,13 @@
 
 最近更新：
 
-版本：v2.0.0-beta1 更新时间：2015-12-15
+### 版本 2.1.0-beta1 更新时间：2015-12-22
+
+增加表别名支持
+
+具体请看：[增加表别名支持](http://www.dexcoder.com/selfly/article/4309)
+
+### 版本：v2.0.0-beta1 更新时间：2015-12-15
 
 本版本进行了彻底的重构，并且api做了一些细微的改变，具体可以看使用说明对比和原来的区别。
 
@@ -326,6 +332,17 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
     Criteria criteria = Criteria.select(User.class).where("[gmtCreate]", ">",
         new Object[] { "str_to_date('2015-10-1','%Y-%m-%d')" });
     List<User> userList = jdbcDao.queryList(criteria);
+
+### 表别名支持
+
+有些时候，就算单表操作也必须用到表别名，例如oracle中的xmltype类型。可以在Criteria中设置表别名：
+
+    Criteria criteria = Criteria.select(Table.class).tableAlias("t").addSelectFunc("[xmlFile].getclobval() xmlFile")
+            .where("tableId", new Object[]{10000002L});
+    Object obj = jdbcDao.queryForObject(criteria);
+
+    //对应的sql
+    select t.XML_FILE.getclobval() xmlFile from TABLE t where t.TABLE_ID = ?
 
 ### 执行自定义sql
 
