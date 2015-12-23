@@ -32,7 +32,7 @@ public class Criteria {
     }
 
     /**
-     * 查询初始化
+     * select init
      *
      * @param clazz
      * @return
@@ -41,26 +41,45 @@ public class Criteria {
         return new Criteria(clazz, new SelectBuilder());
     }
 
+    /**
+     * insert init
+     * 
+     * @param clazz
+     * @return
+     */
     public static Criteria insert(Class<?> clazz) {
         return new Criteria(clazz, new InsertBuilder());
     }
 
+    /**
+     * update init
+     * 
+     * @param clazz
+     * @return
+     */
     public static Criteria update(Class<?> clazz) {
         return new Criteria(clazz, new UpdateBuilder());
     }
 
+    /**
+     * delete init
+     * @param clazz
+     * @return
+     */
     public static Criteria delete(Class<?> clazz) {
         return new Criteria(clazz, new DeleteBuilder());
     }
 
+    /**
+     * 设置表别名
+     * 
+     * @param alias
+     * @return
+     */
     public Criteria tableAlias(String alias) {
         this.sqlBuilder.setTableAlias(alias);
         return this;
     }
-
-    //    public Criteria ofField(String fieldName, Object value) {
-    //        return new Criteria(this.entityClass, new FieldBuilder()).and(fieldName, value);
-    //    }
 
     /**
      * 添加白名单
@@ -243,11 +262,25 @@ public class Criteria {
         return this;
     }
 
+    /**
+     * 添加函数
+     * 
+     * @param func
+     * @return
+     */
     public Criteria addSelectFunc(String func) {
         this.addSelectFunc(func, true, false);
         return this;
     }
 
+    /**
+     * 添加函数
+     * 
+     * @param func 函数代码
+     * @param isFieldExclusion 是否与列互斥 默认true
+     * @param isOrderBy 是否需要排序 默认fasle
+     * @return
+     */
     public Criteria addSelectFunc(String func, boolean isFieldExclusion, boolean isOrderBy) {
         this.sqlBuilder.addField(func, String.valueOf(isOrderBy), String.valueOf(isFieldExclusion), AutoFieldType.FUNC,
             null);

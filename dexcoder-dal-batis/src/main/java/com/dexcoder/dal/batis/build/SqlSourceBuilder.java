@@ -3,7 +3,8 @@ package com.dexcoder.dal.batis.build;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dexcoder.dal.batis.parser.GenericTokenParser;
+import com.dexcoder.dal.handler.GenericTokenParser;
+import com.dexcoder.dal.handler.TokenHandler;
 
 /**
  * Created by liyd on 2015-11-27.

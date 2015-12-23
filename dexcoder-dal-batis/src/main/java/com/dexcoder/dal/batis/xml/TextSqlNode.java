@@ -2,10 +2,10 @@ package com.dexcoder.dal.batis.xml;
 
 import java.util.regex.Pattern;
 
-import com.dexcoder.dal.batis.build.TokenHandler;
-import com.dexcoder.dal.batis.parser.GenericTokenParser;
 import com.dexcoder.dal.batis.build.DynamicContext;
 import com.dexcoder.dal.exceptions.JdbcAssistantException;
+import com.dexcoder.dal.handler.GenericTokenParser;
+import com.dexcoder.dal.handler.TokenHandler;
 
 /**
  * Created by liyd on 2015-11-26.

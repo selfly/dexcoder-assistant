@@ -5,14 +5,22 @@ package com.dexcoder.dal.build;
  */
 public enum AutoFieldType {
     INSERT,
+
     UPDATE,
+
     WHERE,
+
     INCLUDE,
+
     EXCLUDE,
+
     ORDER_BY_ASC,
+
     ORDER_BY_DESC,
+
     BRACKET_BEGIN,
+
     BRACKET_END,
-    FUNC,
-    NATIVE,
+
+    FUNC
 }

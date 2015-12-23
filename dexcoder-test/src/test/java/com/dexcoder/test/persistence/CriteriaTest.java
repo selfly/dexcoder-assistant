@@ -70,6 +70,14 @@ public class CriteriaTest {
         for (Object obj : boundSql.getParameters()) {
             System.out.println(obj);
         }
+
+        System.out.println("---------------含entity null属性-----------------------");
+        criteria = Criteria.update(User.class).set("loginName", "selfly").where("userId", new Object[] { 10000L });
+        boundSql = criteria.build(user, false, new DefaultNameHandler());
+        System.out.println(boundSql.getSql());
+        for (Object obj : boundSql.getParameters()) {
+            System.out.println(obj);
+        }
     }
 
     @Test

@@ -8,9 +8,8 @@
         <version>2.1.0-beta1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
     <artifactId>dexcoder-dal-batis</artifactId>
-
+    <name>dexcoder-dal-batis</name>
     <dependencies>
         <dependency>
             <groupId>com.dexcoder</groupId>

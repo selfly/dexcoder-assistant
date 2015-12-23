@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>dexcoder-test</artifactId>
-
+    <name>dexcoder-test</name>
     <dependencies>
         <dependency>
             <groupId>com.dexcoder</groupId>

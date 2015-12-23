@@ -9,10 +9,22 @@ import com.dexcoder.dal.BoundSql;
  */
 public class CriteriaBoundSql implements BoundSql {
 
+    /**
+     * sql
+     */
     private String       sql;
 
+    /**
+     * parameters
+     */
     private List<Object> parameters;
 
+    /**
+     * Constructor
+     *
+     * @param sql
+     * @param parameters
+     */
     public CriteriaBoundSql(String sql, List<Object> parameters) {
         this.sql = sql;
         this.parameters = parameters;

@@ -20,7 +20,6 @@ import com.dexcoder.commons.pager.Pager;
  */
 @Aspect
 @Component
-//这里使用注解，也可以在配置文件里声明bean，一样
 public class PageControl {
 
     /** 分页线程变量 */
@@ -92,7 +91,7 @@ public class PageControl {
     public void queryMethod() {
         //该方法没实际作用，只是切面声明对象，声明一个切面的表达式
         //下面使用时，只需要写入这个表达式名(方法名)即可   等同于
-        //@Before("anyMethod()") == @Before("execution(* com.liyd.sample.service.impl.*.*(..))")
+        //@Before("anyMethod()") == @Before("execution(* org.springframework.jdbc.core.JdbcOperations.query*(..))")
         //可以是private修饰符，但是会有never used的警告，所以这里用了public
     }
 

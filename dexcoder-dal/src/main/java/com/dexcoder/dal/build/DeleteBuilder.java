@@ -10,6 +10,9 @@ public class DeleteBuilder extends AbstractSqlBuilder {
 
     protected static final String COMMAND_OPEN = "DELETE FROM ";
 
+    /**
+     * whereBuilder
+     */
     private SqlBuilder            whereBuilder;
 
     public DeleteBuilder() {

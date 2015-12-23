@@ -14,6 +14,9 @@ public class UpdateBuilder extends AbstractSqlBuilder {
 
     protected static final String COMMAND_OPEN = "UPDATE ";
 
+    /**
+     * whereBuilder
+     */
     private SqlBuilder            whereBuilder;
 
     public UpdateBuilder() {

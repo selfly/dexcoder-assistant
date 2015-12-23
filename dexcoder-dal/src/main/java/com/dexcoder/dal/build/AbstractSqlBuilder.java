@@ -14,8 +14,14 @@ import com.dexcoder.dal.handler.*;
  */
 public abstract class AbstractSqlBuilder implements SqlBuilder {
 
+    /**
+     * 表别名
+     */
     protected String                  tableAlias;
 
+    /**
+     * 列
+     */
     protected List<String>            columnFields;
 
     /**
@@ -54,6 +60,13 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
         return (this.autoFields.get(fieldName) != null);
     }
 
+    /**
+     * 初始化 TokenParsers
+     * 
+     * @param clazz
+     * @param nameHandler
+     * @return
+     */
     protected Set<GenericTokenParser> initTokenParsers(Class<?> clazz, NameHandler nameHandler) {
         if (tokenParsers == null) {
             tokenParsers = new HashSet<GenericTokenParser>(2);
@@ -67,6 +80,14 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
         return tokenParsers;
     }
 
+    /**
+     * TokenParsers 解析
+     * 
+     * @param content
+     * @param clazz
+     * @param nameHandler
+     * @return
+     */
     protected String tokenParse(String content, Class<?> clazz, NameHandler nameHandler) {
         Set<GenericTokenParser> tokenParsers = initTokenParsers(clazz, nameHandler);
         String result = content;
@@ -76,12 +97,19 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
         return result;
     }
 
+    /**
+     * 合并entity中的field
+     * 
+     * @param entity
+     * @param autoFieldType
+     * @param nameHandler
+     * @param isIgnoreNull
+     */
     protected void mergeEntityFields(Object entity, AutoFieldType autoFieldType, NameHandler nameHandler,
                                      boolean isIgnoreNull) {
         if (entity == null) {
             return;
         }
-        //        String pkColumnName = NameUtils.getUnderlineName(nameHandler.getPkCamelName(entity.getClass()));
         BeanInfo selfBeanInfo = ClassUtils.getSelfBeanInfo(entity.getClass());
         PropertyDescriptor[] propertyDescriptors = selfBeanInfo.getPropertyDescriptors();
         for (PropertyDescriptor pd : propertyDescriptors) {
@@ -101,12 +129,8 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
             if (this.hasField(fieldName)) {
                 continue;
             }
-            //            String columnName = nameHandler.getColumnName(fieldName);
             AutoField autoField = this.buildAutoField(fieldName, "and", "=", autoFieldType, value);
             this.autoFields.put(fieldName, autoField);
-            //            if (StrUtils.equals(pkColumnName, columnName)) {
-            //                this.pkFieldName = fieldName;
-            //            }
         }
     }
 

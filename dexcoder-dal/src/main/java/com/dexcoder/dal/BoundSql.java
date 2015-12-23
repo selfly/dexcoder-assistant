@@ -9,22 +9,17 @@ import java.util.List;
  */
 public interface BoundSql {
 
-    //    /**
-    //     * 获取主键名称
-    //     *
-    //     * @return
-    //     */
-    //    String getPkName();
-
     /**
-     * 获取要执行的sql，参数的地方用?号与下面参数列表对应
+     * Get execute sql.
+     * Parameter with a ? mark and corresponds below parameters.
      *
      * @return
      */
     String getSql();
 
     /**
-     * 获取执行sql的参数，与上面sql中的?号对应
+     * Get execute sql parameters.
+     * Allowed to return empty list,Don't return null.
      *
      * @return
      */

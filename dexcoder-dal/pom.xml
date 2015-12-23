@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>dexcoder-dal</artifactId>
-
+    <name>dexcoder-dal</name>
     <dependencies>
         <dependency>
             <groupId>com.dexcoder</groupId>

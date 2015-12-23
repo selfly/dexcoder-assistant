@@ -1,8 +1,9 @@
 package com.dexcoder.dal.batis.parser;
 
-import com.dexcoder.dal.batis.build.TokenHandler;
-
 import java.util.Properties;
+
+import com.dexcoder.dal.handler.GenericTokenParser;
+import com.dexcoder.dal.handler.TokenHandler;
 
 /**
  * Created by liyd on 2015-11-24.

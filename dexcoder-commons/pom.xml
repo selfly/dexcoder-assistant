@@ -11,6 +11,7 @@
 
     <artifactId>dexcoder-commons</artifactId>
 
+    <name>dexcoder-commons</name>
     <dependencies>
         <dependency>
             <groupId>commons-io</groupId>
