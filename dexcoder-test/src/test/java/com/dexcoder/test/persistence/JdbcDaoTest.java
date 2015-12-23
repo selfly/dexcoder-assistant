@@ -22,10 +22,10 @@ import com.dexcoder.test.model.User;
 public class JdbcDaoTest extends BaseTest {
 
     @Autowired
-    private JdbcDao           jdbcDao;
+    private JdbcDao jdbcDao;
 
     //    @Autowired
-//    private DynamicDataSource dynamicDataSource;
+    //    private DynamicDataSource dynamicDataSource;
 
     @BeforeClass
     public static void before() {
@@ -118,6 +118,14 @@ public class JdbcDaoTest extends BaseTest {
         Criteria criteria = Criteria.update(User.class).set("{USER_AGE}", "{USER_AGE + 1}")
             .where("userId", new Object[] { 56L });
         jdbcDao.update(criteria);
+    }
+
+    @Test
+    public void testUpdate5() {
+        User u = new User();
+        u.setUserId(154L);
+        u.setLoginName("aabb");
+        int i = jdbcDao.update(u,false);
     }
 
     @Test
@@ -348,6 +356,7 @@ public class JdbcDaoTest extends BaseTest {
             System.out.println(map.get("userId"));
             System.out.println(map.get("loginName"));
         }
+
     }
 
     //    @Test

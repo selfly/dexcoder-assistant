@@ -58,6 +58,11 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
         return jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
+    public int update(Object entity, boolean isIgnoreNull) {
+        BoundSql boundSql = Criteria.update(entity.getClass()).build(entity, isIgnoreNull, getNameHandler());
+        return jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
+    }
+
     public int delete(Criteria criteria) {
         BoundSql boundSql = criteria.build(true, getNameHandler());
         return jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());

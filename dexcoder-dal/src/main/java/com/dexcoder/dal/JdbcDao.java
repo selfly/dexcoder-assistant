@@ -57,6 +57,15 @@ public interface JdbcDao {
     int update(Object entity);
 
     /**
+     * 根据实体更新
+     *
+     * @param entity
+     * @param isIgnoreNull 是否忽略null值的属性 默认true
+     * @return
+     */
+    int update(Object entity, boolean isIgnoreNull);
+
+    /**
      * 根据Criteria删除
      *
      * @param criteria the criteria
@@ -83,7 +92,7 @@ public interface JdbcDao {
      *
      * @param clazz the clazz
      */
-    public void deleteAll(Class<?> clazz);
+    void deleteAll(Class<?> clazz);
 
     /**
      * 按设置的条件查询
@@ -92,7 +101,7 @@ public interface JdbcDao {
      * @param criteria the criteria
      * @return list
      */
-    public <T> List<T> queryList(Criteria criteria);
+    <T> List<T> queryList(Criteria criteria);
 
     /**
      * 按设置的条件查询
@@ -101,7 +110,7 @@ public interface JdbcDao {
      * @param clazz the clazz
      * @return list
      */
-    public <T> List<T> queryList(Class<?> clazz);
+    <T> List<T> queryList(Class<?> clazz);
 
     /**
      * 查询列表
@@ -109,7 +118,7 @@ public interface JdbcDao {
      * @param entity the entity
      * @return the list
      */
-    public <T> List<T> queryList(T entity);
+    <T> List<T> queryList(T entity);
 
     /**
      * 查询列表
@@ -119,7 +128,7 @@ public interface JdbcDao {
      * @param criteria the criteria
      * @return the list
      */
-    public <T> List<T> queryList(T entity, Criteria criteria);
+    <T> List<T> queryList(T entity, Criteria criteria);
 
     /**
      * 查询记录数
@@ -127,7 +136,7 @@ public interface JdbcDao {
      * @param entity
      * @return
      */
-    public int queryCount(Object entity);
+    int queryCount(Object entity);
 
     /**
      * 查询记录数
@@ -135,7 +144,7 @@ public interface JdbcDao {
      * @param criteria the criteria
      * @return int int
      */
-    public int queryCount(Criteria criteria);
+    int queryCount(Criteria criteria);
 
     /**
      * 查询记录数
@@ -144,7 +153,7 @@ public interface JdbcDao {
      * @param criteria the criteria
      * @return int int
      */
-    public int queryCount(Object entity, Criteria criteria);
+    int queryCount(Object entity, Criteria criteria);
 
     /**
      * 根据主键得到记录
@@ -154,7 +163,7 @@ public interface JdbcDao {
      * @param id the id
      * @return t
      */
-    public <T> T get(Class<T> clazz, Long id);
+    <T> T get(Class<T> clazz, Long id);
 
     /**
      * 根据主键得到记录
@@ -164,7 +173,7 @@ public interface JdbcDao {
      * @param id the id
      * @return t
      */
-    public <T> T get(Criteria criteria, Long id);
+    <T> T get(Criteria criteria, Long id);
 
     /**
      * 查询单个记录
@@ -173,7 +182,7 @@ public interface JdbcDao {
      * @param entity the entity
      * @return t t
      */
-    public <T> T querySingleResult(T entity);
+    <T> T querySingleResult(T entity);
 
     /**
      * 查询单个记录
@@ -182,7 +191,7 @@ public interface JdbcDao {
      * @param criteria the criteria
      * @return t t
      */
-    public <T> T querySingleResult(Criteria criteria);
+    <T> T querySingleResult(Criteria criteria);
 
     <T> T queryForObject(Criteria criteria);
 
