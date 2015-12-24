@@ -24,8 +24,6 @@ update更新支持选择是否更新值为null的属性
 
 如果你不喜欢用`Hibernate`、`Mybaits`这类ORM框架，喜欢`JdbcTemplate`或`DbUtils`，那么可以试试这个封装的通用dal，这可能是目前封装的最方便易用的通用dal层了。
 
-dexcoder-dal的目标是如果项目中没有一些极特殊的操作，一个通用dao搞定一个项目！
-
 dexcoder-dal的一些特性：
 
 1. 一个dao即可以搞定所有的实体类，不必再一个个建立跟实体对应的继承于类似BaseDao这类“通用dao”了。
@@ -249,7 +247,7 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
 ###指定字段白名单，在任何查询方法中都可以使用
 
     public void get(){
-        //将只返回userName
+        //将只返回loginName
         Criteria criteria = Criteria.select(User.class).include("loginName");
         User u = jdbcDao.get(criteria, 23L);
     }
@@ -257,7 +255,7 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
 ###指定字段黑名单，在任何查询方法中都可以使用
 
 	public void get4(){
-        //将不返回userName
+        //将不返回loginName
         Criteria criteria = Criteria.select(User.class).exclude("loginName");
         User u = jdbcDao.get(criteria, 23L);
     }
