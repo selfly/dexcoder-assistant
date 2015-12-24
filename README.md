@@ -20,7 +20,9 @@ update更新支持选择是否更新值为null的属性
 
 [详细更新日志](md/update_log.md)
 
-##核心组件dexcoder-dal使用说明如果你不喜欢用`Hibernate`、`Mybaits`这类ORM框架，喜欢`JdbcTemplate`或`DbUtils`，那么可以试试这个封装的通用dal，这可能是目前封装的最方便易用的通用dal层了。
+##核心组件dexcoder-dal使用说明
+
+如果你不喜欢用`Hibernate`、`Mybaits`这类ORM框架，喜欢`JdbcTemplate`或`DbUtils`，那么可以试试这个封装的通用dal，这可能是目前封装的最方便易用的通用dal层了。
 
 dexcoder-dal的一些特性：
 
