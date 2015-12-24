@@ -49,7 +49,15 @@ dexcoder-dal的一些特性：
 
 当然，这些你可以在扩展中改变它，但不建议这么做，这本身就是一个良好的规范。
 
-要在项目中使用通用dao十分简单，只需要在spring的配置文件中声明如下bean：
+要在项目中使用通用dao十分简单，目前已上maven中央库，直接在pom.xml中添加依赖：
+
+    <dependency>
+        <groupId>com.dexcoder</groupId>
+        <artifactId>dexcoder-dal-spring</artifactId>
+        <version>2.2.0-beta1</version>
+    </dependency>
+
+然后在spring的配置文件中声明如下bean：
 
     <bean id="jdbcDao" class="com.dexcoder.dal.spring.JdbcDaoImpl">
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
@@ -378,7 +386,15 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
 
 #### mybatis方式执行
 
-同样注入`sqlFactory`，这里把上面的`SimpleSqlFactory`替换成`BatisSqlFactoryBean`：
+采用了插件式实现，使用该方式首先添加依赖：
+
+    <dependency>
+        <groupId>com.dexcoder</groupId>
+        <artifactId>dexcoder-dal-batis</artifactId>
+        <version>2.2.0-beta1</version>
+    </dependency>
+
+之后同样注入`sqlFactory`，把上面的`SimpleSqlFactory`替换成`BatisSqlFactoryBean`：
 
     <bean id="jdbcDao" class="com.dexcoder.dal.spring.JdbcDaoImpl">
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
