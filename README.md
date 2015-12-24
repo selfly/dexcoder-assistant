@@ -20,15 +20,13 @@ update更新支持选择是否更新值为null的属性
 
 [详细更新日志](md/update_log.md)
 
-##核心组件dexcoder-dal使用说明
-
-如果你不喜欢用`Hibernate`、`Mybaits`这类ORM框架，喜欢`JdbcTemplate`或`DbUtils`，那么可以试试这个封装的通用dal，这可能是目前封装的最方便易用的通用dal层了。
+##核心组件dexcoder-dal使用说明如果你不喜欢用`Hibernate`、`Mybaits`这类ORM框架，喜欢`JdbcTemplate`或`DbUtils`，那么可以试试这个封装的通用dal，这可能是目前封装的最方便易用的通用dal层了。
 
 dexcoder-dal的一些特性：
 
 1. 一个dao即可以搞定所有的实体类，不必再一个个建立跟实体对应的继承于类似BaseDao这类“通用dao”了。
 2. 各类方法参数除了`Entity`外，支持更强大的`Criteria`方式。
-3. sql的where条件支持一些复杂的条件，如`等于`、`不等于`、`or`、`in`、`not in`甚至是执行函数。
+3. sql的where条件支持一些复杂的条件，如`=`、`!=`、`or`、`in`、`not in`甚至是执行函数。
 4. 允许在查询时指定使用哪个字段进行排序，可以指定多个进行组合升降序自由排序。
 5. 支持在查询时指定返回字段的白名单和黑名单，可以指定只返回某些字段或不返回某些字段。
 6. select查询时支持函数，`count()`、`max()`、`to_char()`、甚至是`distinct`,理论上都可以支持。
@@ -37,6 +35,7 @@ dexcoder-dal的一些特性：
 9. 支持执行自定义sql。
 10. 支持使用类似mybatis的方式执行自定义sql。
 11. 支持读写分离和动态数据源。
+12. 对于数据水平分表支持友好。
 
 该通用dao是在使用过程中，针对常规的泛型dao经常遇到的一些不便问题进行了改进。命名上遵循了约定优于配置的原则，典型约定如下：
 
