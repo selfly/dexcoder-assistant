@@ -1,4 +1,4 @@
-package com.dexcoder.commons.annotation;
+package com.dexcoder.dal.annotation;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -7,14 +7,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Created by liyd on 2016-1-4.
+ * Created by liyd on 2015-12-31.
  */
 @Target({ METHOD })
 @Retention(RUNTIME)
-public @interface Column {
-
-    String name();
-
-    String alias() default "";
-
+public @interface Transient {
 }

@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dexcoder.commons.annotation.Transient;
+import com.dexcoder.dal.annotation.Transient;
 import com.dexcoder.commons.utils.ClassUtils;
 import com.dexcoder.dal.BoundSql;
 import com.dexcoder.dal.exceptions.JdbcAssistantException;
@@ -28,7 +28,8 @@ public class SelectBuilder extends AbstractSqlBuilder {
     protected boolean             isFieldExclusion = false;
     protected boolean             isOrderBy        = true;
 
-    public SelectBuilder() {
+    public SelectBuilder(Class<?> clazz) {
+        super(clazz);
         includeFields = new ArrayList<String>();
         excludeFields = new ArrayList<String>();
         funcAutoFields = new ArrayList<AutoField>();

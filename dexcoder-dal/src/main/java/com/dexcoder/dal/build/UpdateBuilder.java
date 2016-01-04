@@ -24,8 +24,7 @@ public class UpdateBuilder extends AbstractSqlBuilder {
     }
 
     public void addField(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value) {
-        AutoField autoField = this.buildAutoField(fieldName, sqlOperator, fieldOperator, type, value);
-        this.autoFields.put(fieldName, autoField);
+        autoTable.addAutoField(fieldName, sqlOperator, fieldOperator, type, value);
     }
 
     public void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type,
@@ -34,7 +33,7 @@ public class UpdateBuilder extends AbstractSqlBuilder {
     }
 
     public BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
-        super.mergeEntityFields(entity, AutoFieldType.UPDATE, nameHandler, isIgnoreNull);
+        autoTable.mergeEntityFields(entity, AutoFieldType.UPDATE, isIgnoreNull);
         String pkFieldName = nameHandler.getPkFieldName(clazz);
         //更新，主键都是在where
         AutoField pkField = getFields().get(pkFieldName);

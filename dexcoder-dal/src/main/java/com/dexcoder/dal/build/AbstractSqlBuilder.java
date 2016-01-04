@@ -1,15 +1,11 @@
 package com.dexcoder.dal.build;
 
-import java.beans.BeanInfo;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
-import com.dexcoder.commons.annotation.Column;
-import com.dexcoder.commons.annotation.Transient;
-import com.dexcoder.commons.utils.ClassUtils;
-import com.dexcoder.commons.utils.StrUtils;
-import com.dexcoder.dal.handler.*;
+import com.dexcoder.dal.handler.GenericTokenParser;
+import com.dexcoder.dal.handler.NativeTokenHandler;
+import com.dexcoder.dal.handler.TokenHandler;
 
 /**
  * Created by liyd on 2015-12-7.
@@ -17,81 +13,52 @@ import com.dexcoder.dal.handler.*;
 public abstract class AbstractSqlBuilder implements SqlBuilder {
 
     /**
-     * 表别名
+     * 符号中内容会被转换(field -> column)
      */
-    protected String                  tableAlias;
+    public static final String[]      NATIVE_FIELD_TOKEN = { "[", "]" };
 
     /**
-     * 列
+     * 表信息
      */
-    protected List<String>            columnFields;
-
-    /**
-     * 操作的字段
-     */
-    protected Map<String, AutoField>  autoFields;
+    protected AutoTable.Builder       autoTableBuilder;
 
     /**
      * parser map
      */
     protected Set<GenericTokenParser> tokenParsers;
 
-    public AbstractSqlBuilder() {
-        columnFields = new ArrayList<String>();
-        autoFields = new LinkedHashMap<String, AutoField>();
-
+    public AbstractSqlBuilder(Class<?> clazz) {
+        autoTableBuilder = new AutoTable.Builder(clazz);
     }
 
-    public void setTableAlias(String alias) {
-        this.tableAlias = alias;
-    }
-
-    public String getTableAlias() {
-        return this.tableAlias;
-    }
-
-    public Map<String, AutoField> getFields() {
-        return this.autoFields;
-    }
-
-    public boolean hasFields() {
-        return (!autoFields.isEmpty());
-    }
-
-    public boolean hasField(String fieldName) {
-        return (this.autoFields.get(fieldName) != null);
+    public void setTableAlias(String tableAlias) {
+        autoTableBuilder.tableAlias(tableAlias);
     }
 
     /**
      * 初始化 TokenParsers
-     * 
-     * @param clazz
-     * @param nameHandler
-     * @return
+     *
+     * @param autoTable the auto table
+     * @return set set
      */
-    protected Set<GenericTokenParser> initTokenParsers(Class<?> clazz, NameHandler nameHandler) {
+    protected Set<GenericTokenParser> initTokenParsers(AutoTable autoTable) {
         if (tokenParsers == null) {
-            tokenParsers = new HashSet<GenericTokenParser>(2);
-            TokenHandler tokenHandler = new NativeTokenHandler(clazz, getTableAlias(), nameHandler);
-            tokenParsers.add(new GenericTokenParser(AutoField.NATIVE_FIELD_TOKEN[0], AutoField.NATIVE_FIELD_TOKEN[1],
-                tokenHandler));
-            tokenHandler = new NativeTokenHandler(clazz, null, new NoneNameHandler());
-            tokenParsers.add(new GenericTokenParser(AutoField.NATIVE_CODE_TOKEN[0], AutoField.NATIVE_CODE_TOKEN[1],
-                tokenHandler));
+            tokenParsers = new HashSet<GenericTokenParser>(1);
+            TokenHandler tokenHandler = new NativeTokenHandler(autoTable);
+            tokenParsers.add(new GenericTokenParser(NATIVE_FIELD_TOKEN[0], NATIVE_FIELD_TOKEN[1], tokenHandler));
         }
         return tokenParsers;
     }
 
     /**
      * TokenParsers 解析
-     * 
-     * @param content
-     * @param clazz
-     * @param nameHandler
-     * @return
+     *
+     * @param content the content
+     * @param autoTable the auto table
+     * @return string
      */
-    protected String tokenParse(String content, Class<?> clazz, NameHandler nameHandler) {
-        Set<GenericTokenParser> tokenParsers = initTokenParsers(clazz, nameHandler);
+    protected String tokenParse(String content, AutoTable autoTable) {
+        Set<GenericTokenParser> tokenParsers = initTokenParsers(autoTable);
         String result = content;
         for (GenericTokenParser tokenParser : tokenParsers) {
             result = tokenParser.parse(result);
@@ -99,99 +66,4 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
         return result;
     }
 
-    /**
-     * 合并entity中的field
-     * 
-     * @param entity
-     * @param autoFieldType
-     * @param nameHandler
-     * @param isIgnoreNull
-     */
-    protected void mergeEntityFields(Object entity, AutoFieldType autoFieldType, NameHandler nameHandler,
-                                     boolean isIgnoreNull) {
-        if (entity == null) {
-            return;
-        }
-        BeanInfo selfBeanInfo = ClassUtils.getSelfBeanInfo(entity.getClass());
-        PropertyDescriptor[] propertyDescriptors = selfBeanInfo.getPropertyDescriptors();
-        for (PropertyDescriptor pd : propertyDescriptors) {
-            Method readMethod = pd.getReadMethod();
-            if (readMethod == null) {
-                continue;
-            }
-            Transient aTransient = readMethod.getAnnotation(Transient.class);
-            if (aTransient != null) {
-                continue;
-            }
-
-            String fieldName;
-            String alias;
-            Column aColumn = readMethod.getAnnotation(Column.class);
-            if (aColumn != null) {
-                fieldName = aColumn.name();
-                alias = aColumn.alias();
-            } else {
-                fieldName = pd.getName();
-            }
-            columnFields.add(fieldName);
-            Object value = ClassUtils.invokeMethod(readMethod, entity);
-
-            //忽略掉null
-            if (value == null && isIgnoreNull) {
-                continue;
-            }
-            //已经有了，以Criteria中为准
-            if (this.hasField(fieldName)) {
-                continue;
-            }
-            AutoField autoField = this.buildAutoField(fieldName, "and", "=", autoFieldType, value);
-            this.autoFields.put(fieldName, autoField);
-        }
-    }
-
-    /**
-     * 构建操作的字段
-     *
-     * @param fieldName the field name
-     * @param sqlOperator the build operator
-     * @param fieldOperator the field operator
-     * @param type the type
-     * @param value the values
-     * @return auto field
-     */
-    protected AutoField buildAutoField(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type,
-                                       Object value) {
-        AutoField autoField = new AutoField();
-        autoField.setName(fieldName);
-        autoField.setSqlOperator(sqlOperator);
-        autoField.setFieldOperator(fieldOperator);
-        autoField.setValue(value);
-        autoField.setType(type);
-        return autoField;
-    }
-
-    /**
-     * 处理column别名
-     * 
-     * @param columnName
-     * @return
-     */
-    protected String applyColumnAlias(String columnName) {
-        if (StrUtils.isBlank(getTableAlias())) {
-            return columnName;
-        }
-        return new StringBuilder(getTableAlias()).append(".").append(columnName).toString();
-    }
-
-    /**
-     * 处理table别名
-     * @param tableName
-     * @return
-     */
-    protected String applyTableAlias(String tableName) {
-        if (StrUtils.isBlank(getTableAlias())) {
-            return tableName;
-        }
-        return new StringBuilder(tableName).append(" ").append(getTableAlias()).toString();
-    }
 }

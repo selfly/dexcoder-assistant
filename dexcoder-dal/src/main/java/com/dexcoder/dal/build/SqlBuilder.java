@@ -39,34 +39,34 @@ public interface SqlBuilder {
      */
     void setTableAlias(String alias);
 
-    /**
-     * 获取表别名
-     * 
-     * @return
-     */
-    String getTableAlias();
+//    /**
+//     * 获取表别名
+//     *
+//     * @return
+//     */
+//    String getTableAlias();
 
-    /**
-     * 是否拥有操作字段
-     * 
-     * @return
-     */
-    boolean hasFields();
+//    /**
+//     * 是否拥有操作字段
+//     *
+//     * @return
+//     */
+//    boolean hasFields();
 
-    /**
-     * 是否拥有某个字段
-     * 
-     * @param fieldName
-     * @return
-     */
-    boolean hasField(String fieldName);
+//    /**
+//     * 是否拥有某个字段
+//     *
+//     * @param fieldName
+//     * @return
+//     */
+//    boolean hasField(String fieldName);
 
-    /**
-     * 获取所有操作字段
-     * 
-     * @return
-     */
-    Map<String, AutoField> getFields();
+//    /**
+//     * 获取所有操作字段
+//     *
+//     * @return
+//     */
+//    Map<String, AutoField> getFields();
 
     /**
      * 构建BoundSql

@@ -1,6 +1,7 @@
 package com.dexcoder.dal.handler;
 
 import com.dexcoder.commons.utils.StrUtils;
+import com.dexcoder.dal.build.AutoTable;
 
 /**
  * 解析[]符号
@@ -9,21 +10,17 @@ import com.dexcoder.commons.utils.StrUtils;
  */
 public class NativeTokenHandler implements TokenHandler {
 
-    private Class<?>    clazz;
-    private String      alias;
-    private NameHandler nameHandler;
+    private AutoTable autoTable;
 
-    public NativeTokenHandler(Class<?> clazz, String alias, NameHandler nameHandler) {
-        this.clazz = clazz;
-        this.alias = alias;
-        this.nameHandler = nameHandler;
+    public NativeTokenHandler(AutoTable autoTable) {
+        this.autoTable = autoTable;
     }
 
     public String handleToken(String content) {
-        String columnName = nameHandler.getColumnName(this.clazz, content);
-        if (StrUtils.isBlank(alias)) {
+        String columnName = autoTable.getNameHandler().getColumnName(autoTable.getTableClass(), content);
+        if (StrUtils.isBlank(autoTable.getTableAlias())) {
             return columnName;
         }
-        return new StringBuilder(alias).append(".").append(columnName).toString();
+        return new StringBuilder(autoTable.getTableAlias()).append(".").append(columnName).toString();
     }
 }
