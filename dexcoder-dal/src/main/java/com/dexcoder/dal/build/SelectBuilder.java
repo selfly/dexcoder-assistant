@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.dexcoder.commons.annotation.Transient;
 import com.dexcoder.commons.utils.ClassUtils;
 import com.dexcoder.dal.BoundSql;
 import com.dexcoder.dal.exceptions.JdbcAssistantException;
@@ -111,6 +112,10 @@ public class SelectBuilder extends AbstractSqlBuilder {
         for (PropertyDescriptor pd : propertyDescriptors) {
             Method readMethod = pd.getReadMethod();
             if (readMethod == null) {
+                continue;
+            }
+            Transient aTransient = readMethod.getAnnotation(Transient.class);
+            if (aTransient != null) {
                 continue;
             }
             columnFields.add(pd.getName());

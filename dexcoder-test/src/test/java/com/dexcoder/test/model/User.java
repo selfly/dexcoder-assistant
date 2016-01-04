@@ -2,8 +2,9 @@ package com.dexcoder.test.model;
 
 import java.util.Date;
 
+import com.dexcoder.commons.annotation.Column;
+import com.dexcoder.commons.annotation.Transient;
 import com.dexcoder.commons.pager.Pageable;
-
 
 /**
  * 用户
@@ -39,6 +40,19 @@ public class User extends Pageable {
     /** 修改时间 */
     private Date              gmtModify;
 
+    /** 数据库无  */
+    private Date              gmtBeginTime;
+
+    @Transient
+    public Date getGmtBeginTime() {
+        return gmtBeginTime;
+    }
+
+    public void setGmtBeginTime(Date gmtBeginTime) {
+        this.gmtBeginTime = gmtBeginTime;
+    }
+
+    @Column(name = "`USER_ID`")
     public Long getUserId() {
         return userId;
     }

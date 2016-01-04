@@ -7,6 +7,8 @@ import com.dexcoder.dal.build.Criteria;
 import com.dexcoder.dal.handler.DefaultNameHandler;
 import com.dexcoder.test.model.User;
 
+import java.util.Date;
+
 /**
  * Created by liyd on 2015-12-8.
  */
@@ -18,6 +20,7 @@ public class CriteriaTest {
         user.setEmail("selfly@dexcoder.com");
         user.setUserAge(18);
         user.setUserType("1");
+        user.setGmtBeginTime(new Date());
 
         System.out.println("---------------含entity-----------------------");
         Criteria criteria = Criteria.insert(User.class).into("userId", 10000L).into("loginName", "selfly")

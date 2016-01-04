@@ -5,6 +5,8 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.*;
 
+import com.dexcoder.commons.annotation.Column;
+import com.dexcoder.commons.annotation.Transient;
 import com.dexcoder.commons.utils.ClassUtils;
 import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.dal.handler.*;
@@ -117,7 +119,20 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
             if (readMethod == null) {
                 continue;
             }
-            String fieldName = pd.getName();
+            Transient aTransient = readMethod.getAnnotation(Transient.class);
+            if (aTransient != null) {
+                continue;
+            }
+
+            String fieldName;
+            String alias;
+            Column aColumn = readMethod.getAnnotation(Column.class);
+            if (aColumn != null) {
+                fieldName = aColumn.name();
+                alias = aColumn.alias();
+            } else {
+                fieldName = pd.getName();
+            }
             columnFields.add(fieldName);
             Object value = ClassUtils.invokeMethod(readMethod, entity);
 
@@ -137,11 +152,11 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
     /**
      * 构建操作的字段
      *
-     * @param fieldName     the field name
-     * @param sqlOperator   the build operator
+     * @param fieldName the field name
+     * @param sqlOperator the build operator
      * @param fieldOperator the field operator
-     * @param type          the type
-     * @param value         the values
+     * @param type the type
+     * @param value the values
      * @return auto field
      */
     protected AutoField buildAutoField(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type,

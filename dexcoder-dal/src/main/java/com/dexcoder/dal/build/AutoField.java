@@ -25,6 +25,11 @@ public class AutoField {
     private String               name;
 
     /**
+     * 别名
+     */
+    private String               alias;
+
+    /**
      * 操作符 and or
      */
     private String               sqlOperator;
@@ -60,6 +65,14 @@ public class AutoField {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public Object getValue() {

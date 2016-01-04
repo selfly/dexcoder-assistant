@@ -126,6 +126,7 @@ public class JdbcDaoTest extends BaseTest {
         u.setUserId(154L);
         u.setLoginName("aabb");
         int i = jdbcDao.update(u,false);
+        System.out.println(i);
     }
 
     @Test
@@ -317,6 +318,20 @@ public class JdbcDaoTest extends BaseTest {
             System.out.println(map.get("user_id"));
             System.out.println(map.get("login_name"));
         }
+    }
+
+    @Test
+    public void testSelectSql3() {
+
+        PageControl.performPage(1,20);
+        jdbcDao.queryForSql("select t.* ,t2.login_name lgName from USER t left join USER t2 on t.user_id=t2.user_id");
+        Pager pager = PageControl.getPager();
+        System.out.println(pager.getList().size());
+        System.out.println(pager.getItemsTotal());
+//        for (Map<String, Object> map : list) {
+//            System.out.println(map.get("user_id"));
+//            System.out.println(map.get("login_name"));
+//        }
     }
 
     @Test
