@@ -53,7 +53,7 @@ public class User extends Pageable {
         this.gmtBeginTime = gmtBeginTime;
     }
 
-    @Column(name = "`USER_ID`")
+//    @Column(name = "`USER_ID`")
     public Long getUserId() {
         return userId;
     }

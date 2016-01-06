@@ -20,47 +20,37 @@ public class AutoField {
     /**
      * native field 正则
      */
-    public static final String REGEX_NATIVE_FIELD = "[\\[|\\}](.)+[\\]|\\}]";
-
-    public static void main(String[] args) {
-
-        System.out.println("name".matches(REGEX_NATIVE_FIELD));
-        System.out.println("[name".matches(REGEX_NATIVE_FIELD));
-        System.out.println("[name]".matches(REGEX_NATIVE_FIELD));
-        System.out.println("{name".matches(REGEX_NATIVE_FIELD));
-        System.out.println("{name}".matches(REGEX_NATIVE_FIELD));
-
-    }
+    public static final String REGEX_NATIVE_FIELD = "(^[\\[].+[\\]]$)|(^[{].+[}]$)";
 
     /**
      * 名称
      */
-    private String        name;
+    private String             name;
 
     /**
      * 别名
      */
-    private String        alias;
+    private String             alias;
 
     /**
      * 操作符 and or
      */
-    private String        sqlOperator;
+    private String             sqlOperator;
 
     /**
      * 本身操作符 值大于、小于、in等
      */
-    private String        fieldOperator;
+    private String             fieldOperator;
 
     /**
      * 值
      */
-    private Object        value;
+    private Object             value;
 
     /**
      * 类型
      */
-    private AutoFieldType type;
+    private AutoFieldType      type;
 
     public boolean isNativeField() {
         return name.matches(REGEX_NATIVE_FIELD);
@@ -112,5 +102,20 @@ public class AutoField {
 
     public void setFieldOperator(String fieldOperator) {
         this.fieldOperator = fieldOperator;
+    }
+
+    public static class Builder {
+
+        public static AutoField build(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type,
+                                      Object value, String fieldAlias) {
+            AutoField autoField = new AutoField();
+            autoField.setName(fieldName);
+            autoField.setSqlOperator(sqlOperator);
+            autoField.setFieldOperator(fieldOperator);
+            autoField.setValue(value);
+            autoField.setType(type);
+            autoField.setAlias(fieldAlias);
+            return autoField;
+        }
     }
 }

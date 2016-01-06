@@ -15,28 +15,25 @@ public class InsertBuilder extends AbstractSqlBuilder {
 
     protected static final String COMMAND_OPEN = "INSERT INTO ";
 
-    public InsertBuilder(Class<?> clazz) {
-        super(clazz);
-    }
-
     public void addField(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value) {
-        autoTableBuilder.autoField(fieldName, sqlOperator, fieldOperator, type, value, null);
+        AutoField autoField = AutoField.Builder.build(fieldName, sqlOperator, fieldOperator, type, value, null);
+        metaTable.getAutoFields().put(fieldName, autoField);
     }
 
     public void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type,
                              Object value) {
-        throw new JdbcAssistantException("Insert SQL不支持设置条件");
+        throw new JdbcAssistantException("InsertBuilder不支持设置条件");
     }
 
     public BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
-        AutoTable autoTable = autoTableBuilder.nameHandler(nameHandler)
-            .mergeEntityFields(entity, AutoFieldType.INSERT, isIgnoreNull).build();
+        metaTable = new MetaTable.Builder(metaTable).tableClass(clazz).entity(entity, isIgnoreNull)
+            .nameHandler(nameHandler).build();
         StringBuilder sql = new StringBuilder(COMMAND_OPEN);
         StringBuilder args = new StringBuilder("(");
         List<Object> params = new ArrayList<Object>();
-        sql.append(autoTable.getTableName()).append(" (");
+        sql.append(metaTable.getTableName()).append(" (");
 
-        for (Map.Entry<String, AutoField> entry : autoTable.getAutoFields().entrySet()) {
+        for (Map.Entry<String, AutoField> entry : metaTable.getAutoFields().entrySet()) {
             AutoField autoField = entry.getValue();
             //忽略null值
             if (autoField.getValue() == null && isIgnoreNull) {
@@ -44,8 +41,8 @@ public class InsertBuilder extends AbstractSqlBuilder {
             }
             //原生类型
             if (autoField.isNativeField()) {
-                String nativeFieldName = tokenParse(autoField.getName(), autoTable);
-                String nativeValue = tokenParse(String.valueOf(autoField.getValue()), autoTable);
+                String nativeFieldName = tokenParse(autoField.getName(), metaTable);
+                String nativeValue = tokenParse(String.valueOf(autoField.getValue()), metaTable);
                 sql.append(nativeFieldName).append(",");
                 args.append(nativeValue);
             } else {

@@ -29,12 +29,14 @@ public class DeleteBuilder extends AbstractSqlBuilder {
     }
 
     public BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
-        super.mergeEntityFields(entity, AutoFieldType.WHERE, nameHandler, isIgnoreNull);
-        whereBuilder.setTableAlias(getTableAlias());
-        whereBuilder.getFields().putAll(this.getFields());
-        String tableName = nameHandler.getTableName(clazz, whereBuilder.getFields());
+        metaTable = new MetaTable.Builder(metaTable).nameHandler(nameHandler).build();
+        //构建到whereBuilder
+        new MetaTable.Builder(whereBuilder.getMetaTable()).tableClass(clazz).tableAlias(metaTable.getTableAlias())
+            .entity(entity, isIgnoreNull).nameHandler(nameHandler).build();
+        //这里必须从whereBuilder的MetaTable中获取表名，以便水平分表时能使用正确的表名
+        String tableName = whereBuilder.getMetaTable().getTableAndAliasName();
         StringBuilder sb = new StringBuilder(COMMAND_OPEN);
-        sb.append(applyTableAlias(tableName)).append(" ");
+        sb.append(tableName).append(" ");
         BoundSql boundSql = whereBuilder.build(clazz, entity, isIgnoreNull, nameHandler);
         sb.append(boundSql.getSql());
         return new CriteriaBoundSql(sb.toString(), boundSql.getParameters());

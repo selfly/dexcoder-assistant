@@ -24,7 +24,8 @@ public class UpdateBuilder extends AbstractSqlBuilder {
     }
 
     public void addField(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value) {
-        autoTable.addAutoField(fieldName, sqlOperator, fieldOperator, type, value);
+        AutoField autoField = AutoField.Builder.build(fieldName, sqlOperator, fieldOperator, type, value, null);
+        metaTable.getAutoFields().put(fieldName, autoField);
     }
 
     public void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type,
@@ -33,31 +34,31 @@ public class UpdateBuilder extends AbstractSqlBuilder {
     }
 
     public BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
-        autoTable.mergeEntityFields(entity, AutoFieldType.UPDATE, isIgnoreNull);
-        String pkFieldName = nameHandler.getPkFieldName(clazz);
+        metaTable = new MetaTable.Builder(metaTable).tableClass(clazz).entity(entity, isIgnoreNull)
+            .nameHandler(nameHandler).build();
         //更新，主键都是在where
-        AutoField pkField = getFields().get(pkFieldName);
-        if (pkField != null) {
-            getFields().remove(pkFieldName);
-            if (!whereBuilder.hasField(pkFieldName)) {
-                this.whereBuilder.addCondition(pkField.getName(), pkField.getSqlOperator(), pkField.getFieldOperator(),
-                    pkField.getType(), pkField.getValue());
+        AutoField pkAutoField = metaTable.getAutoFields().get(metaTable.getPkFieldName());
+        if (pkAutoField != null) {
+            metaTable.getAutoFields().remove(pkAutoField.getName());
+            if (!whereBuilder.getMetaTable().hasAutoField(pkAutoField.getName())) {
+                this.whereBuilder.addCondition(pkAutoField.getName(), pkAutoField.getSqlOperator(),
+                    pkAutoField.getFieldOperator(), pkAutoField.getType(), pkAutoField.getValue());
             }
         }
-
-        String tableName = nameHandler.getTableName(clazz, this.whereBuilder.getFields());
-        tableName = applyTableAlias(tableName);
+        //whereBuilder的metaTable
+        new MetaTable.Builder(whereBuilder.getMetaTable()).tableClass(clazz).tableAlias(metaTable.getTableAlias())
+            .nameHandler(nameHandler).build();
 
         StringBuilder sql = new StringBuilder(COMMAND_OPEN);
         List<Object> params = new ArrayList<Object>();
-        sql.append(tableName).append(" SET ");
-        for (Map.Entry<String, AutoField> entry : this.autoFields.entrySet()) {
-            String columnName = nameHandler.getColumnName(clazz, entry.getKey());
-            columnName = applyColumnAlias(columnName);
+        //tableName必须从whereBuilder中获取，以便水平分表时能正确获取表名
+        sql.append(whereBuilder.getMetaTable().getTableAndAliasName()).append(" SET ");
+        for (Map.Entry<String, AutoField> entry : metaTable.getAutoFields().entrySet()) {
+            String columnName = metaTable.getColumnAndTableAliasName(entry.getKey());
             AutoField autoField = entry.getValue();
             if (autoField.isNativeField()) {
-                String nativeFieldName = tokenParse(autoField.getName(), clazz, nameHandler);
-                String nativeValue = tokenParse(String.valueOf(autoField.getValue()), clazz, nameHandler);
+                String nativeFieldName = tokenParse(autoField.getName(), metaTable);
+                String nativeValue = tokenParse(String.valueOf(autoField.getValue()), metaTable);
                 sql.append(nativeFieldName).append(" = ").append(nativeValue).append(",");
             } else if (autoField.getValue() == null) {
                 sql.append(columnName).append(" = NULL,");
@@ -67,7 +68,6 @@ public class UpdateBuilder extends AbstractSqlBuilder {
             }
         }
         sql.deleteCharAt(sql.length() - 1);
-        whereBuilder.setTableAlias(getTableAlias());
         BoundSql boundSql = whereBuilder.build(clazz, entity, isIgnoreNull, nameHandler);
         sql.append(" ").append(boundSql.getSql());
         params.addAll(boundSql.getParameters());

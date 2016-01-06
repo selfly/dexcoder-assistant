@@ -17,8 +17,8 @@ public class WhereBuilder extends AbstractSqlBuilder {
     protected static final String COMMAND_OPEN = " WHERE ";
 
     public void addField(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value) {
-        AutoField autoField = buildAutoField(fieldName, sqlOperator, fieldOperator, type, value);
-        this.autoFields.put(fieldName, autoField);
+        AutoField autoField = AutoField.Builder.build(fieldName, sqlOperator, fieldOperator, type, value, null);
+        metaTable.getAutoFields().put(fieldName, autoField);
     }
 
     public void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type,
@@ -32,22 +32,21 @@ public class WhereBuilder extends AbstractSqlBuilder {
 
     public BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
         StringBuilder sb = new StringBuilder();
-        if (hasFields()) {
+        if (metaTable.hasAutoFields()) {
             sb.append(COMMAND_OPEN);
         }
         List<Object> params = new ArrayList<Object>();
         AutoField preAutoFile = null;
-        for (Map.Entry<String, AutoField> entry : getFields().entrySet()) {
-            String columnName = nameHandler.getColumnName(clazz, entry.getKey());
-            columnName = applyColumnAlias(columnName);
+        for (Map.Entry<String, AutoField> entry : metaTable.getAutoFields().entrySet()) {
+            String columnName = metaTable.getColumnAndTableAliasName(entry.getKey());
             AutoField autoField = entry.getValue();
             if (StrUtils.isNotBlank(autoField.getSqlOperator()) && sb.length() > COMMAND_OPEN.length()
                 && !isFieldBracketBegin(preAutoFile)) {
                 sb.append(autoField.getSqlOperator()).append(" ");
             }
             if (autoField.isNativeField()) {
-                String nativeFieldName = tokenParse(autoField.getName(), clazz, nameHandler);
-                String nativeValue = tokenParse(String.valueOf(autoField.getValue()), clazz, nameHandler);
+                String nativeFieldName = tokenParse(autoField.getName(), metaTable);
+                String nativeValue = tokenParse(String.valueOf(autoField.getValue()), metaTable);
                 sb.append(nativeFieldName).append(" ").append(autoField.getFieldOperator()).append(" ")
                     .append(nativeValue).append(" ");
             } else if (autoField.getType() == AutoFieldType.BRACKET_BEGIN

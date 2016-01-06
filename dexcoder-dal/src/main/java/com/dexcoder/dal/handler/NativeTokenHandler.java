@@ -1,7 +1,6 @@
 package com.dexcoder.dal.handler;
 
-import com.dexcoder.commons.utils.StrUtils;
-import com.dexcoder.dal.build.AutoTable;
+import com.dexcoder.dal.build.MetaTable;
 
 /**
  * 解析[]符号
@@ -10,17 +9,16 @@ import com.dexcoder.dal.build.AutoTable;
  */
 public class NativeTokenHandler implements TokenHandler {
 
-    private AutoTable autoTable;
+    private MetaTable metaTable;
 
-    public NativeTokenHandler(AutoTable autoTable) {
-        this.autoTable = autoTable;
+    public NativeTokenHandler(MetaTable metaTable) {
+        this.metaTable = metaTable;
     }
 
     public String handleToken(String content) {
-        String columnName = autoTable.getNameHandler().getColumnName(autoTable.getTableClass(), content);
-        if (StrUtils.isBlank(autoTable.getTableAlias())) {
-            return columnName;
+        if (metaTable == null) {
+            return content;
         }
-        return new StringBuilder(autoTable.getTableAlias()).append(".").append(columnName).toString();
+        return metaTable.getColumnAndTableAliasName(content);
     }
 }

@@ -77,7 +77,7 @@ public class Criteria {
      * @return
      */
     public Criteria tableAlias(String alias) {
-        this.sqlBuilder.setTableAlias(alias);
+        new MetaTable.Builder(this.sqlBuilder.getMetaTable()).tableAlias(alias);
         return this;
     }
 

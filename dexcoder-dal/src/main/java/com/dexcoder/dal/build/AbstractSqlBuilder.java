@@ -15,24 +15,24 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
     /**
      * 符号中内容会被转换(field -> column)
      */
-    public static final String[]      NATIVE_FIELD_TOKEN = { "[", "]" };
+    public static final String[]      NATIVE_TOKEN = { "[", "]", "{", "}" };
 
     /**
      * 表信息
      */
-    protected AutoTable.Builder       autoTableBuilder;
+    protected MetaTable               metaTable;
 
     /**
      * parser map
      */
     protected Set<GenericTokenParser> tokenParsers;
 
-    public AbstractSqlBuilder(Class<?> clazz) {
-        autoTableBuilder = new AutoTable.Builder(clazz);
+    public AbstractSqlBuilder() {
+        metaTable = new MetaTable.Builder().initAutoFields().build();
     }
 
-    public void setTableAlias(String tableAlias) {
-        autoTableBuilder.tableAlias(tableAlias);
+    public MetaTable getMetaTable() {
+        return metaTable;
     }
 
     /**
@@ -41,11 +41,13 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
      * @param autoTable the auto table
      * @return set set
      */
-    protected Set<GenericTokenParser> initTokenParsers(AutoTable autoTable) {
+    protected Set<GenericTokenParser> initTokenParsers(MetaTable autoTable) {
         if (tokenParsers == null) {
-            tokenParsers = new HashSet<GenericTokenParser>(1);
+            tokenParsers = new HashSet<GenericTokenParser>(2);
             TokenHandler tokenHandler = new NativeTokenHandler(autoTable);
-            tokenParsers.add(new GenericTokenParser(NATIVE_FIELD_TOKEN[0], NATIVE_FIELD_TOKEN[1], tokenHandler));
+            tokenParsers.add(new GenericTokenParser(NATIVE_TOKEN[0], NATIVE_TOKEN[1], tokenHandler));
+            tokenHandler = new NativeTokenHandler(null);
+            tokenParsers.add(new GenericTokenParser(NATIVE_TOKEN[2], NATIVE_TOKEN[3], tokenHandler));
         }
         return tokenParsers;
     }
@@ -57,7 +59,7 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
      * @param autoTable the auto table
      * @return string
      */
-    protected String tokenParse(String content, AutoTable autoTable) {
+    protected String tokenParse(String content, MetaTable autoTable) {
         Set<GenericTokenParser> tokenParsers = initTokenParsers(autoTable);
         String result = content;
         for (GenericTokenParser tokenParser : tokenParsers) {

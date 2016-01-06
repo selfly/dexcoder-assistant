@@ -5,6 +5,8 @@ package com.dexcoder.dal.build;
  */
 public enum AutoFieldType {
 
+    NORMAL,
+
     INSERT,
 
     UPDATE,

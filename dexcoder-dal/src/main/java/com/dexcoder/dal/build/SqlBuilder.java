@@ -1,7 +1,5 @@
 package com.dexcoder.dal.build;
 
-import java.util.Map;
-
 import com.dexcoder.dal.BoundSql;
 import com.dexcoder.dal.handler.NameHandler;
 
@@ -32,49 +30,41 @@ public interface SqlBuilder {
      */
     void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value);
 
+    //    /**
+    //     * 获取表别名
+    //     *
+    //     * @return
+    //     */
+    //    String getTableAlias();
+
+    //    /**
+    //     * 是否拥有操作字段
+    //     *
+    //     * @return
+    //     */
+    //    boolean hasFields();
+
     /**
-     * 设置表别名
-     * 
-     * @param alias
+     * 获取操作表对象
+     *
+     * @return
      */
-    void setTableAlias(String alias);
+    MetaTable getMetaTable();
 
-//    /**
-//     * 获取表别名
-//     *
-//     * @return
-//     */
-//    String getTableAlias();
-
-//    /**
-//     * 是否拥有操作字段
-//     *
-//     * @return
-//     */
-//    boolean hasFields();
-
-//    /**
-//     * 是否拥有某个字段
-//     *
-//     * @param fieldName
-//     * @return
-//     */
-//    boolean hasField(String fieldName);
-
-//    /**
-//     * 获取所有操作字段
-//     *
-//     * @return
-//     */
-//    Map<String, AutoField> getFields();
+    //    /**
+    //     * 获取所有操作字段
+    //     *
+    //     * @return
+    //     */
+    //    Map<String, AutoField> getFields();
 
     /**
      * 构建BoundSql
      *
-     * @param clazz the clazz
-     * @param entity the entity
-     * @param isIgnoreNull the is ignore null
-     * @param nameHandler the name handler
+     * @param clazz 不能为空
+     * @param entity 可以为空
+     * @param isIgnoreNull entity不为空的情况下是否忽略null属性
+     * @param nameHandler 名称处理器，如果注解指定了单独的nameHandler则会被覆盖
      * @return bound sql
      */
     BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler);

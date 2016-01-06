@@ -14,22 +14,23 @@ public class OrderByBuilder extends AbstractSqlBuilder {
     protected static final String COMMAND_OPEN = " ORDER BY ";
 
     public void addField(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value) {
-        AutoField autoField = buildAutoField(fieldName, null, fieldOperator, type, null);
-        this.autoFields.put(fieldName, autoField);
+        AutoField autoField = AutoField.Builder.build(fieldName, null, fieldOperator, type, null, null);
+        metaTable.getAutoFields().put(fieldName, autoField);
     }
 
     public void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type,
                              Object value) {
-        throw new JdbcAssistantException("OrderByBuilder不支持条件添加");
+        throw new JdbcAssistantException("OrderByBuilder不支持设置条件");
     }
 
     public BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
+        metaTable = new MetaTable.Builder(metaTable).tableClass(clazz).nameHandler(nameHandler).build();
         StringBuilder sb = new StringBuilder(COMMAND_OPEN);
-        if (getFields().isEmpty()) {
-            sb.append(applyColumnAlias(nameHandler.getPkColumnName(clazz))).append(" DESC");
+        if (metaTable.getAutoFields().isEmpty()) {
+            sb.append(metaTable.getColumnAndTableAliasName(metaTable.getPkFieldName())).append(" DESC");
         } else {
-            for (Map.Entry<String, AutoField> entry : getFields().entrySet()) {
-                String columnName = applyColumnAlias(nameHandler.getColumnName(clazz, entry.getKey()));
+            for (Map.Entry<String, AutoField> entry : metaTable.getAutoFields().entrySet()) {
+                String columnName = metaTable.getColumnAndTableAliasName(entry.getKey());
                 sb.append(columnName).append(" ").append(entry.getValue().getFieldOperator()).append(",");
             }
             if (sb.length() > 10) {

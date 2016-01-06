@@ -8,7 +8,7 @@ import org.springframework.util.CollectionUtils;
 import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.dal.BoundSql;
 import com.dexcoder.dal.JdbcDao;
-import com.dexcoder.dal.build.AutoField;
+import com.dexcoder.dal.build.AbstractSqlBuilder;
 import com.dexcoder.dal.build.Criteria;
 import com.dexcoder.dal.handler.NameHandler;
 
@@ -26,7 +26,7 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
         String nativePKValue = handler.getPkNativeValue(entity.getClass(), getDialect());
         if (StrUtils.isNotBlank(nativePKValue)) {
             String pkFieldName = handler.getPkFieldName(entity.getClass());
-            criteria.into(AutoField.NATIVE_FIELD_TOKEN[0] + pkFieldName + AutoField.NATIVE_FIELD_TOKEN[1],
+            criteria.into(AbstractSqlBuilder.NATIVE_TOKEN[0] + pkFieldName + AbstractSqlBuilder.NATIVE_TOKEN[1],
                 nativePKValue);
         }
         final BoundSql boundSql = criteria.build(entity, true, getNameHandler());
