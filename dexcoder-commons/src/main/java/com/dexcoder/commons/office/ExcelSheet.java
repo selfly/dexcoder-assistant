@@ -56,7 +56,7 @@ public class ExcelSheet {
     }
 
     public boolean hasRows() {
-        return (rows != null && !rows.isEmpty());
+        return rows != null && !rows.isEmpty();
     }
 
     public String getSheetName() {

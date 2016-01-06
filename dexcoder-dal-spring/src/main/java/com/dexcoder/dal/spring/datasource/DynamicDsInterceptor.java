@@ -19,6 +19,7 @@ public class DynamicDsInterceptor {
 
     @Pointcut("execution(* org.springframework.jdbc.core.JdbcOperations.*(..))")
     public void executeMethod() {
+        throw new UnsupportedOperationException("不支持的方法");
     }
 
     @Around("executeMethod()")

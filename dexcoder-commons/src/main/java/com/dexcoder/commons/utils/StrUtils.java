@@ -105,7 +105,7 @@ public class StrUtils {
             return true;
         }
         for (int i = 0; i < strLen; i++) {
-            if ((Character.isWhitespace(str.charAt(i)) == false)) {
+            if (Character.isWhitespace(str.charAt(i)) == false) {
                 return false;
             }
         }
@@ -130,32 +130,6 @@ public class StrUtils {
      */
     public static boolean isNotBlank(String str) {
         return !StrUtils.isBlank(str);
-    }
-
-    // Trim
-    //-----------------------------------------------------------------------
-
-    /**
-     * <p>Removes control characters (char &lt;= 32) from both
-     * ends of this String, handling <code>null</code> by returning
-     * an empty String ("").</p>
-     * <p/>
-     * <pre>
-     * StrUtils.clean(null)          = ""
-     * StrUtils.clean("")            = ""
-     * StrUtils.clean("abc")         = "abc"
-     * StrUtils.clean("    abc    ") = "abc"
-     * StrUtils.clean("     ")       = ""
-     * </pre>
-     *
-     * @param str the String to clean, may be null
-     * @return the trimmed text, never <code>null</code>
-     * @see String#trim()
-     * @deprecated Use the clearer named {@link #trimToEmpty(String)}.
-     * Method will be removed in Commons Lang 3.0.
-     */
-    public static String clean(String str) {
-        return str == null ? EMPTY : str.trim();
     }
 
     /**

@@ -15,7 +15,7 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
     /**
      * 符号中内容会被转换(field -> column)
      */
-    public static final String[]      NATIVE_TOKEN = { "[", "]", "{", "}" };
+    public static final String[]      NATIVE_TOKENS = { "{", "}", "[", "]" };
 
     /**
      * 表信息
@@ -44,10 +44,10 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
     protected Set<GenericTokenParser> initTokenParsers(MetaTable autoTable) {
         if (tokenParsers == null) {
             tokenParsers = new HashSet<GenericTokenParser>(2);
-            TokenHandler tokenHandler = new NativeTokenHandler(autoTable);
-            tokenParsers.add(new GenericTokenParser(NATIVE_TOKEN[0], NATIVE_TOKEN[1], tokenHandler));
-            tokenHandler = new NativeTokenHandler(null);
-            tokenParsers.add(new GenericTokenParser(NATIVE_TOKEN[2], NATIVE_TOKEN[3], tokenHandler));
+            TokenHandler tokenHandler = new NativeTokenHandler(null);
+            tokenParsers.add(new GenericTokenParser(NATIVE_TOKENS[0], NATIVE_TOKENS[1], tokenHandler));
+            tokenHandler = new NativeTokenHandler(autoTable);
+            tokenParsers.add(new GenericTokenParser(NATIVE_TOKENS[2], NATIVE_TOKENS[3], tokenHandler));
         }
         return tokenParsers;
     }

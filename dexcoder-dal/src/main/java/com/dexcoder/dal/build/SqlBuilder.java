@@ -30,33 +30,12 @@ public interface SqlBuilder {
      */
     void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value);
 
-    //    /**
-    //     * 获取表别名
-    //     *
-    //     * @return
-    //     */
-    //    String getTableAlias();
-
-    //    /**
-    //     * 是否拥有操作字段
-    //     *
-    //     * @return
-    //     */
-    //    boolean hasFields();
-
     /**
      * 获取操作表对象
      *
      * @return
      */
     MetaTable getMetaTable();
-
-    //    /**
-    //     * 获取所有操作字段
-    //     *
-    //     * @return
-    //     */
-    //    Map<String, AutoField> getFields();
 
     /**
      * 构建BoundSql

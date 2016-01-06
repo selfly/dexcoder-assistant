@@ -18,7 +18,7 @@ import com.dexcoder.commons.utils.ClassUtils;
  */
 public class XMLMapperEntityResolver implements EntityResolver {
 
-    private static final Map<String, String> doctypeMap            = new HashMap<String, String>();
+    private static final Map<String, String> DOCTYPE_MAP           = new HashMap<String, String>();
 
     private static final String              BATIS_MAPPER_PUBLIC   = "-//dexcoder.com//DTD Mapper 2.0//EN"
                                                                        .toUpperCase(Locale.ENGLISH);
@@ -28,9 +28,9 @@ public class XMLMapperEntityResolver implements EntityResolver {
 
     static {
 
-        doctypeMap.put(BATIS_MAPPER_PUBLIC, BATIS_MAPPER_DTD);
+        DOCTYPE_MAP.put(BATIS_MAPPER_PUBLIC, BATIS_MAPPER_DTD);
 
-        doctypeMap.put(MYBATIS_MAPPER_SYSTEM, BATIS_MAPPER_DTD);
+        DOCTYPE_MAP.put(MYBATIS_MAPPER_SYSTEM, BATIS_MAPPER_DTD);
     }
 
     /*
@@ -51,27 +51,27 @@ public class XMLMapperEntityResolver implements EntityResolver {
             systemId = systemId.toUpperCase(Locale.ENGLISH);
         }
 
-        InputSource source = null;
+        InputSource source;
         try {
-            String path = doctypeMap.get(publicId);
-            source = getInputSource(path, source);
+            String path = DOCTYPE_MAP.get(publicId);
+            source = getInputSource(path);
             if (source == null) {
-                path = doctypeMap.get(systemId);
-                source = getInputSource(path, source);
+                path = DOCTYPE_MAP.get(systemId);
+                source = getInputSource(path);
             }
         } catch (Exception e) {
-            throw new SAXException(e.toString());
+            throw new SAXException(e);
         }
         return source;
     }
 
-    private InputSource getInputSource(String path, InputSource source) {
+    private InputSource getInputSource(String path) {
         if (path != null) {
             InputStream in;
             in = ClassUtils.getDefaultClassLoader().getResourceAsStream(path);
-            source = new InputSource(in);
+            return new InputSource(in);
         }
-        return source;
+        return null;
     }
 
 }

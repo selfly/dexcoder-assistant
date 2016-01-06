@@ -109,6 +109,6 @@ public class WhereBuilder extends AbstractSqlBuilder {
      * @return
      */
     protected boolean isFieldBracketBegin(AutoField autoField) {
-        return (autoField != null && autoField.getType() == AutoFieldType.BRACKET_BEGIN);
+        return autoField != null && autoField.getType() == AutoFieldType.BRACKET_BEGIN;
     }
 }

@@ -1,6 +1,7 @@
 package com.dexcoder.commons.utils;
 
 import com.dexcoder.commons.enums.IEnum;
+import com.dexcoder.commons.exceptions.CommonsAssistantException;
 
 /**
  * 枚举辅助类
@@ -36,9 +37,8 @@ public final class EnumUtils {
             Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(enumClass);
             return getEnums(clazz);
         } catch (ClassNotFoundException e) {
-            //ignore
+            throw new CommonsAssistantException("加载枚举类失败", e);
         }
-        return null;
     }
 
     /**

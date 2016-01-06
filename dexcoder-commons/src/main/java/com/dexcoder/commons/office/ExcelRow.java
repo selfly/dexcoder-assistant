@@ -25,7 +25,7 @@ public class ExcelRow {
     }
 
     public boolean hasCells() {
-        return (cells != null && !cells.isEmpty());
+        return cells != null && !cells.isEmpty();
     }
 
     public ExcelCell getCell(int i) {

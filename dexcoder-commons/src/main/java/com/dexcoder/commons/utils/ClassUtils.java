@@ -27,7 +27,7 @@ public class ClassUtils {
      * Needs to be a WeakHashMap with WeakReferences as values to allow
      * for proper garbage collection in case of multiple class loaders.
      */
-    private static final Map<Class<?>, BeanInfo> classCache = Collections
+    private static final Map<Class<?>, BeanInfo> CLASS_CACHE = Collections
                                                                 .synchronizedMap(new WeakHashMap<Class<?>, BeanInfo>());
 
     /**
@@ -39,9 +39,9 @@ public class ClassUtils {
     public static BeanInfo getBeanInfo(Class<?> clazz, Class<?> stopClazz) {
         try {
             BeanInfo beanInfo;
-            if (classCache.get(clazz) == null) {
+            if (CLASS_CACHE.get(clazz) == null) {
                 beanInfo = Introspector.getBeanInfo(clazz, stopClazz);
-                classCache.put(clazz, beanInfo);
+                CLASS_CACHE.put(clazz, beanInfo);
                 // Immediately remove class from Introspector cache, to allow for proper
                 // garbage collection on class loader shutdown - we cache it here anyway,
                 // in a GC-friendly manner. In contrast to CachedIntrospectionResults,
@@ -52,7 +52,7 @@ public class ClassUtils {
                     classToFlush = classToFlush.getSuperclass();
                 } while (classToFlush != null);
             } else {
-                beanInfo = classCache.get(clazz);
+                beanInfo = CLASS_CACHE.get(clazz);
             }
             return beanInfo;
         } catch (IntrospectionException e) {

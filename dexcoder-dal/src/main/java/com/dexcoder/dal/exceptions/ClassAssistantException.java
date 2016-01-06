@@ -1,5 +1,7 @@
 package com.dexcoder.dal.exceptions;
 
+import com.dexcoder.commons.exceptions.AssistantException;
+
 /**
  * Created by liyd on 2015-12-4.
  */

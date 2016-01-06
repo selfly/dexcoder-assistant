@@ -26,7 +26,7 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
         String nativePKValue = handler.getPkNativeValue(entity.getClass(), getDialect());
         if (StrUtils.isNotBlank(nativePKValue)) {
             String pkFieldName = handler.getPkFieldName(entity.getClass());
-            criteria.into(AbstractSqlBuilder.NATIVE_TOKEN[0] + pkFieldName + AbstractSqlBuilder.NATIVE_TOKEN[1],
+            criteria.into(AbstractSqlBuilder.NATIVE_TOKENS[2] + pkFieldName + AbstractSqlBuilder.NATIVE_TOKENS[3],
                 nativePKValue);
         }
         final BoundSql boundSql = criteria.build(entity, true, getNameHandler());

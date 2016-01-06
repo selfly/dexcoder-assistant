@@ -3,6 +3,7 @@ package com.dexcoder.commons.pager;
 import java.io.Serializable;
 
 import com.dexcoder.commons.bean.BeanConverter;
+import com.dexcoder.commons.exceptions.CommonsAssistantException;
 
 /**
  * 分页等常用信息存储
@@ -42,12 +43,9 @@ public class Pageable implements Serializable {
         try {
             T t = clazz.newInstance();
             return BeanConverter.convert(t, this);
-        } catch (InstantiationException e) {
-            //ignore
-        } catch (IllegalAccessException e) {
-            //ignore
+        } catch (Exception e) {
+            throw new CommonsAssistantException("转换对象失败", e);
         }
-        return null;
     }
 
     public int getItemsPerPage() {

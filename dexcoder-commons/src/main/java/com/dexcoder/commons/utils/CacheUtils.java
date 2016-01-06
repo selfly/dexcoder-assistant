@@ -19,7 +19,7 @@ public class CacheUtils {
 
     /** 缓存map */
     private static CacheMap<Object, Object> cacheMap                = new LRUCache<Object, Object>(DEFAULT_CACHE_SIZE,
-                                                                        DEFAULT_CACHE_LIVE_TIME); ;
+                                                                        DEFAULT_CACHE_LIVE_TIME);
 
     /**
      * 获取缓存大小

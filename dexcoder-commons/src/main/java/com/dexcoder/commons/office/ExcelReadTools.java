@@ -223,11 +223,4 @@ public class ExcelReadTools {
         }
     }
 
-    public static void main(String[] args) {
-
-        ExcelSheet excelSheet = ExcelReadTools.readFirstSheet(new File("e:/old/test.xlsx"));
-        System.out.println(excelSheet);
-
-    }
-
 }

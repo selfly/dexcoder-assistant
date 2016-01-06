@@ -7,16 +7,6 @@ package com.dexcoder.dal.build;
  */
 public class AutoField {
 
-    //    /**
-    //     * 不以传参方式构建，符号中内容不会被转换
-    //     */
-    //    public static final String[] NATIVE_CODE_TOKEN  = { "{", "}" };
-    //
-    //    /**
-    //     * 不以传参方式构建，符号中内容会被转换(field -> column)
-    //     */
-    //    public static final String[] NATIVE_FIELD_TOKEN = { "[", "]" };
-
     /**
      * native field 正则
      */

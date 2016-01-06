@@ -165,7 +165,7 @@ public class BeanConverter {
 
         Map<String, TypeConverter> converters = getConverters();
 
-        if (converters == null || converters.size() == 0) {
+        if (converters == null || converters.isEmpty()) {
             return value;
         }
 

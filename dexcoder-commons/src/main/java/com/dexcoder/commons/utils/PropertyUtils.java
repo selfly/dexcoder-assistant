@@ -38,11 +38,9 @@ public final class PropertyUtils {
         try {
             File configFile = getConfigFile(resourceName);
             if (configFile == null) {
-                //                LOG.info("从classpath加载资源文件:{}", resourceName);
                 InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceName);
                 return is;
             } else {
-                //                LOG.info("从目录加载资源文件:{}", configFile.getAbsolutePath());
                 return new FileInputStream(configFile);
             }
         } catch (FileNotFoundException e) {

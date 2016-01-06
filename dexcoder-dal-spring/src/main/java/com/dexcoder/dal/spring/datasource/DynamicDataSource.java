@@ -33,7 +33,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
     public static final String  DS_MODE_W              = "w";
     public static final String  DS_MODE_RW             = "rw";
 
-    private static Logger       LOG                    = LoggerFactory.getLogger(DynamicDataSource.class);
+    private static final Logger       LOG                    = LoggerFactory.getLogger(DynamicDataSource.class);
 
     /**
      * 默认配置文件名

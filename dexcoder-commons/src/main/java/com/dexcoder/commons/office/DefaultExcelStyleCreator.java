@@ -90,7 +90,7 @@ public class DefaultExcelStyleCreator implements ExcelStyleCreator {
         for (int i = 0; i < cells.size(); i++) {
 
             ExcelCell excelCell = cells.get(i);
-            Object value = ((excelCell == null || excelCell.getValue() == null) ? null : excelCell.getValue());
+            Object value = (excelCell == null || excelCell.getValue() == null) ? null : excelCell.getValue();
             createCell(workbook, sheet, row, value, rowIndex, i);
         }
     }
