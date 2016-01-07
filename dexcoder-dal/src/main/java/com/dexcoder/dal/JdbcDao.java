@@ -88,13 +88,6 @@ public interface JdbcDao extends SqlJdbcDao {
     int delete(Class<?> clazz, Long id);
 
     /**
-     * 删除所有记录(TRUNCATE ddl权限)
-     *
-     * @param clazz the clazz
-     */
-    void deleteAll(Class<?> clazz);
-
-    /**
      * 按设置的条件查询
      *
      * @param <T>  the type parameter

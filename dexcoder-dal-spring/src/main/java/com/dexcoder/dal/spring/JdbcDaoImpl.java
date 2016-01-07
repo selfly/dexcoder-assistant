@@ -79,12 +79,6 @@ public class JdbcDaoImpl extends SqlJdbcDaoImpl implements JdbcDao {
         return jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
-    public void deleteAll(Class<?> clazz) {
-        String tableName = this.getNameHandler().getTableName(clazz, null);
-        String sql = "TRUNCATE TABLE " + tableName;
-        jdbcTemplate.execute(sql);
-    }
-
     public <T> List<T> queryList(Criteria criteria) {
         BoundSql boundSql = criteria.build(true, getNameHandler());
         List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParameters().toArray(),
