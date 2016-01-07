@@ -12,23 +12,23 @@ public interface SqlBuilder {
      * 添加操作字段
      *
      * @param fieldName     the field name
-     * @param sqlOperator   the sql operator
+     * @param logicalOperator   the logicalOperator
      * @param fieldOperator the field operator
      * @param type          the type
      * @param value         the value
      */
-    void addField(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value);
+    void addField(String fieldName, String logicalOperator, String fieldOperator, AutoFieldType type, Object value);
 
     /**
      * 添加操作条件
      *
      * @param fieldName the field name
-     * @param sqlOperator the sql operator
+     * @param logicalOperator the logicalOperator
      * @param fieldOperator the field operator
      * @param type the type
      * @param value the value
      */
-    void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value);
+    void addCondition(String fieldName, String logicalOperator, String fieldOperator, AutoFieldType type, Object value);
 
     /**
      * 获取操作表对象

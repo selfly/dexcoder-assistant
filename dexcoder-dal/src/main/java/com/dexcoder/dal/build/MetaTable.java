@@ -80,12 +80,12 @@ public class MetaTable {
     /**
      * 是否和字段互斥
      */
-    private boolean              isFieldExclusion = false;
+    private boolean                isFieldExclusion = false;
 
     /**
      * 是否需要排序
      */
-    private boolean              isOrderBy        = true;
+    private boolean                isOrderBy        = true;
 
     private MetaTable() {
     }
@@ -115,7 +115,7 @@ public class MetaTable {
 
     /**
      * 是否拥用列
-     * 
+     *
      * @return
      */
     public boolean hasColumnFields() {
@@ -124,21 +124,21 @@ public class MetaTable {
 
     /**
      * 是否包含属性
-     * 
+     *
      * @return
      */
     public boolean hasAutoFields() {
-        return (!autoFields.isEmpty());
+        return !autoFields.isEmpty();
     }
 
     /**
      * 是否包含某个属性
-     * 
+     *
      * @param fieldName
      * @return
      */
     public boolean hasAutoField(String fieldName) {
-        return (this.autoFields.get(fieldName) != null);
+        return this.autoFields.get(fieldName) != null;
     }
 
     public Map<String, AutoField> getAutoFields() {
@@ -177,7 +177,7 @@ public class MetaTable {
     }
 
     public boolean hasFuncAutoField() {
-        return (funcAutoFields != null && !funcAutoFields.isEmpty());
+        return funcAutoFields != null && !funcAutoFields.isEmpty();
     }
 
     public boolean isIncludeField(String fieldName) {
@@ -200,7 +200,7 @@ public class MetaTable {
      *     如果有注解，直接返回注解的表名
      *     否则用nameHandler获取，这个必须实时获取以便在水平分表时能正确处理表名
      * </pre>
-     * 
+     *
      * @return
      */
     public String getTableName() {
@@ -295,14 +295,11 @@ public class MetaTable {
                 if (aTransient != null) {
                     continue;
                 }
-                String fieldName;
-                String fieldAlias = null;
+                String fieldName = pd.getName();
+                String fieldAnnotationName = null;
                 Column aColumn = readMethod.getAnnotation(Column.class);
                 if (aColumn != null) {
-                    fieldName = aColumn.name();
-                    fieldAlias = aColumn.alias();
-                } else {
-                    fieldName = pd.getName();
+                    fieldAnnotationName = aColumn.name();
                 }
                 if (metaTable.columnFields != null) {
                     metaTable.columnFields.add(fieldName);
@@ -317,8 +314,8 @@ public class MetaTable {
                 if (value == null && isIgnoreNull) {
                     continue;
                 }
-                AutoField autoField = AutoField.Builder.build(fieldName, "and", "=", AutoFieldType.NORMAL, value,
-                    fieldAlias);
+                AutoField autoField = new AutoField.Builder().name(fieldName).annotationName(fieldAnnotationName)
+                    .logicalOperator("and").fieldOperator("=").type(AutoFieldType.NORMAL).value(value).build();
                 metaTable.getAutoFields().put(fieldName, autoField);
             }
             return this;

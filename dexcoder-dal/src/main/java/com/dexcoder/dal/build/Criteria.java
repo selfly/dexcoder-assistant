@@ -247,8 +247,8 @@ public class Criteria {
      *
      * @return
      */
-    public Criteria begin(String sqlOperator) {
-        this.sqlBuilder.addCondition("(", sqlOperator, null, AutoFieldType.BRACKET_BEGIN, null);
+    public Criteria begin(String logicalOperator) {
+        this.sqlBuilder.addCondition("(", logicalOperator, null, AutoFieldType.BRACKET_BEGIN, null);
         return this;
     }
 

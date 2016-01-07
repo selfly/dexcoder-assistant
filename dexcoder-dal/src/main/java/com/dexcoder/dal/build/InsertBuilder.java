@@ -15,12 +15,13 @@ public class InsertBuilder extends AbstractSqlBuilder {
 
     protected static final String COMMAND_OPEN = "INSERT INTO ";
 
-    public void addField(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value) {
-        AutoField autoField = AutoField.Builder.build(fieldName, sqlOperator, fieldOperator, type, value, null);
+    public void addField(String fieldName, String logicalOperator, String fieldOperator, AutoFieldType type, Object value) {
+        AutoField autoField = new AutoField.Builder().name(fieldName).logicalOperator(logicalOperator)
+            .fieldOperator(fieldOperator).type(type).value(value).build();
         metaTable.getAutoFields().put(fieldName, autoField);
     }
 
-    public void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type,
+    public void addCondition(String fieldName, String logicalOperator, String fieldOperator, AutoFieldType type,
                              Object value) {
         throw new JdbcAssistantException("InsertBuilder不支持设置条件");
     }

@@ -20,15 +20,15 @@ public class AutoField {
     /**
      * 别名
      */
-    private String             alias;
+    private String             annotationName;
 
     /**
-     * 操作符 and or
+     * 逻辑操作符 and or
      */
-    private String             sqlOperator;
+    private String             logicalOperator;
 
     /**
-     * 本身操作符 值大于、小于、in等
+     * 属性操作符 值大于、小于、in等
      */
     private String             fieldOperator;
 
@@ -42,6 +42,11 @@ public class AutoField {
      */
     private AutoFieldType      type;
 
+    /**
+     * 是否native属性
+     * 
+     * @return
+     */
     public boolean isNativeField() {
         return name.matches(REGEX_NATIVE_FIELD);
     }
@@ -50,61 +55,62 @@ public class AutoField {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getAnnotationName() {
+        return annotationName;
     }
 
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
-    }
-
-    public AutoFieldType getType() {
-        return type;
-    }
-
-    public void setType(AutoFieldType type) {
-        this.type = type;
-    }
-
-    public String getSqlOperator() {
-        return sqlOperator;
-    }
-
-    public void setSqlOperator(String sqlOperator) {
-        this.sqlOperator = sqlOperator;
+    public String getLogicalOperator() {
+        return logicalOperator;
     }
 
     public String getFieldOperator() {
         return fieldOperator;
     }
 
-    public void setFieldOperator(String fieldOperator) {
-        this.fieldOperator = fieldOperator;
+    public Object getValue() {
+        return value;
+    }
+
+    public AutoFieldType getType() {
+        return type;
     }
 
     public static class Builder {
 
-        public static AutoField build(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type,
-                                      Object value, String fieldAlias) {
-            AutoField autoField = new AutoField();
-            autoField.setName(fieldName);
-            autoField.setSqlOperator(sqlOperator);
-            autoField.setFieldOperator(fieldOperator);
-            autoField.setValue(value);
-            autoField.setType(type);
-            autoField.setAlias(fieldAlias);
+        private AutoField autoField = new AutoField();
+
+        public Builder name(String fieldName) {
+            autoField.name = fieldName;
+            return this;
+        }
+
+        public Builder logicalOperator(String logicalOperator) {
+            autoField.logicalOperator = logicalOperator;
+            return this;
+        }
+
+        public Builder fieldOperator(String fieldOperator) {
+            autoField.fieldOperator = fieldOperator;
+            return this;
+        }
+
+        public Builder value(Object value) {
+            autoField.value = value;
+            return this;
+        }
+
+        public Builder type(AutoFieldType type) {
+            autoField.type = type;
+            return this;
+        }
+
+        public Builder annotationName(String annotationName) {
+            autoField.annotationName = annotationName;
+            return this;
+        }
+
+        public AutoField build() {
+            assert autoField.name != null || autoField.annotationName != null;
             return autoField;
         }
     }

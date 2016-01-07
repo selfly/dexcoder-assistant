@@ -13,12 +13,13 @@ public class OrderByBuilder extends AbstractSqlBuilder {
 
     protected static final String COMMAND_OPEN = " ORDER BY ";
 
-    public void addField(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value) {
-        AutoField autoField = AutoField.Builder.build(fieldName, null, fieldOperator, type, null, null);
+    public void addField(String fieldName, String logicalOperator, String fieldOperator, AutoFieldType type,
+                         Object value) {
+        AutoField autoField = new AutoField.Builder().name(fieldName).fieldOperator(fieldOperator).type(type).build();
         metaTable.getAutoFields().put(fieldName, autoField);
     }
 
-    public void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type,
+    public void addCondition(String fieldName, String logicalOperator, String fieldOperator, AutoFieldType type,
                              Object value) {
         throw new JdbcAssistantException("OrderByBuilder不支持设置条件");
     }

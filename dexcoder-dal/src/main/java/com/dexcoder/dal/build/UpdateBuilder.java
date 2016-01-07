@@ -23,14 +23,15 @@ public class UpdateBuilder extends AbstractSqlBuilder {
         whereBuilder = new WhereBuilder();
     }
 
-    public void addField(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value) {
-        AutoField autoField = AutoField.Builder.build(fieldName, sqlOperator, fieldOperator, type, value, null);
+    public void addField(String fieldName, String logicalOperator, String fieldOperator, AutoFieldType type, Object value) {
+        AutoField autoField = new AutoField.Builder().name(fieldName).logicalOperator(logicalOperator)
+            .fieldOperator(fieldOperator).type(type).value(value).build();
         metaTable.getAutoFields().put(fieldName, autoField);
     }
 
-    public void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type,
+    public void addCondition(String fieldName, String logicalOperator, String fieldOperator, AutoFieldType type,
                              Object value) {
-        whereBuilder.addCondition(fieldName, sqlOperator, fieldOperator, type, value);
+        whereBuilder.addCondition(fieldName, logicalOperator, fieldOperator, type, value);
     }
 
     public BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
@@ -41,7 +42,7 @@ public class UpdateBuilder extends AbstractSqlBuilder {
         if (pkAutoField != null) {
             metaTable.getAutoFields().remove(pkAutoField.getName());
             if (!whereBuilder.getMetaTable().hasAutoField(pkAutoField.getName())) {
-                this.whereBuilder.addCondition(pkAutoField.getName(), pkAutoField.getSqlOperator(),
+                this.whereBuilder.addCondition(pkAutoField.getName(), pkAutoField.getLogicalOperator(),
                     pkAutoField.getFieldOperator(), pkAutoField.getType(), pkAutoField.getValue());
             }
         }

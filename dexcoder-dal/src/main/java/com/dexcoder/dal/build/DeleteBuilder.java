@@ -19,13 +19,13 @@ public class DeleteBuilder extends AbstractSqlBuilder {
         whereBuilder = new WhereBuilder();
     }
 
-    public void addField(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value) {
-        this.addCondition(fieldName, sqlOperator, fieldOperator, type, value);
+    public void addField(String fieldName, String logicalOperator, String fieldOperator, AutoFieldType type, Object value) {
+        this.addCondition(fieldName, logicalOperator, fieldOperator, type, value);
     }
 
-    public void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type,
+    public void addCondition(String fieldName, String logicalOperator, String fieldOperator, AutoFieldType type,
                              Object value) {
-        whereBuilder.addCondition(fieldName, sqlOperator, fieldOperator, type, value);
+        whereBuilder.addCondition(fieldName, logicalOperator, fieldOperator, type, value);
     }
 
     public BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler) {

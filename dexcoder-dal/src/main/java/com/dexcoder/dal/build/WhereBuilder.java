@@ -16,18 +16,19 @@ public class WhereBuilder extends AbstractSqlBuilder {
 
     protected static final String COMMAND_OPEN = " WHERE ";
 
-    public void addField(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value) {
-        AutoField autoField = AutoField.Builder.build(fieldName, sqlOperator, fieldOperator, type, value, null);
+    public void addField(String fieldName, String logicalOperator, String fieldOperator, AutoFieldType type, Object value) {
+        AutoField autoField = new AutoField.Builder().name(fieldName).logicalOperator(logicalOperator)
+            .fieldOperator(fieldOperator).type(type).value(value).build();
         metaTable.getAutoFields().put(fieldName, autoField);
     }
 
-    public void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type,
+    public void addCondition(String fieldName, String logicalOperator, String fieldOperator, AutoFieldType type,
                              Object value) {
         Object obj = value;
         while (obj instanceof Object[] && Array.getLength(obj) == 1) {
             obj = ((Object[]) obj)[0];
         }
-        this.addField(fieldName, sqlOperator, fieldOperator, type, obj);
+        this.addField(fieldName, logicalOperator, fieldOperator, type, obj);
     }
 
     public BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
@@ -40,9 +41,9 @@ public class WhereBuilder extends AbstractSqlBuilder {
         for (Map.Entry<String, AutoField> entry : metaTable.getAutoFields().entrySet()) {
             String columnName = metaTable.getColumnAndTableAliasName(entry.getKey());
             AutoField autoField = entry.getValue();
-            if (StrUtils.isNotBlank(autoField.getSqlOperator()) && sb.length() > COMMAND_OPEN.length()
+            if (StrUtils.isNotBlank(autoField.getLogicalOperator()) && sb.length() > COMMAND_OPEN.length()
                 && !isFieldBracketBegin(preAutoFile)) {
-                sb.append(autoField.getSqlOperator()).append(" ");
+                sb.append(autoField.getLogicalOperator()).append(" ");
             }
             if (autoField.isNativeField()) {
                 String nativeFieldName = tokenParse(autoField.getName(), metaTable);
@@ -76,8 +77,8 @@ public class WhereBuilder extends AbstractSqlBuilder {
     protected void processArrayArgs(StringBuilder sb, List<Object> params, String columnName, AutoField autoField,
                                     AutoField preAutoField) {
         Object[] args = (Object[]) autoField.getValue();
-        if (StrUtils.isNotBlank(autoField.getSqlOperator()) && !isFieldBracketBegin(preAutoField)) {
-            sb.append(autoField.getSqlOperator());
+        if (StrUtils.isNotBlank(autoField.getLogicalOperator()) && !isFieldBracketBegin(preAutoField)) {
+            sb.append(autoField.getLogicalOperator());
         }
         if (StrUtils.indexOf(StrUtils.upperCase(autoField.getFieldOperator()), "IN") != -1) {
             sb.append(columnName).append(" ").append(autoField.getFieldOperator()).append(" (");

@@ -29,28 +29,29 @@ public class SelectBuilder extends AbstractSqlBuilder {
         orderByBuilder = new OrderByBuilder();
     }
 
-    public void addField(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type, Object value) {
+    public void addField(String fieldName, String logicalOperator, String fieldOperator, AutoFieldType type, Object value) {
         if (type == AutoFieldType.INCLUDE) {
             metaTable.getIncludeFields().add(fieldName);
         } else if (type == AutoFieldType.EXCLUDE) {
             metaTable.getExcludeFields().add(fieldName);
         } else if (type == AutoFieldType.ORDER_BY_ASC) {
-            orderByBuilder.addField(fieldName, sqlOperator, "ASC", type, value);
+            orderByBuilder.addField(fieldName, logicalOperator, "ASC", type, value);
         } else if (type == AutoFieldType.ORDER_BY_DESC) {
-            orderByBuilder.addField(fieldName, sqlOperator, "DESC", type, value);
+            orderByBuilder.addField(fieldName, logicalOperator, "DESC", type, value);
         } else if (type == AutoFieldType.FUNC) {
             new MetaTable.Builder(metaTable).isFieldExclusion(Boolean.valueOf(fieldOperator)).isOrderBy(
-                Boolean.valueOf(sqlOperator));
-            AutoField autoField = AutoField.Builder.build(fieldName, sqlOperator, fieldOperator, type, value, null);
+                Boolean.valueOf(logicalOperator));
+            AutoField autoField = new AutoField.Builder().name(fieldName).logicalOperator(logicalOperator)
+                .fieldOperator(fieldOperator).type(type).value(value).build();
             metaTable.getFuncAutoFields().add(autoField);
         } else {
             throw new JdbcAssistantException("不支持的字段设置类型");
         }
     }
 
-    public void addCondition(String fieldName, String sqlOperator, String fieldOperator, AutoFieldType type,
+    public void addCondition(String fieldName, String logicalOperator, String fieldOperator, AutoFieldType type,
                              Object value) {
-        whereBuilder.addCondition(fieldName, sqlOperator, fieldOperator, type, value);
+        whereBuilder.addCondition(fieldName, logicalOperator, fieldOperator, type, value);
     }
 
     public BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
