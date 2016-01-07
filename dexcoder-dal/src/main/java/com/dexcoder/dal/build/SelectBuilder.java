@@ -76,7 +76,7 @@ public class SelectBuilder extends AbstractSqlBuilder {
         if (!metaTable.isFieldExclusion()) {
             for (AutoField columnAutoField : metaTable.getColumnAutoFields()) {
                 //白名单 黑名单
-                if (metaTable.getIncludeFields() != null && !metaTable.isIncludeField(columnAutoField.getName())) {
+                if (!metaTable.isIncludeField(columnAutoField.getName())) {
                     continue;
                 } else if (metaTable.isExcludeField(columnAutoField.getName())) {
                     continue;

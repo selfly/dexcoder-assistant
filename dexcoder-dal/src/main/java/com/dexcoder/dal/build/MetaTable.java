@@ -205,14 +205,15 @@ public class MetaTable {
     }
 
     public boolean isIncludeField(String fieldName) {
-        if (this.includeFields == null) {
-            return false;
+        if (this.includeFields == null || this.includeFields.isEmpty()) {
+            //名单为空，默认全是白名单
+            return true;
         }
         return includeFields.contains(fieldName);
     }
 
     public boolean isExcludeField(String fieldName) {
-        if (this.excludeFields == null) {
+        if (this.excludeFields == null || this.excludeFields.isEmpty()) {
             return false;
         }
         return excludeFields.contains(fieldName);
