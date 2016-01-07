@@ -55,7 +55,7 @@ public class MetaTable {
     /**
      * 列
      */
-    protected List<String>         columnFields;
+    protected List<AutoField>      columnAutoFields;
 
     /**
      * 操作的字段
@@ -102,6 +102,13 @@ public class MetaTable {
         return funcAutoFields;
     }
 
+    public String getPkColumnName() {
+        if (StrUtils.isBlank(pkColumnName)) {
+            pkColumnName = nameHandler.getPkColumnName(tableClass);
+        }
+        return pkColumnName;
+    }
+
     public String getPkFieldName() {
         if (StrUtils.isBlank(pkFieldName)) {
             pkFieldName = nameHandler.getPkFieldName(tableClass);
@@ -109,8 +116,8 @@ public class MetaTable {
         return pkFieldName;
     }
 
-    public List<String> getColumnFields() {
-        return columnFields;
+    public List<AutoField> getColumnAutoFields() {
+        return columnAutoFields;
     }
 
     /**
@@ -119,7 +126,7 @@ public class MetaTable {
      * @return
      */
     public boolean hasColumnFields() {
-        return (this.columnFields != null && !this.columnFields.isEmpty());
+        return this.columnAutoFields != null && !this.columnAutoFields.isEmpty();
     }
 
     /**
@@ -148,12 +155,22 @@ public class MetaTable {
     /**
      * 获取有表别名的column名
      *
-     * @param fieldName
+     * @param autoField
      * @return
      */
+    public String getColumnAndTableAliasName(AutoField autoField) {
+        if (StrUtils.isBlank(autoField.getAnnotationName())) {
+            return getColumnAndTableAliasName(autoField.getName());
+        }
+        if (StrUtils.isBlank(this.tableAlias)) {
+            return autoField.getAnnotationName();
+        }
+        return new StringBuilder(this.tableAlias).append(".").append(autoField.getAnnotationName()).toString();
+    }
+
     public String getColumnAndTableAliasName(String fieldName) {
-        String columnName = StrUtils.equals(fieldName, pkFieldName) ? pkColumnName : nameHandler.getColumnName(
-            tableClass, fieldName);
+        String columnName = StrUtils.equals(fieldName, getPkFieldName()) ? getPkColumnName() : nameHandler
+            .getColumnName(tableClass, fieldName);
         if (StrUtils.isBlank(this.tableAlias)) {
             return columnName;
         }
@@ -238,8 +255,8 @@ public class MetaTable {
             return this;
         }
 
-        public Builder initColumnFields() {
-            metaTable.columnFields = new ArrayList<String>();
+        public Builder initColumnAutoFields() {
+            metaTable.columnAutoFields = new ArrayList<AutoField>();
             return this;
         }
 
@@ -301,8 +318,10 @@ public class MetaTable {
                 if (aColumn != null) {
                     fieldAnnotationName = aColumn.name();
                 }
-                if (metaTable.columnFields != null) {
-                    metaTable.columnFields.add(fieldName);
+                if (metaTable.columnAutoFields != null) {
+                    AutoField autoField = new AutoField.Builder().name(fieldName).annotationName(fieldAnnotationName)
+                        .build();
+                    metaTable.columnAutoFields.add(autoField);
                 }
                 //已经有了，以Criteria中为准
                 if (metaTable.hasAutoField(fieldName)) {

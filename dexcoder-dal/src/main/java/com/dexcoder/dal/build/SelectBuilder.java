@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.dexcoder.commons.utils.ClassUtils;
 import com.dexcoder.dal.BoundSql;
+import com.dexcoder.dal.annotation.Column;
 import com.dexcoder.dal.annotation.Transient;
 import com.dexcoder.dal.exceptions.JdbcAssistantException;
 import com.dexcoder.dal.handler.NameHandler;
@@ -23,13 +24,14 @@ public class SelectBuilder extends AbstractSqlBuilder {
     protected SqlBuilder          orderByBuilder;
 
     public SelectBuilder() {
-        metaTable = new MetaTable.Builder(metaTable).initColumnFields().initExcludeFields().initIncludeFields()
+        metaTable = new MetaTable.Builder(metaTable).initColumnAutoFields().initExcludeFields().initIncludeFields()
             .initFuncAutoFields().build();
         whereBuilder = new WhereBuilder();
         orderByBuilder = new OrderByBuilder();
     }
 
-    public void addField(String fieldName, String logicalOperator, String fieldOperator, AutoFieldType type, Object value) {
+    public void addField(String fieldName, String logicalOperator, String fieldOperator, AutoFieldType type,
+                         Object value) {
         if (type == AutoFieldType.INCLUDE) {
             metaTable.getIncludeFields().add(fieldName);
         } else if (type == AutoFieldType.EXCLUDE) {
@@ -67,19 +69,19 @@ public class SelectBuilder extends AbstractSqlBuilder {
         }
         if (metaTable.hasFuncAutoField()) {
             for (AutoField autoField : metaTable.getFuncAutoFields()) {
-                String nativeFieldName = tokenParse(autoField.getName(), metaTable);
+                String nativeFieldName = tokenParse(autoField, metaTable);
                 sb.append(nativeFieldName).append(",");
             }
         }
         if (!metaTable.isFieldExclusion()) {
-            for (String columnField : metaTable.getColumnFields()) {
+            for (AutoField columnAutoField : metaTable.getColumnAutoFields()) {
                 //白名单 黑名单
-                if (metaTable.isIncludeField(columnField)) {
+                if (metaTable.isIncludeField(columnAutoField.getName())) {
                     continue;
-                } else if (metaTable.isExcludeField(columnField)) {
+                } else if (metaTable.isExcludeField(columnAutoField.getName())) {
                     continue;
                 }
-                String columnName = metaTable.getColumnAndTableAliasName(columnField);
+                String columnName = metaTable.getColumnAndTableAliasName(columnAutoField);
                 sb.append(columnName);
                 sb.append(",");
             }
@@ -105,7 +107,7 @@ public class SelectBuilder extends AbstractSqlBuilder {
         //ClassUtils已经使用了缓存，此处就不用了
         BeanInfo selfBeanInfo = ClassUtils.getSelfBeanInfo(clazz);
         PropertyDescriptor[] propertyDescriptors = selfBeanInfo.getPropertyDescriptors();
-        List<String> columnFields = new ArrayList<String>();
+        List<AutoField> columnAutoFields = new ArrayList<AutoField>();
         for (PropertyDescriptor pd : propertyDescriptors) {
             Method readMethod = pd.getReadMethod();
             if (readMethod == null) {
@@ -115,9 +117,16 @@ public class SelectBuilder extends AbstractSqlBuilder {
             if (aTransient != null) {
                 continue;
             }
-            columnFields.add(pd.getName());
+            String fieldAnnotationName = null;
+            Column aColumn = readMethod.getAnnotation(Column.class);
+            if (aColumn != null) {
+                fieldAnnotationName = aColumn.name();
+            }
+            AutoField autoField = new AutoField.Builder().name(pd.getName()).annotationName(fieldAnnotationName)
+                .build();
+            columnAutoFields.add(autoField);
         }
-        metaTable.getColumnFields().addAll(columnFields);
+        metaTable.getColumnAutoFields().addAll(columnAutoFields);
     }
 
 }

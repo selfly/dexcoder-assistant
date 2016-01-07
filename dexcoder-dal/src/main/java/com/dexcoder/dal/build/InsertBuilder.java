@@ -15,7 +15,8 @@ public class InsertBuilder extends AbstractSqlBuilder {
 
     protected static final String COMMAND_OPEN = "INSERT INTO ";
 
-    public void addField(String fieldName, String logicalOperator, String fieldOperator, AutoFieldType type, Object value) {
+    public void addField(String fieldName, String logicalOperator, String fieldOperator, AutoFieldType type,
+                         Object value) {
         AutoField autoField = new AutoField.Builder().name(fieldName).logicalOperator(logicalOperator)
             .fieldOperator(fieldOperator).type(type).value(value).build();
         metaTable.getAutoFields().put(fieldName, autoField);
@@ -32,7 +33,7 @@ public class InsertBuilder extends AbstractSqlBuilder {
         StringBuilder sql = new StringBuilder(COMMAND_OPEN);
         StringBuilder args = new StringBuilder("(");
         List<Object> params = new ArrayList<Object>();
-        sql.append(metaTable.getTableName()).append(" (");
+        sql.append(metaTable.getTableAndAliasName()).append(" (");
 
         for (Map.Entry<String, AutoField> entry : metaTable.getAutoFields().entrySet()) {
             AutoField autoField = entry.getValue();
@@ -42,12 +43,12 @@ public class InsertBuilder extends AbstractSqlBuilder {
             }
             //原生类型
             if (autoField.isNativeField()) {
-                String nativeFieldName = tokenParse(autoField.getName(), metaTable);
+                String nativeFieldName = tokenParse(autoField, metaTable);
                 String nativeValue = tokenParse(String.valueOf(autoField.getValue()), metaTable);
                 sql.append(nativeFieldName).append(",");
                 args.append(nativeValue);
             } else {
-                String columnName = nameHandler.getColumnName(clazz, entry.getKey());
+                String columnName = metaTable.getColumnAndTableAliasName(autoField);
                 sql.append(columnName).append(",");
                 args.append("?");
             }

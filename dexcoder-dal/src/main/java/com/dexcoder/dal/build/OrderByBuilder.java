@@ -28,10 +28,10 @@ public class OrderByBuilder extends AbstractSqlBuilder {
         metaTable = new MetaTable.Builder(metaTable).tableClass(clazz).nameHandler(nameHandler).build();
         StringBuilder sb = new StringBuilder(COMMAND_OPEN);
         if (metaTable.getAutoFields().isEmpty()) {
-            sb.append(metaTable.getColumnAndTableAliasName(metaTable.getPkFieldName())).append(" DESC");
+            sb.append(metaTable.getTableAlias()).append(" ").append(metaTable.getPkColumnName()).append(" DESC");
         } else {
             for (Map.Entry<String, AutoField> entry : metaTable.getAutoFields().entrySet()) {
-                String columnName = metaTable.getColumnAndTableAliasName(entry.getKey());
+                String columnName = metaTable.getColumnAndTableAliasName(entry.getValue());
                 sb.append(columnName).append(" ").append(entry.getValue().getFieldOperator()).append(",");
             }
             if (sb.length() > 10) {

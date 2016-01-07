@@ -23,7 +23,8 @@ public class UpdateBuilder extends AbstractSqlBuilder {
         whereBuilder = new WhereBuilder();
     }
 
-    public void addField(String fieldName, String logicalOperator, String fieldOperator, AutoFieldType type, Object value) {
+    public void addField(String fieldName, String logicalOperator, String fieldOperator, AutoFieldType type,
+                         Object value) {
         AutoField autoField = new AutoField.Builder().name(fieldName).logicalOperator(logicalOperator)
             .fieldOperator(fieldOperator).type(type).value(value).build();
         metaTable.getAutoFields().put(fieldName, autoField);
@@ -55,7 +56,7 @@ public class UpdateBuilder extends AbstractSqlBuilder {
         //tableName必须从whereBuilder中获取，以便水平分表时能正确获取表名
         sql.append(whereBuilder.getMetaTable().getTableAndAliasName()).append(" SET ");
         for (Map.Entry<String, AutoField> entry : metaTable.getAutoFields().entrySet()) {
-            String columnName = metaTable.getColumnAndTableAliasName(entry.getKey());
+            String columnName = metaTable.getColumnAndTableAliasName(entry.getValue());
             AutoField autoField = entry.getValue();
             if (autoField.isNativeField()) {
                 String nativeFieldName = tokenParse(autoField.getName(), metaTable);
