@@ -126,6 +126,14 @@ public interface JdbcDao extends SqlJdbcDao {
     /**
      * 查询记录数
      *
+     * @param clazz
+     * @return
+     */
+    int queryCount(Class<?> clazz);
+
+    /**
+     * 查询记录数
+     *
      * @param entity
      * @return
      */

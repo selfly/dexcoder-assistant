@@ -107,6 +107,11 @@ public class JdbcDaoImpl extends SqlJdbcDaoImpl implements JdbcDao {
         return (List<T>) list;
     }
 
+    public int queryCount(Class<?> clazz) {
+        BoundSql boundSql = Criteria.select(clazz).addSelectFunc("count(*)").build(null, true, getNameHandler());
+        return jdbcTemplate.queryForInt(boundSql.getSql(), boundSql.getParameters().toArray());
+    }
+
     public int queryCount(Object entity, Criteria criteria) {
         BoundSql boundSql = criteria.addSelectFunc("count(*)").build(entity, true, getNameHandler());
         return jdbcTemplate.queryForInt(boundSql.getSql(), boundSql.getParameters().toArray());
