@@ -18,7 +18,7 @@ import com.dexcoder.dal.handler.NameHandler;
  * Created by liyd on 3/3/15.
  */
 @SuppressWarnings("unchecked")
-public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
+public class JdbcDaoImpl extends SqlJdbcDaoImpl implements JdbcDao {
 
     public Long insert(Object entity) {
         NameHandler handler = this.getNameHandler();
@@ -175,44 +175,15 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
         return (T) list.iterator().next();
     }
 
-    public <T> T queryForObject(Criteria criteria) {
+    public <T> T queryObject(Criteria criteria) {
         final BoundSql boundSql = criteria.build(true, getNameHandler());
         return (T) jdbcTemplate.queryForObject(boundSql.getSql(), boundSql.getParameters().toArray(), Object.class);
     }
 
-    public List<Map<String, Object>> queryForList(Criteria criteria) {
+    public List<Map<String, Object>> queryRowMapList(Criteria criteria) {
         BoundSql boundSql = criteria.build(true, getNameHandler());
         List<Map<String, Object>> mapList = jdbcTemplate.queryForList(boundSql.getSql(), boundSql.getParameters()
             .toArray());
         return convertMapKeyToCamel(mapList);
     }
-
-    public List<Map<String, Object>> queryForSql(String refSql) {
-        return this.queryForSql(refSql, null, null);
-    }
-
-    public List<Map<String, Object>> queryForSql(String refSql, Object[] params) {
-        return this.queryForSql(refSql, null, params);
-    }
-
-    public List<Map<String, Object>> queryForSql(String refSql, String expectParamKey, Object[] params) {
-        BoundSql boundSql = this.sqlFactory.getBoundSql(refSql, expectParamKey, params);
-        List<Map<String, Object>> mapList = jdbcTemplate.queryForList(boundSql.getSql(), boundSql.getParameters()
-            .toArray());
-        return convertMapKeyToCamel(mapList);
-    }
-
-    public int updateForSql(String refSql) {
-        return this.updateForSql(refSql, null, null);
-    }
-
-    public int updateForSql(String refSql, Object[] params) {
-        return this.updateForSql(refSql, null, params);
-    }
-
-    public int updateForSql(String refSql, String expectParamKey, Object[] params) {
-        BoundSql boundSql = this.sqlFactory.getBoundSql(refSql, expectParamKey, params);
-        return jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
-    }
-
 }

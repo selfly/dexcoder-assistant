@@ -88,7 +88,8 @@ public abstract class AbstractJdbcDaoImpl {
         for (Map<String, Object> map : mapList) {
             Map<String, Object> resultMap = new HashMap<String, Object>(map.size());
             for (Map.Entry<String, Object> entry : map.entrySet()) {
-                String camelName = NameUtils.getCamelName(entry.getKey());
+                String camelName = StrUtils.indexOf(entry.getKey(), "_") != -1 ? NameUtils.getCamelName(entry.getKey())
+                    : entry.getKey();
                 resultMap.put(camelName, entry.getValue());
             }
             resultMapList.add(resultMap);
@@ -103,7 +104,7 @@ public abstract class AbstractJdbcDaoImpl {
      * @return
      */
     @SuppressWarnings("unchecked")
-	protected <T> RowMapper<T> getRowMapper(Class<T> clazz) {
+    protected <T> RowMapper<T> getRowMapper(Class<T> clazz) {
 
         if (StrUtils.isBlank(rowMapperClass)) {
             return BeanPropertyRowMapper.newInstance(clazz);

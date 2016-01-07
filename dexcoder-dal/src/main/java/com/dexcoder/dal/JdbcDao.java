@@ -10,7 +10,7 @@ import com.dexcoder.dal.build.Criteria;
  *
  * Created by liyd on 3/3/15.
  */
-public interface JdbcDao {
+public interface JdbcDao extends SqlJdbcDao {
 
     /**
      * 插入一条记录 自动处理主键
@@ -193,60 +193,22 @@ public interface JdbcDao {
      */
     <T> T querySingleResult(Criteria criteria);
 
-    <T> T queryForObject(Criteria criteria);
-
-    List<Map<String, Object>> queryForList(Criteria criteria);
+    /**
+     * 查询单个对象,例如count(*) max(id)这类只有一个结果的sql
+     * 
+     * @param criteria
+     * @param <T>
+     * @return
+     */
+    <T> T queryObject(Criteria criteria);
 
     /**
-     * 根据sql查询
-     *
-     * @param refSql
-     * @return list
+     * 查询列表 例如使用函数后和列不排斥的情况
+     * 
+     * @param criteria
+     * @return
      */
-    List<Map<String, Object>> queryForSql(String refSql);
-
-    /**
-     * 根据sql查询
-     *
-     * @param refSql
-     * @param params the params
-     * @return list
-     */
-    List<Map<String, Object>> queryForSql(String refSql, Object[] params);
-
-    /**
-     * 根据sql查询
-     *
-     * @param refSql the ref sql
-     * @param name 写sql时访问的参数变量名称
-     * @param params the params
-     * @return list list
-     */
-    List<Map<String, Object>> queryForSql(String refSql, String name, Object[] params);
-
-    /**
-     * 执行sql
-     *
-     * @param refSql the ref sql
-     */
-    int updateForSql(String refSql);
-
-    /**
-     * 执行sql
-     *
-     * @param refSql the ref sql
-     * @param params the params
-     */
-    int updateForSql(String refSql, Object[] params);
-
-    /**
-     * 执行sql
-     *
-     * @param refSql the ref sql
-     * @param expectParamKey the expect param key
-     * @param params the params
-     */
-    int updateForSql(String refSql, String expectParamKey, Object[] params);
+    List<Map<String, Object>> queryRowMapList(Criteria criteria);
 
     //    /**
     //     * 查询blob字段值
