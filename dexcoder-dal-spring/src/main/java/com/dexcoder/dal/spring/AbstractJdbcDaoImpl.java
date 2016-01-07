@@ -77,6 +77,25 @@ public abstract class AbstractJdbcDaoImpl {
     /**
      * 转换map中的key column为field
      *
+     * @param map the map
+     * @return map
+     */
+    protected Map<String, Object> convertMapKeyToCamel(Map<String, Object> map) {
+        if (map == null) {
+            return null;
+        }
+        Map<String, Object> resultMap = new HashMap<String, Object>(map.size());
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            String camelName = StrUtils.indexOf(entry.getKey(), "_") != -1 ? NameUtils.getCamelName(entry.getKey())
+                : entry.getKey();
+            resultMap.put(camelName, entry.getValue());
+        }
+        return resultMap;
+    }
+
+    /**
+     * 转换map中的key column为field
+     *
      * @param mapList
      * @return
      */
@@ -86,12 +105,7 @@ public abstract class AbstractJdbcDaoImpl {
         }
         List<Map<String, Object>> resultMapList = new ArrayList<Map<String, Object>>(mapList.size());
         for (Map<String, Object> map : mapList) {
-            Map<String, Object> resultMap = new HashMap<String, Object>(map.size());
-            for (Map.Entry<String, Object> entry : map.entrySet()) {
-                String camelName = StrUtils.indexOf(entry.getKey(), "_") != -1 ? NameUtils.getCamelName(entry.getKey())
-                    : entry.getKey();
-                resultMap.put(camelName, entry.getValue());
-            }
+            Map<String, Object> resultMap = convertMapKeyToCamel(map);
             resultMapList.add(resultMap);
         }
         return resultMapList;

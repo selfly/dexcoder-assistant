@@ -34,7 +34,8 @@ public class SqlJdbcDaoImpl extends AbstractJdbcDaoImpl implements SqlJdbcDao {
 
     public Map<String, Object> querySingleRowMapForSql(String refSql, String expectParamKey, Object[] params) {
         BoundSql boundSql = this.sqlFactory.getBoundSql(refSql, expectParamKey, params);
-        return jdbcTemplate.queryForMap(boundSql.getSql(), boundSql.getParameters().toArray());
+        Map<String, Object> map = jdbcTemplate.queryForMap(boundSql.getSql(), boundSql.getParameters().toArray());
+        return convertMapKeyToCamel(map);
     }
 
     public List<Map<String, Object>> queryRowMapListForSql(String refSql) {
