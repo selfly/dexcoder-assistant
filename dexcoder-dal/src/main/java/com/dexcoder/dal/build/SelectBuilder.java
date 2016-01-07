@@ -87,7 +87,7 @@ public class SelectBuilder extends AbstractSqlBuilder {
             }
         }
         sb.deleteCharAt(sb.length() - 1);
-        sb.append(" FROM ").append(tableName).append(" ");
+        sb.append(" FROM ").append(tableName);
         BoundSql whereBoundSql = whereBuilder.build(clazz, entity, isIgnoreNull, nameHandler);
         sb.append(whereBoundSql.getSql());
         if (metaTable.isOrderBy()) {

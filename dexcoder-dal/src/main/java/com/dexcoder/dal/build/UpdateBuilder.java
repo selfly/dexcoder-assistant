@@ -71,7 +71,7 @@ public class UpdateBuilder extends AbstractSqlBuilder {
         }
         sql.deleteCharAt(sql.length() - 1);
         BoundSql boundSql = whereBuilder.build(clazz, entity, isIgnoreNull, nameHandler);
-        sql.append(" ").append(boundSql.getSql());
+        sql.append(boundSql.getSql());
         params.addAll(boundSql.getParameters());
         return new CriteriaBoundSql(sql.toString(), params);
     }

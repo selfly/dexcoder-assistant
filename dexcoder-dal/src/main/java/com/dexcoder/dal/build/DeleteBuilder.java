@@ -36,7 +36,7 @@ public class DeleteBuilder extends AbstractSqlBuilder {
         //这里必须从whereBuilder的MetaTable中获取表名，以便水平分表时能使用正确的表名
         String tableName = whereBuilder.getMetaTable().getTableAndAliasName();
         StringBuilder sb = new StringBuilder(COMMAND_OPEN);
-        sb.append(tableName).append(" ");
+        sb.append(tableName);
         BoundSql boundSql = whereBuilder.build(clazz, entity, isIgnoreNull, nameHandler);
         sb.append(boundSql.getSql());
         return new CriteriaBoundSql(sb.toString(), boundSql.getParameters());
