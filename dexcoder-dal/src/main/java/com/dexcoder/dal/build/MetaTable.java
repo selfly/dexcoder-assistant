@@ -177,6 +177,13 @@ public class MetaTable {
         return new StringBuilder(this.tableAlias).append(".").append(columnName).toString();
     }
 
+    public String applyColumnTableAlias(String columnName) {
+        if (StrUtils.isBlank(this.tableAlias)) {
+            return columnName;
+        }
+        return new StringBuilder(this.tableAlias).append(".").append(columnName).toString();
+    }
+
     /**
      * 获取有表别名的table名
      * @return
