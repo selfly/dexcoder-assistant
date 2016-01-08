@@ -2,6 +2,8 @@ package com.dexcoder.commons.office;
 
 import java.util.List;
 
+import com.dexcoder.commons.utils.StrUtils;
+
 /**
  * sheet中的一行数据
  *
@@ -26,6 +28,18 @@ public class ExcelRow {
 
     public boolean hasCells() {
         return cells != null && !cells.isEmpty();
+    }
+
+    public boolean isEmptyRow() {
+        if (cells == null || cells.isEmpty()) {
+            return true;
+        }
+        for (ExcelCell excelCell : cells) {
+            if (excelCell != null && excelCell.getValue() != null && StrUtils.isNotBlank(excelCell.getStringValue())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public ExcelCell getCell(int i) {
