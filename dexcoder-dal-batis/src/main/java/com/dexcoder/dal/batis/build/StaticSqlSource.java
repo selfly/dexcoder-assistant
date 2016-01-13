@@ -20,7 +20,7 @@ public class StaticSqlSource implements SqlSource {
     }
 
     public BatisBoundSql getBoundSql(Object parameterObject) {
-        return new BatisBoundSql(sql, parameterMappings);
+        return new BatisBoundSql(sql, parameterMappings,parameterObject);
     }
 
 }

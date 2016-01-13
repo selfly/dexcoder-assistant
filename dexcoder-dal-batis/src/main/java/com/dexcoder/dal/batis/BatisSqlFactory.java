@@ -15,7 +15,10 @@ import com.dexcoder.dal.batis.build.MappedStatement;
  */
 public class BatisSqlFactory implements SqlFactory {
 
-    private Configuration configuration;
+    /** 默认参数名 */
+    private static final String DEFAULT_PARAMETERS_KEY = "parameters";
+
+    private Configuration       configuration;
 
     public BatisSqlFactory(Configuration configuration) {
         this.configuration = configuration;
@@ -40,7 +43,7 @@ public class BatisSqlFactory implements SqlFactory {
         if (ArrUtils.isEmpty(parameters)) {
             return null;
         }
-        String paramKey = StrUtils.isBlank(expectParamKey) ? "item" : expectParamKey;
+        String paramKey = StrUtils.isBlank(expectParamKey) ? DEFAULT_PARAMETERS_KEY : expectParamKey;
         Map<String, Object> map = new HashMap<String, Object>();
         if (parameters.length == 1) {
             map.put(paramKey, parameters[0]);

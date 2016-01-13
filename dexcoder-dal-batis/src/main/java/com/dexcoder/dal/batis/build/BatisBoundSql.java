@@ -15,14 +15,14 @@ public class BatisBoundSql implements BoundSql {
 
     private String                 sql;
     private List<ParameterMapping> parameterMappings;
-    //    private Object                 parameterObject;
+    private Object                 parameterObject;
     private Map<String, Object>    additionalParameters;
     private MetaObject             metaParameters;
 
-    public BatisBoundSql(String sql, List<ParameterMapping> parameterMappings) {
+    public BatisBoundSql(String sql, List<ParameterMapping> parameterMappings, Object parameterObject) {
         this.sql = sql;
         this.parameterMappings = parameterMappings;
-        //        this.parameterObject = parameterObject;
+        this.parameterObject = parameterObject;
         this.additionalParameters = new HashMap<String, Object>();
         this.metaParameters = MetaObject.forObject(additionalParameters);
     }
@@ -50,5 +50,9 @@ public class BatisBoundSql implements BoundSql {
 
     public Object getAdditionalParameter(String name) {
         return metaParameters.getValue(name);
+    }
+
+    public Object getParameterObject() {
+        return parameterObject;
     }
 }

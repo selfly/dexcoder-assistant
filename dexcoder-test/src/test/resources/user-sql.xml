@@ -5,57 +5,68 @@
 <mapper namespace="User">
 
     <sql id="columns">
-        user_id,login_name,password,user_age,user_type
+        login_name,password,user_age,user_type,email,gmt_create
     </sql>
 
+    <insert id="insertUser">
+        insert into USER(
+        <include refid="columns"/>
+        ) values (
+        <foreach collection="parameters" index="index" item="item" separator=",">
+            #{item}
+        </foreach>
+        )
+    </insert>
+
+    <insert id="insertUser2">
+        insert into USER(
+        <include refid="columns"/>
+        ) values (
+        #{user.loginName},
+        #{user.password},
+        #{user.userAge},
+        #{user.userType},
+        #{user.email},
+        #{user.gmtCreate}
+        )
+    </insert>
+
+    <insert id="insertUser3">
+        insert into USER(
+        <include refid="columns"/>
+        ) values (
+        'batisUser3',
+        '123456',
+        18,
+        '1',
+        'batis3@dexcoder.com',
+        now()
+        )
+    </insert>
+
+    <insert id="insertUser4">
+        insert into USER(
+        <include refid="columns"/>
+        ) values (
+        #{parameters[0]},
+        #{parameters[1]},
+        #{parameters[2]},
+        #{parameters[3]},
+        #{parameters[4]},
+        #{parameters[5]}
+        )
+    </insert>
+
     <select id="getUser">
-        select
+        select user_id,
         <include refid="columns"/>
         from user
         <where>
-            <if test="params[0] != null">
-                user_type = #{params[0].userType}
+            <if test="parameters[0] != null">
+                user_type = #{parameters[0]}
             </if>
-            <if test="params[1] != null">
-                and login_name in
-                <foreach collection="params[1]" index="index" item="item" separator="," open="(" close=")">
-                    #{item}
-                </foreach>
-            </if>
-        </where>
-    </select>
-
-    <select id="getUser3">
-        select
-        <include refid="columns"/>
-        from user
-
-    </select>
-
-
-    <select id="getUser2">
-        select
-        <include refid="columns"/>
-        from user
-
-        <where>
-            <if test="user[0] != null">
-                login_name=#{user[0].loginName}
-            </if>
-        </where>
-
-    </select>
-
-    <select id="getUser3">
-        select
-        <include refid="columns"/>
-        from user
-        <where>
-            <if test="names != null">
-                login_name in
-                <foreach collection="names" index="index" item="item" separator="," open="(" close=")">
-                    #{item}
-                </foreach>
+            <if test="parameters[1] != null and parameters[1].loginName != null">
+                and login_name = #{parameters[1].loginName}
             </if>
         </where>
     </select>

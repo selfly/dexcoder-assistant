@@ -26,7 +26,6 @@ public class XMLStatementBuilder extends BaseBuilder {
         XMLIncludeTransformer includeParser = new XMLIncludeTransformer(configuration, builderAssistant);
         includeParser.applyIncludes(xNode.getNode());
 
-        // Parse the SQL (pre: <selectKey> and <include> were parsed and removed)
         //        SqlSource sqlSource = new XMLLanguageDriver().createSqlSource(configuration, xNode);
 
         XMLScriptBuilder builder = new XMLScriptBuilder(configuration, xNode);

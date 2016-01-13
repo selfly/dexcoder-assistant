@@ -28,9 +28,6 @@ public class JdbcDaoTest {
     @Autowired
     private JdbcDao jdbcDao;
 
-    //    @Autowired
-    //    private DynamicDataSource dynamicDataSource;
-
     @Test
     public void before() {
         //插入测试数据
@@ -458,41 +455,6 @@ public class JdbcDaoTest {
 
         User user = jdbcDao.get(User.class, -2L);
         Assert.assertEquals("aaaa", user.getLoginName());
-    }
-
-    @Test
-    public void testBatisSql() {
-        List<Map<String, Object>> mapList = jdbcDao.queryRowMapListForSql("User.getUser");
-        for (Map<String, Object> map : mapList) {
-            System.out.println(map.get("user_id"));
-            System.out.println(map.get("login_name"));
-        }
-    }
-
-    @Test
-    public void testBatisSql2() {
-        User user = new User();
-        user.setLoginName("selfly_a93");
-        List<Map<String, Object>> mapList = jdbcDao.queryRowMapListForSql("User.getUser2", "user", new Object[] { user,
-                "selfly_a93" });
-        for (Map<String, Object> map : mapList) {
-            System.out.println(map.get("user_id"));
-            System.out.println(map.get("login_name"));
-        }
-    }
-
-    @Test
-    public void testBatisSql3() {
-        User user = new User();
-        user.setUserType("1");
-        Object[] names = new Object[] { "selfly_a93", "selfly_a94", "selfly_a95" };
-        List<Map<String, Object>> mapList = jdbcDao.queryRowMapListForSql("User.getUser", "params", new Object[] {
-                user, names });
-        for (Map<String, Object> map : mapList) {
-            System.out.println(map.get("userId"));
-            System.out.println(map.get("loginName"));
-        }
-
     }
 
     //    @Test

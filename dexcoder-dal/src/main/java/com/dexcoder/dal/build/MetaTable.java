@@ -55,7 +55,7 @@ public class MetaTable {
     /**
      * 列
      */
-    protected List<AutoField>      columnAutoFields;
+    private List<AutoField>        columnAutoFields;
 
     /**
      * 操作的字段
@@ -65,17 +65,17 @@ public class MetaTable {
     /**
      * 白名单
      */
-    protected List<String>         includeFields;
+    private List<String>           includeFields;
 
     /**
      * 黑名单
      */
-    protected List<String>         excludeFields;
+    private List<String>           excludeFields;
 
     /**
      * 函数
      */
-    protected List<AutoField>      funcAutoFields;
+    private List<AutoField>        funcAutoFields;
 
     /**
      * 是否和字段互斥
@@ -364,6 +364,8 @@ public class MetaTable {
         }
 
         public MetaTable build() {
+            assert metaTable.tableClass != null;
+            assert metaTable.nameHandler != null;
             return this.metaTable;
         }
     }

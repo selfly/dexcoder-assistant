@@ -448,12 +448,12 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
 我们调用`queryForSql`方法时传入了三个参数：
 
 - User.getUser 具体的sql全id，namespace+id。
-- params 自定义sql中访问参数的key，如果不传入默认为`item`。
-- Object[] sql中用到的参数。访问具体参数时可以使用item[0],item[1]对应里面相应的元素，支持复杂对象。
+- params 自定义sql中访问参数的key，如果不传入默认为`parameters`。
+- Object[] sql中用到的参数。访问具体参数时可以使用parameters[0],parameters[1]对应里面相应的元素，支持复杂对象。
 
 可以看到这里支持复杂参数，第一个是`User`bean对象，第二个是Object数组，至于获取方式可以看上面的xml代码。
 
-除了传入的参数为Object数组并使用`item[0]`这种方式访问相应的元素外，其它的和mybatis可以说是一样的，mybatis支持的动态sql方式这里也可以支持,因为他本身就是来源于mybatis。
+除了传入的参数为Object数组并使用`parameters[0]`这种方式访问相应的元素外，其它的和mybatis可以说是一样的，mybatis支持的动态sql方式这里也可以支持,因为他本身就是来源于mybatis。
 
 另外返回结果中map的key做了`LOGIN_NAME`到骆驼命名法`loginName`的转换。
 
