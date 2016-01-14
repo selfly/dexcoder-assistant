@@ -23,11 +23,12 @@ public class SelectBuilder extends AbstractSqlBuilder {
     protected SqlBuilder          whereBuilder;
     protected SqlBuilder          orderByBuilder;
 
-    public SelectBuilder() {
+    public SelectBuilder(Class<?> clazz) {
+        super(clazz);
         metaTable = new MetaTable.Builder(metaTable).initColumnAutoFields().initExcludeFields().initIncludeFields()
             .initFuncAutoFields().build();
-        whereBuilder = new WhereBuilder();
-        orderByBuilder = new OrderByBuilder();
+        whereBuilder = new WhereBuilder(clazz);
+        orderByBuilder = new OrderByBuilder(clazz);
     }
 
     public void addField(String fieldName, String logicalOperator, String fieldOperator, AutoFieldType type,
@@ -56,16 +57,16 @@ public class SelectBuilder extends AbstractSqlBuilder {
         whereBuilder.addCondition(fieldName, logicalOperator, fieldOperator, type, value);
     }
 
-    public BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
-        metaTable = new MetaTable.Builder(metaTable).tableClass(clazz).nameHandler(nameHandler).build();
+    public BoundSql build(Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
+        metaTable = new MetaTable.Builder(metaTable).nameHandler(nameHandler).build();
         //构建到whereBuilder
-        new MetaTable.Builder(whereBuilder.getMetaTable()).tableClass(clazz).tableAlias(metaTable.getTableAlias())
+        new MetaTable.Builder(whereBuilder.getMetaTable()).tableAlias(metaTable.getTableAlias())
             .entity(entity, isIgnoreNull).nameHandler(nameHandler).build();
         //表名从whereBuilder获取
         String tableName = whereBuilder.getMetaTable().getTableAndAliasName();
         StringBuilder sb = new StringBuilder(COMMAND_OPEN);
         if (!metaTable.hasColumnFields() && !metaTable.isFieldExclusion()) {
-            this.fetchClassFields(clazz);
+            this.fetchClassFields(metaTable.getTableClass());
         }
         if (metaTable.hasFuncAutoField()) {
             for (AutoField autoField : metaTable.getFuncAutoFields()) {
@@ -88,11 +89,11 @@ public class SelectBuilder extends AbstractSqlBuilder {
         }
         sb.deleteCharAt(sb.length() - 1);
         sb.append(" FROM ").append(tableName);
-        BoundSql whereBoundSql = whereBuilder.build(clazz, entity, isIgnoreNull, nameHandler);
+        BoundSql whereBoundSql = whereBuilder.build(entity, isIgnoreNull, nameHandler);
         sb.append(whereBoundSql.getSql());
         if (metaTable.isOrderBy()) {
             new MetaTable.Builder(orderByBuilder.getMetaTable()).tableAlias(metaTable.getTableAlias()).build();
-            BoundSql orderByBoundSql = orderByBuilder.build(clazz, entity, isIgnoreNull, nameHandler);
+            BoundSql orderByBoundSql = orderByBuilder.build(entity, isIgnoreNull, nameHandler);
             sb.append(orderByBoundSql.getSql());
         }
         return new CriteriaBoundSql(sb.toString(), whereBoundSql.getParameters());

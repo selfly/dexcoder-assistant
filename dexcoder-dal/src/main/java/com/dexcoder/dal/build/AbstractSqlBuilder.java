@@ -28,8 +28,8 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
      */
     protected Set<GenericTokenParser> tokenParsers;
 
-    public AbstractSqlBuilder() {
-        metaTable = new MetaTable.Builder().initAutoFields().build();
+    public AbstractSqlBuilder(Class<?> clazz) {
+        metaTable = new MetaTable.Builder().initAutoFields().tableClass(clazz).build();
     }
 
     public MetaTable getMetaTable() {

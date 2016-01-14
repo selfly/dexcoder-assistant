@@ -16,6 +16,7 @@ import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.dal.JdbcDao;
 import com.dexcoder.dal.build.Criteria;
 import com.dexcoder.dal.spring.page.PageControl;
+import com.dexcoder.test.model.AnnotationUser;
 import com.dexcoder.test.model.User;
 
 /**
@@ -129,7 +130,7 @@ public class JdbcDaoTest {
         Criteria criteria = Criteria.update(User.class).set("password", "update2")
             .where("userId", new Object[] { -2L, -3L });
         int i = jdbcDao.update(criteria);
-        Assert.assertEquals(i, 1);
+        Assert.assertEquals(i, 2);
 
         User user = jdbcDao.get(User.class, -2L);
         Assert.assertEquals("update2", user.getPassword());
@@ -375,8 +376,9 @@ public class JdbcDaoTest {
 
     @Test
     public void queryObject2() {
-        Criteria criteria = Criteria.select(User.class).addSelectFunc("length([loginName]) loginNameLength", false,
-            true);
+        Criteria criteria = Criteria.select(User.class)
+            .addSelectFunc("length([loginName]) loginNameLength", false, true).where("loginName", "is not", null)
+            .and("loginName", "!=", new Object[] { "" });
         List<Map<String, Object>> mapList = jdbcDao.queryRowMapList(criteria);
         Assert.assertNotNull(mapList);
         for (Map<String, Object> map : mapList) {
@@ -387,7 +389,8 @@ public class JdbcDaoTest {
 
     @Test
     public void queryRowMapList() {
-        Criteria criteria = Criteria.select(User.class).addSelectFunc("distinct [loginName]");
+        Criteria criteria = Criteria.select(User.class).addSelectFunc("distinct [loginName]")
+            .where("loginName", "is not", null).and("loginName", "!=", new Object[] { "" });
         List<Map<String, Object>> mapList = jdbcDao.queryRowMapList(criteria);
         Assert.assertNotNull(mapList);
         for (Map<String, Object> map : mapList) {
@@ -455,6 +458,162 @@ public class JdbcDaoTest {
 
         User user = jdbcDao.get(User.class, -2L);
         Assert.assertEquals("aaaa", user.getLoginName());
+    }
+
+    @Test
+    public void testAnnotationInsert() {
+
+        //注解对应了 USER_A 表
+        AnnotationUser annotationUser = new AnnotationUser();
+        annotationUser.setLoginName("annotation_12");
+        //数据库中desc是关键字 注解名称
+        annotationUser.setDesc("test desc");
+        annotationUser.setGmtCreate(new Date());
+        Long userId = jdbcDao.insert(annotationUser);
+        Assert.assertNotNull(userId);
+
+        //查询时表中没有gmtCreate字段，注解进行了忽略
+        AnnotationUser annotationUser1 = jdbcDao.get(AnnotationUser.class, userId);
+        Assert.assertEquals(annotationUser1.getLoginName(), "annotation_12");
+    }
+
+    @Test
+    public void testAnnotationInsert2() {
+
+        //注解对应了 USER_A 表 注意criteria中desc的处理
+        Criteria criteria = Criteria.insert(AnnotationUser.class).into("loginName", "annUser")
+            .into("`desc`", "test desc").into("gmtCreate", new Date());
+        Long userId = jdbcDao.insert(criteria);
+        Assert.assertNotNull(userId);
+
+        //查询时表中没有gmtCreate字段，注解进行了忽略
+        AnnotationUser annotationUser1 = jdbcDao.get(AnnotationUser.class, userId);
+        Assert.assertEquals(annotationUser1.getLoginName(), "annUser");
+    }
+
+    @Test
+    public void testAnnotationSave() {
+
+        jdbcDao.delete(AnnotationUser.class, -1L);
+        //注解对应了 USER_A 表
+        AnnotationUser annotationUser = new AnnotationUser();
+        annotationUser.setUserId(-1L);
+        annotationUser.setLoginName("annotation_12");
+        //数据库中desc是关键字 注解名称
+        annotationUser.setDesc("test desc");
+        annotationUser.setGmtCreate(new Date());
+        jdbcDao.save(annotationUser);
+
+        //查询时表中没有gmtCreate字段，注解进行了忽略
+        AnnotationUser annotationUser1 = jdbcDao.get(AnnotationUser.class, -1L);
+        Assert.assertNotNull(annotationUser1);
+    }
+
+    @Test
+    public void testAnnotationUpdate() {
+
+        Long userId = this.insertAnnotationUser();
+        //注解对应了 USER_A 表
+        AnnotationUser updateUser = new AnnotationUser();
+        updateUser.setUserId(userId);
+        updateUser.setLoginName("annotation_update");
+        //数据库中desc是关键字 注解名称
+        updateUser.setDesc("test desc update");
+        int i = jdbcDao.update(updateUser);
+        Assert.assertTrue(i > 0);
+
+        //查询时表中没有gmtCreate字段，注解进行了忽略
+        AnnotationUser annotationUser1 = jdbcDao.get(AnnotationUser.class, userId);
+        Assert.assertEquals(annotationUser1.getLoginName(), "annotation_update");
+    }
+
+    @Test
+    public void testAnnotationUpdate2() {
+
+        Long userId = this.insertAnnotationUser();
+
+        Criteria criteria = Criteria.update(AnnotationUser.class).set("loginName", "criteriaUserUpdate")
+            .where("userId", new Object[] { userId });
+
+        int i = jdbcDao.update(criteria);
+        Assert.assertTrue(i > 0);
+
+        //查询时表中没有gmtCreate字段，注解进行了忽略
+        AnnotationUser annotationUser1 = jdbcDao.get(AnnotationUser.class, userId);
+        Assert.assertEquals(annotationUser1.getLoginName(), "criteriaUserUpdate");
+    }
+
+    @Test
+    public void testAnnotationDelete() {
+        Long userId = this.insertAnnotationUser();
+        AnnotationUser annotationUser = new AnnotationUser();
+        annotationUser.setUserId(userId);
+        int i = jdbcDao.delete(annotationUser);
+        Assert.assertTrue(i > 0);
+        //查询时表中没有gmtCreate字段，注解进行了忽略
+        AnnotationUser annotationUser1 = jdbcDao.get(AnnotationUser.class, userId);
+        Assert.assertNull(annotationUser1);
+    }
+
+    @Test
+    public void testAnnotationDelete2() {
+        Long userId = this.insertAnnotationUser();
+        Criteria criteria = Criteria.delete(AnnotationUser.class).where("userId", new Object[] { userId });
+
+        int i = jdbcDao.delete(criteria);
+        Assert.assertTrue(i > 0);
+        //查询时表中没有gmtCreate字段，注解进行了忽略
+        AnnotationUser annotationUser1 = jdbcDao.get(AnnotationUser.class, userId);
+        Assert.assertNull(annotationUser1);
+    }
+
+    @Test
+    public void testAnnotationDelete3() {
+        Long userId = this.insertAnnotationUser();
+        int i = jdbcDao.delete(AnnotationUser.class, userId);
+        Assert.assertTrue(i > 0);
+        //查询时表中没有gmtCreate字段，注解进行了忽略
+        AnnotationUser annotationUser1 = jdbcDao.get(AnnotationUser.class, userId);
+        Assert.assertNull(annotationUser1);
+    }
+
+    @Test
+    public void testAnnotationSelect() {
+        this.insertAnnotationUser();
+        this.insertAnnotationUser();
+        List<AnnotationUser> userList = jdbcDao.queryList(AnnotationUser.class);
+        Assert.assertTrue(userList.size() > 0);
+    }
+
+    @Test
+    public void testAnnotationSelect2() {
+        this.insertAnnotationUser();
+        Long userId = this.insertAnnotationUser();
+        AnnotationUser annotationUser = new AnnotationUser();
+        annotationUser.setUserId(userId);
+        List<AnnotationUser> userList = jdbcDao.queryList(annotationUser);
+        Assert.assertTrue(userList.size() == 1);
+    }
+
+    @Test
+    public void testAnnotationSelect3() {
+        this.insertAnnotationUser();
+        this.insertAnnotationUser();
+        Criteria criteria = Criteria.select(AnnotationUser.class).exclude("userId");
+        List<AnnotationUser> userList = jdbcDao.queryList(criteria);
+        Assert.assertTrue(userList.size() > 1);
+        for (AnnotationUser annotationUser : userList) {
+            Assert.assertNull(annotationUser.getUserId());
+        }
+    }
+
+    private Long insertAnnotationUser() {
+        //注解对应了 USER_A 表
+        AnnotationUser annotationUser = new AnnotationUser();
+        annotationUser.setLoginName("annotation_12");
+        annotationUser.setDesc("test desc");
+        annotationUser.setGmtCreate(new Date());
+        return jdbcDao.insert(annotationUser);
     }
 
     //    @Test

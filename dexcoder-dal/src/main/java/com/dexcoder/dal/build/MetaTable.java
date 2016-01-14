@@ -111,9 +111,20 @@ public class MetaTable {
 
     public String getPkFieldName() {
         if (StrUtils.isBlank(pkFieldName)) {
+            pkFieldName = this.nameHandler.getPkFieldName(tableClass);
+        }
+        return pkFieldName;
+    }
+
+    public String getPkFieldName(NameHandler nameHandler) {
+        if (StrUtils.isBlank(pkFieldName)) {
             pkFieldName = nameHandler.getPkFieldName(tableClass);
         }
         return pkFieldName;
+    }
+
+    public Class<?> getTableClass() {
+        return tableClass;
     }
 
     public List<AutoField> getColumnAutoFields() {
@@ -365,7 +376,7 @@ public class MetaTable {
 
         public MetaTable build() {
             assert metaTable.tableClass != null;
-            assert metaTable.nameHandler != null;
+            //            assert metaTable.nameHandler != null;
             return this.metaTable;
         }
     }

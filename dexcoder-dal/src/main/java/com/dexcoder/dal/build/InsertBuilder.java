@@ -15,6 +15,10 @@ public class InsertBuilder extends AbstractSqlBuilder {
 
     protected static final String COMMAND_OPEN = "INSERT INTO ";
 
+    public InsertBuilder(Class<?> clazz) {
+        super(clazz);
+    }
+
     public void addField(String fieldName, String logicalOperator, String fieldOperator, AutoFieldType type,
                          Object value) {
         AutoField autoField = new AutoField.Builder().name(fieldName).logicalOperator(logicalOperator)
@@ -27,9 +31,8 @@ public class InsertBuilder extends AbstractSqlBuilder {
         throw new JdbcAssistantException("InsertBuilder不支持设置条件");
     }
 
-    public BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
-        metaTable = new MetaTable.Builder(metaTable).tableClass(clazz).entity(entity, isIgnoreNull)
-            .nameHandler(nameHandler).build();
+    public BoundSql build(Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
+        metaTable = new MetaTable.Builder(metaTable).entity(entity, isIgnoreNull).nameHandler(nameHandler).build();
         StringBuilder sql = new StringBuilder(COMMAND_OPEN);
         StringBuilder args = new StringBuilder("(");
         List<Object> params = new ArrayList<Object>();

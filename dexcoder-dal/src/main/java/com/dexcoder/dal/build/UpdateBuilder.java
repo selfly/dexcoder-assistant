@@ -19,8 +19,9 @@ public class UpdateBuilder extends AbstractSqlBuilder {
      */
     private SqlBuilder            whereBuilder;
 
-    public UpdateBuilder() {
-        whereBuilder = new WhereBuilder();
+    public UpdateBuilder(Class<?> clazz) {
+        super(clazz);
+        whereBuilder = new WhereBuilder(clazz);
     }
 
     public void addField(String fieldName, String logicalOperator, String fieldOperator, AutoFieldType type,
@@ -35,9 +36,8 @@ public class UpdateBuilder extends AbstractSqlBuilder {
         whereBuilder.addCondition(fieldName, logicalOperator, fieldOperator, type, value);
     }
 
-    public BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
-        metaTable = new MetaTable.Builder(metaTable).tableClass(clazz).entity(entity, isIgnoreNull)
-            .nameHandler(nameHandler).build();
+    public BoundSql build(Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
+        metaTable = new MetaTable.Builder(metaTable).entity(entity, isIgnoreNull).nameHandler(nameHandler).build();
         //更新，主键都是在where
         AutoField pkAutoField = metaTable.getAutoFields().get(metaTable.getPkFieldName());
         if (pkAutoField != null) {
@@ -48,7 +48,7 @@ public class UpdateBuilder extends AbstractSqlBuilder {
             }
         }
         //whereBuilder的metaTable
-        new MetaTable.Builder(whereBuilder.getMetaTable()).tableClass(clazz).tableAlias(metaTable.getTableAlias())
+        new MetaTable.Builder(whereBuilder.getMetaTable()).tableAlias(metaTable.getTableAlias())
             .nameHandler(nameHandler).build();
 
         StringBuilder sql = new StringBuilder(COMMAND_OPEN);
@@ -70,7 +70,7 @@ public class UpdateBuilder extends AbstractSqlBuilder {
             }
         }
         sql.deleteCharAt(sql.length() - 1);
-        BoundSql boundSql = whereBuilder.build(clazz, entity, isIgnoreNull, nameHandler);
+        BoundSql boundSql = whereBuilder.build(entity, isIgnoreNull, nameHandler);
         sql.append(boundSql.getSql());
         params.addAll(boundSql.getParameters());
         return new CriteriaBoundSql(sql.toString(), params);

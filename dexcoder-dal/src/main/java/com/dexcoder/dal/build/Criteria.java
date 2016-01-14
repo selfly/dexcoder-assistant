@@ -38,7 +38,7 @@ public class Criteria {
      * @return
      */
     public static Criteria select(Class<?> clazz) {
-        return new Criteria(clazz, new SelectBuilder());
+        return new Criteria(clazz, new SelectBuilder(clazz));
     }
 
     /**
@@ -48,7 +48,7 @@ public class Criteria {
      * @return
      */
     public static Criteria insert(Class<?> clazz) {
-        return new Criteria(clazz, new InsertBuilder());
+        return new Criteria(clazz, new InsertBuilder(clazz));
     }
 
     /**
@@ -58,7 +58,7 @@ public class Criteria {
      * @return
      */
     public static Criteria update(Class<?> clazz) {
-        return new Criteria(clazz, new UpdateBuilder());
+        return new Criteria(clazz, new UpdateBuilder(clazz));
     }
 
     /**
@@ -67,7 +67,7 @@ public class Criteria {
      * @return
      */
     public static Criteria delete(Class<?> clazz) {
-        return new Criteria(clazz, new DeleteBuilder());
+        return new Criteria(clazz, new DeleteBuilder(clazz));
     }
 
     /**
@@ -296,7 +296,7 @@ public class Criteria {
      * @return
      */
     public BoundSql build(Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
-        return this.sqlBuilder.build(this.entityClass, entity, isIgnoreNull, nameHandler);
+        return this.sqlBuilder.build(entity, isIgnoreNull, nameHandler);
     }
 
     /**
@@ -312,5 +312,9 @@ public class Criteria {
 
     public Class<?> getEntityClass() {
         return entityClass;
+    }
+
+    public String getPkField(NameHandler nameHandler) {
+        return this.sqlBuilder.getMetaTable().getPkFieldName(nameHandler);
     }
 }

@@ -40,12 +40,11 @@ public interface SqlBuilder {
     /**
      * 构建BoundSql
      *
-     * @param clazz 不能为空
      * @param entity 可以为空
      * @param isIgnoreNull entity不为空的情况下是否忽略null属性
      * @param nameHandler 名称处理器，如果注解指定了单独的nameHandler则会被覆盖
      * @return bound sql
      */
-    BoundSql build(Class<?> clazz, Object entity, boolean isIgnoreNull, NameHandler nameHandler);
+    BoundSql build(Object entity, boolean isIgnoreNull, NameHandler nameHandler);
 
 }

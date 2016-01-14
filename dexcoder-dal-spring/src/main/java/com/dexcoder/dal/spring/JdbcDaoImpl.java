@@ -74,8 +74,9 @@ public class JdbcDaoImpl extends SqlJdbcDaoImpl implements JdbcDao {
     }
 
     public int delete(Class<?> clazz, Long id) {
-        BoundSql boundSql = Criteria.delete(clazz).where(getNameHandler().getPkFieldName(clazz), new Object[] { id })
-            .build(true, getNameHandler());
+        Criteria criteria = Criteria.delete(clazz);
+        BoundSql boundSql = criteria.where(criteria.getPkField(getNameHandler()), new Object[] { id }).build(true,
+            getNameHandler());
         return jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
@@ -129,8 +130,9 @@ public class JdbcDaoImpl extends SqlJdbcDaoImpl implements JdbcDao {
     }
 
     public <T> T get(Class<T> clazz, Long id) {
-        BoundSql boundSql = Criteria.select(clazz).where(getNameHandler().getPkFieldName(clazz), new Object[] { id })
-            .build(true, getNameHandler());
+        Criteria criteria = Criteria.select(clazz);
+        BoundSql boundSql = criteria.where(criteria.getPkField(getNameHandler()), new Object[] { id }).build(true,
+            getNameHandler());
         //采用list方式查询，当记录不存在时返回null而不会抛出异常
         List<T> list = jdbcTemplate.query(boundSql.getSql(), this.getRowMapper(clazz), boundSql.getParameters()
             .toArray());
@@ -141,8 +143,8 @@ public class JdbcDaoImpl extends SqlJdbcDaoImpl implements JdbcDao {
     }
 
     public <T> T get(Criteria criteria, Long id) {
-        BoundSql boundSql = criteria.where(getNameHandler().getPkFieldName(criteria.getEntityClass()),
-            new Object[] { id }).build(true, getNameHandler());
+        BoundSql boundSql = criteria.where(criteria.getPkField(getNameHandler()), new Object[] { id }).build(true,
+            getNameHandler());
         //采用list方式查询，当记录不存在时返回null而不会抛出异常
         List<T> list = (List<T>) jdbcTemplate
             .query(boundSql.getSql(), this.getRowMapper(criteria.getEntityClass()), id);
