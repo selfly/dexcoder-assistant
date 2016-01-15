@@ -9,6 +9,7 @@
 - 因为sql权限问题去掉使用TRUNCATE的deleteAll方法
 - 修正使用注解时注解的属性名不遵循规范时get方法主键错误问题
 - 修正水平拆分数据分表不根据主键拆分时update无法获取表名的问题
+- 修改NameHandler类名为MappingHandler
 
 [详细更新日志](md/update-log.md)
 
