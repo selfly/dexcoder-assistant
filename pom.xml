@@ -159,12 +159,11 @@
                 <artifactId>jaxen</artifactId>
                 <version>${jaxen.version}</version>
             </dependency>
-            <!--<dependency>-->
-            <!--<groupId>dom4j</groupId>-->
-            <!--<artifactId>dom4j</artifactId>-->
-            <!--<version>${dom4j.version}</version>-->
-            <!--<scope>${jar.scope}</scope>-->
-            <!--</dependency>-->
+            <dependency>
+                <groupId>dom4j</groupId>
+                <artifactId>dom4j</artifactId>
+                <version>${dom4j.version}</version>
+            </dependency>
             <dependency>
                 <groupId>ognl</groupId>
                 <artifactId>ognl</artifactId>
