@@ -66,7 +66,7 @@ Tomcat的conf目录 -> project目录 -> classpath
         - id 数据源的id，方便在日志中查看当前操作使用了哪个数据源
         - class 数据源使用的DataSource类，可以是dbcp，c3p0等各大数据源
         - default 是否默认，对应spring中的defaultTargetDataSource，应该只有一个
-        - properties:
+    - properties:
         - weight 权重，value为int型，虽然没有做限定，但仍建议为其设置一个合理且容易理解的值，如权重总和为10
         - mode 读写模式，r-读、w-写、rw-读写
         - 其它的属性，由你使用的具体数据源决定。等同于数据源在spring中声明时可以注入的属性都可以在这里进行设置
