@@ -88,14 +88,14 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
 
 ### insert操作
 
-#### Entity方式
+Entity方式
 
     User user = new User();
     user.setLoginName("selfly_a");
     //......
     Long userId = jdbcDao.insert(user);
 
-#### Criteria 方式
+Criteria 方式
 
     Criteria criteria = Criteria.insert(User.class).into("loginName", "selfly_b").into("password", "12345678")
         .into("email", "selflly@foxmail.com").into("userAge", 22).into("userType", "2").into("gmtCreate", new Date());
@@ -103,14 +103,14 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
 
 ### save操作，和insert的区别在于不处理主键，由调用者指定
 
-#### Entity方式
+Entity方式
 
     User user = new User();
     user.setUserId(-1L);
     //......
     jdbcDao.save(user);
 
-#### Criteria 方式
+Criteria 方式
 
     Criteria criteria = Criteria.insert(User.class).into("userId", -2L).into("loginName", "selfly-2")
         .into("password", "12345678").into("email", "selflly@foxmail.com").into("userAge", 22).into("userType", "2")
@@ -119,7 +119,7 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
 
 ### update操作
 
-#### Entity方式
+Entity方式
 
     User user = new User();
     user.setUserId(57L);
@@ -130,7 +130,7 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
     //方式二 为null的属性值将更新到数据库
     jdbcDao.update(user,true);
 
-#### Criteria方式
+Criteria方式
 
     //criteria方式这里的email设为null也将被更新
     Criteria criteria = Criteria.update(User.class).set("password", "update222").set("email",null)
@@ -139,7 +139,7 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
 
 ###get操作
 
-#### 根据主键
+根据主键
 
     User user = jdbcDao.get(User.class, 63L);
 
@@ -151,11 +151,11 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
 
 ###delete操作
 
-#### 根据主键
+根据主键
 
     jdbcDao.delete(User.class, 57L);
 
-#### Entity方式
+Entity方式
 
     //会把不为空的属性做为where条件
     User u = new User();
@@ -163,7 +163,7 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
     u.setUserType("1");
     jdbcDao.delete(u);
 
-#### Criteria方式
+Criteria方式
 
     //where条件使用了or
     Criteria criteria = Criteria.delete(User.class).where("loginName", new Object[] { "liyd2" })
@@ -172,24 +172,24 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
 
 ### 列表查询操作
 
-#### 所有结果
+所有结果
 
     List<User> users = jdbcDao.queryList(User.class);
 
-#### 以Entity中不为空的属性作为查询条件
+以Entity中不为空的属性作为查询条件
 
     User user = new User();
     user.setUserType("1");
     //......
     List<User> users = jdbcDao.queryList(user);
 
-#### Criteria方式，可以指定黑白名单、排序字段等
+Criteria方式，可以指定黑白名单、排序字段等
 
     Criteria criteria = Criteria.select(User.class).exclude("userId")
         .where("loginName", new Object[]{"liyd"}).asc("userAge").desc("userId");
     List<User> users = jdbcDao.queryList(criteria);
 
-#### 指定逻辑操作符
+指定逻辑操作符
 
     //使用了like，可以换成!=、in、not in等
     Criteria criteria = Criteria.select(User.class).where("loginName", "like",
@@ -240,7 +240,7 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
 
 ### 分页
 
-#### 直接传入Entity，继承于`Pageable`
+直接传入Entity，继承于`Pageable`
 
     //进行分页，只需要增加这行，列表查询方式跟上面没有任何区别
     PageControl.performPage(user);
@@ -252,7 +252,7 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
     //总记录数
     int itemsTotal = pager.getItemsTotal();
 
-#### 直接传入页码和每页大小
+直接传入页码和每页大小
 
     //直接传入页码和每页条数
     PageControl.performPage(1, 10);
@@ -329,7 +329,7 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
 
 执行自定义sql支持两种方式：直接传sql执行和mybatis方式执行。
 
-#### 直接传sql执行
+###直接传sql执行
 
 该方式可能会让除了dao层之外的业务层出现sql代码，因此是不推荐的，它适合一些不在项目中的情况。
 
@@ -351,7 +351,7 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
 
 这个实现比较简单，参数Object数组中不支持复杂的自定义对象。
 
-#### mybatis方式执行
+### mybatis方式执行
 
 采用了插件式实现，使用该方式首先添加依赖：
 
