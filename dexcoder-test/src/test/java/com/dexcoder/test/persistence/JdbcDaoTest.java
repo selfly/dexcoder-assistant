@@ -175,17 +175,17 @@ public class JdbcDaoTest {
         User u = new User();
         u.setUserId(-2L);
         u.setLoginName("aabb");
-        int i = jdbcDao.update(u, true);
+        int i = jdbcDao.update(u, false);
         Assert.assertEquals(1, i);
 
         User user = jdbcDao.get(User.class, -2L);
         Assert.assertNotNull(user.getUserId());
         Assert.assertNotNull(user.getLoginName());
-        Assert.assertNull(u.getPassword());
-        Assert.assertNull(u.getEmail());
-        Assert.assertNull(u.getGmtCreate());
-        Assert.assertNull(u.getUserType());
-        Assert.assertNull(u.getUserAge());
+        Assert.assertNull(user.getPassword());
+        Assert.assertNull(user.getEmail());
+        Assert.assertNull(user.getGmtCreate());
+        Assert.assertNull(user.getUserType());
+        Assert.assertNull(user.getUserAge());
     }
 
     @Test

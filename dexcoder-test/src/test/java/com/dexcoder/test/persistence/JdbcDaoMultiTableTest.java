@@ -41,7 +41,7 @@ public class JdbcDaoMultiTableTest {
 
     @Test
     public void multiTableChapter() {
-        //两次插入bookId不同，根据CustomNameHandler中的策略应该在不同的表中
+        //两次插入bookId不同，根据CustomMappingHandler中的策略应该在不同的表中
         for (int i = 1; i < 51; i++) {
             Chapter chapter = new Chapter();
             chapter.setChapterId((long) i);

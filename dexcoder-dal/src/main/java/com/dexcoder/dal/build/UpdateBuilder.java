@@ -7,7 +7,7 @@ import java.util.Map;
 
 import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.dal.BoundSql;
-import com.dexcoder.dal.handler.NameHandler;
+import com.dexcoder.dal.handler.MappingHandler;
 
 /**
  * Created by liyd on 2015-12-4.
@@ -38,8 +38,8 @@ public class UpdateBuilder extends AbstractSqlBuilder {
         whereBuilder.addCondition(fieldName, logicalOperator, fieldOperator, type, value);
     }
 
-    public BoundSql build(Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
-        metaTable = new MetaTable.Builder(metaTable).entity(entity, isIgnoreNull).nameHandler(nameHandler).build();
+    public BoundSql build(Object entity, boolean isIgnoreNull, MappingHandler mappingHandler) {
+        metaTable = new MetaTable.Builder(metaTable).entity(entity, isIgnoreNull).mappingHandler(mappingHandler).build();
 
         Iterator<Map.Entry<String, AutoField>> iterator = metaTable.getAutoFields().entrySet().iterator();
         while (iterator.hasNext()) {
@@ -59,7 +59,7 @@ public class UpdateBuilder extends AbstractSqlBuilder {
 
         //whereBuilder的metaTable
         new MetaTable.Builder(whereBuilder.getMetaTable()).tableAlias(metaTable.getTableAlias())
-            .nameHandler(nameHandler).build();
+            .mappingHandler(mappingHandler).build();
 
         StringBuilder sql = new StringBuilder(COMMAND_OPEN);
         List<Object> params = new ArrayList<Object>();
@@ -80,7 +80,7 @@ public class UpdateBuilder extends AbstractSqlBuilder {
             }
         }
         sql.deleteCharAt(sql.length() - 1);
-        BoundSql boundSql = whereBuilder.build(entity, isIgnoreNull, nameHandler);
+        BoundSql boundSql = whereBuilder.build(entity, isIgnoreNull, mappingHandler);
         sql.append(boundSql.getSql());
         params.addAll(boundSql.getParameters());
         return new CriteriaBoundSql(sql.toString(), params);

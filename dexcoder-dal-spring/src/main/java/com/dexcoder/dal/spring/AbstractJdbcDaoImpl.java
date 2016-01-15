@@ -18,8 +18,8 @@ import com.dexcoder.commons.utils.NameUtils;
 import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.dal.BoundSql;
 import com.dexcoder.dal.SqlFactory;
-import com.dexcoder.dal.handler.DefaultNameHandler;
-import com.dexcoder.dal.handler.NameHandler;
+import com.dexcoder.dal.handler.DefaultMappingHandler;
+import com.dexcoder.dal.handler.MappingHandler;
 
 /**
  * Created by liyd on 2015-12-15.
@@ -34,7 +34,7 @@ public abstract class AbstractJdbcDaoImpl {
     /**
      * 名称处理器，为空按默认执行
      */
-    protected NameHandler    nameHandler;
+    protected MappingHandler mappingHandler;
 
     /**
      * rowMapper，为空按默认执行
@@ -61,7 +61,7 @@ public abstract class AbstractJdbcDaoImpl {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                String pkColumnName = getNameHandler().getPkColumnName(clazz);
+                String pkColumnName = getMappingHandler().getPkColumnName(clazz);
                 PreparedStatement ps = con.prepareStatement(boundSql.getSql(), new String[] { pkColumnName });
                 int index = 0;
                 for (Object param : boundSql.getParameters()) {
@@ -132,12 +132,12 @@ public abstract class AbstractJdbcDaoImpl {
      *
      * @return
      */
-    protected NameHandler getNameHandler() {
+    protected MappingHandler getMappingHandler() {
 
-        if (this.nameHandler == null) {
-            this.nameHandler = new DefaultNameHandler();
+        if (this.mappingHandler == null) {
+            this.mappingHandler = new DefaultMappingHandler();
         }
-        return this.nameHandler;
+        return this.mappingHandler;
     }
 
     protected String getDialect() {
@@ -155,8 +155,8 @@ public abstract class AbstractJdbcDaoImpl {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void setNameHandler(NameHandler nameHandler) {
-        this.nameHandler = nameHandler;
+    public void setMappingHandler(MappingHandler mappingHandler) {
+        this.mappingHandler = mappingHandler;
     }
 
     public void setRowMapperClass(String rowMapperClass) {

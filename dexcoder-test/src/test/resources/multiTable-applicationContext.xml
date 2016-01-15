@@ -60,10 +60,10 @@
 
     <bean id="jdbcDao" class="com.dexcoder.dal.spring.JdbcDaoImpl">
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
-        <property name="nameHandler" ref="customNameHandler"/>
+        <property name="mappingHandler" ref="customMappingHandler"/>
         <property name="sqlFactory" ref="sqlFactory"/>
     </bean>
-    <bean id="customNameHandler" class="com.dexcoder.test.persistence.CustomNameHandler"/>
+    <bean id="customMappingHandler" class="com.dexcoder.test.persistence.CustomMappingHandler"/>
     <bean id="sqlFactory" class="com.dexcoder.dal.SimpleSqlFactory">
         <!--<property name="sqlLocation" value="user-sql.xml"/>-->
     </bean>

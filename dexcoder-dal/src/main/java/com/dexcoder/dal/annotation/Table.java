@@ -21,5 +21,5 @@ public @interface Table {
 
     String pkField() default "";
 
-    Class<?> nameHandler() default Object.class;
+    Class<?> mappingHandler() default Object.class;
 }

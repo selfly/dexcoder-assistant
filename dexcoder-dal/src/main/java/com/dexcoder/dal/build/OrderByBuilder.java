@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.dexcoder.dal.BoundSql;
 import com.dexcoder.dal.exceptions.JdbcAssistantException;
-import com.dexcoder.dal.handler.NameHandler;
+import com.dexcoder.dal.handler.MappingHandler;
 
 /**
  * Created by liyd on 2015-12-4.
@@ -28,8 +28,8 @@ public class OrderByBuilder extends AbstractSqlBuilder {
         throw new JdbcAssistantException("OrderByBuilder不支持设置条件");
     }
 
-    public BoundSql build(Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
-        metaTable = new MetaTable.Builder(metaTable).nameHandler(nameHandler).build();
+    public BoundSql build(Object entity, boolean isIgnoreNull, MappingHandler mappingHandler) {
+        metaTable = new MetaTable.Builder(metaTable).mappingHandler(mappingHandler).build();
         StringBuilder sb = new StringBuilder(COMMAND_OPEN);
         if (metaTable.getAutoFields().isEmpty()) {
             sb.append(metaTable.applyColumnTableAlias(metaTable.getPkColumnName())).append(" DESC");

@@ -13,7 +13,7 @@ import com.dexcoder.dal.build.AutoField;
  * Date: 2/12/14
  * Time: 4:51 PM
  */
-public class DefaultNameHandler implements NameHandler {
+public class DefaultMappingHandler implements MappingHandler {
 
     /**
      * 主键属性后缀

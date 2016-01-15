@@ -5,7 +5,7 @@ import java.util.Map;
 import com.dexcoder.commons.exceptions.AssistantException;
 import com.dexcoder.commons.utils.NameUtils;
 import com.dexcoder.dal.build.AutoField;
-import com.dexcoder.dal.handler.DefaultNameHandler;
+import com.dexcoder.dal.handler.DefaultMappingHandler;
 import com.dexcoder.test.model.Book;
 import com.dexcoder.test.model.Chapter;
 
@@ -16,7 +16,7 @@ import com.dexcoder.test.model.Chapter;
  * Date: 2/12/14
  * Time: 4:51 PM
  */
-public class CustomNameHandler extends DefaultNameHandler {
+public class CustomMappingHandler extends DefaultMappingHandler {
 
     /**
      * 主键后缀

@@ -11,7 +11,7 @@ import com.dexcoder.dal.BoundSql;
 import com.dexcoder.dal.annotation.Column;
 import com.dexcoder.dal.annotation.Transient;
 import com.dexcoder.dal.exceptions.JdbcAssistantException;
-import com.dexcoder.dal.handler.NameHandler;
+import com.dexcoder.dal.handler.MappingHandler;
 
 /**
  * Created by liyd on 2015-12-4.
@@ -57,11 +57,11 @@ public class SelectBuilder extends AbstractSqlBuilder {
         whereBuilder.addCondition(fieldName, logicalOperator, fieldOperator, type, value);
     }
 
-    public BoundSql build(Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
-        metaTable = new MetaTable.Builder(metaTable).nameHandler(nameHandler).build();
+    public BoundSql build(Object entity, boolean isIgnoreNull, MappingHandler mappingHandler) {
+        metaTable = new MetaTable.Builder(metaTable).mappingHandler(mappingHandler).build();
         //构建到whereBuilder
         new MetaTable.Builder(whereBuilder.getMetaTable()).tableAlias(metaTable.getTableAlias())
-            .entity(entity, isIgnoreNull).nameHandler(nameHandler).build();
+            .entity(entity, isIgnoreNull).mappingHandler(mappingHandler).build();
         //表名从whereBuilder获取
         String tableName = whereBuilder.getMetaTable().getTableAndAliasName();
         StringBuilder sb = new StringBuilder(COMMAND_OPEN);
@@ -89,11 +89,11 @@ public class SelectBuilder extends AbstractSqlBuilder {
         }
         sb.deleteCharAt(sb.length() - 1);
         sb.append(" FROM ").append(tableName);
-        BoundSql whereBoundSql = whereBuilder.build(entity, isIgnoreNull, nameHandler);
+        BoundSql whereBoundSql = whereBuilder.build(entity, isIgnoreNull, mappingHandler);
         sb.append(whereBoundSql.getSql());
         if (metaTable.isOrderBy()) {
             new MetaTable.Builder(orderByBuilder.getMetaTable()).tableAlias(metaTable.getTableAlias()).build();
-            BoundSql orderByBoundSql = orderByBuilder.build(entity, isIgnoreNull, nameHandler);
+            BoundSql orderByBoundSql = orderByBuilder.build(entity, isIgnoreNull, mappingHandler);
             sb.append(orderByBoundSql.getSql());
         }
         return new CriteriaBoundSql(sb.toString(), whereBoundSql.getParameters());

@@ -10,7 +10,7 @@
 - 修正使用注解时注解的属性名不遵循规范时get方法主键错误问题
 - 修正水平拆分数据分表不根据主键拆分时update无法获取表名的问题
 
-[详细更新日志](md/update_log.md)
+[详细更新日志](md/update-log.md)
 
 ##核心组件dexcoder-dal使用说明
 
@@ -128,7 +128,7 @@ Entity方式
     jdbcDao.update(user);
 
     //方式二 为null的属性值将更新到数据库
-    jdbcDao.update(user,true);
+    jdbcDao.update(user,false);
 
 Criteria方式
 
@@ -322,6 +322,35 @@ Criteria方式，可以指定黑白名单、排序字段等
 
     //对应的sql
     select t.XML_FILE.getclobval() xmlFile from TABLE t where t.TABLE_ID = ?
+    
+### 使用注解
+
+可以用注解来指定表名、主键、列名或者忽略某个属性。具体的用法下面代码一看就能明白，唯一需要注意的是注解是在`getter`方法上而不是属性上：
+
+    @Table(name = "USER_A", pkField = "userId", pkColumn = "USER_ID")
+    public class AnnotationUser extends Pageable {
+
+        /** 用户id */
+        private Long              userId;
+
+        /** 数据库关键字 */
+        private String            desc;
+
+        /** 修改时间 数据库无 */
+        private Date              gmtModify;
+        
+        //略...
+
+        @Column(name = "`DESC`")
+        public String getDesc() {
+            return desc;
+        }
+
+        @Transient
+        public Date getGmtModify() {
+            return gmtModify;
+        }
+    }
 
 ### 执行自定义sql
 
@@ -446,12 +475,12 @@ JdbcDao在声明时可以根据需要注入其它几个参数：
     <bean id="jdbcDao" class="com.dexcoder.dal.spring.JdbcDaoImpl">
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
         <property name="sqlFactory" ref="..."/>
-        <property name="nameHandler" ref="..."/>
+        <property name="mappingHandler" ref="..."/>
         <property name="rowMapperClass" value="..."/>
         <property name="dialect" value="..."/>
     </bean>
 
-- nameHandler 默认使用DefaultNameHandler，即遵守上面的约定优于配置，如果需要自定义可以实现该接口。
+- mappingHandler 默认使用DefaultMappingHandler，即遵守上面的约定优于配置，如果需要自定义可以实现该接口。
 - sqlFactory 执行自定义sql时注入相应的sqlFactory。
 - rowMapperClass 默认使用了spring的`BeanPropertyRowMapper.newInstance(clazz)`,需要自定义可以自行实现，标准spring的RowMapper实现即可。
 - dialect 数据库方言，为空会自动判断，一般不需要注入。

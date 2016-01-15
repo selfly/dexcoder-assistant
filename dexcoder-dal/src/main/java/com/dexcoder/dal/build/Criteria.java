@@ -1,7 +1,7 @@
 package com.dexcoder.dal.build;
 
 import com.dexcoder.dal.BoundSql;
-import com.dexcoder.dal.handler.NameHandler;
+import com.dexcoder.dal.handler.MappingHandler;
 
 /**
  * sql操作Criteria
@@ -292,29 +292,29 @@ public class Criteria {
      *
      * @param entity
      * @param isIgnoreNull
-     * @param nameHandler
+     * @param mappingHandler
      * @return
      */
-    public BoundSql build(Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
-        return this.sqlBuilder.build(entity, isIgnoreNull, nameHandler);
+    public BoundSql build(Object entity, boolean isIgnoreNull, MappingHandler mappingHandler) {
+        return this.sqlBuilder.build(entity, isIgnoreNull, mappingHandler);
     }
 
     /**
      * 将设置的信息构建成BoundSql
      *
      * @param isIgnoreNull
-     * @param nameHandler
+     * @param mappingHandler
      * @return
      */
-    public BoundSql build(boolean isIgnoreNull, NameHandler nameHandler) {
-        return build(null, isIgnoreNull, nameHandler);
+    public BoundSql build(boolean isIgnoreNull, MappingHandler mappingHandler) {
+        return build(null, isIgnoreNull, mappingHandler);
     }
 
     public Class<?> getEntityClass() {
         return entityClass;
     }
 
-    public String getPkField(NameHandler nameHandler) {
-        return this.sqlBuilder.getMetaTable().getPkFieldName(nameHandler);
+    public String getPkField(MappingHandler mappingHandler) {
+        return this.sqlBuilder.getMetaTable().getPkFieldName(mappingHandler);
     }
 }

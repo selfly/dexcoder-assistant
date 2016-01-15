@@ -7,7 +7,7 @@ import java.util.Map;
 
 import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.dal.BoundSql;
-import com.dexcoder.dal.handler.NameHandler;
+import com.dexcoder.dal.handler.MappingHandler;
 
 /**
  * Created by liyd on 2015-12-4.
@@ -36,7 +36,7 @@ public class WhereBuilder extends AbstractSqlBuilder {
         this.addField(fieldName, logicalOperator, fieldOperator, type, obj);
     }
 
-    public BoundSql build(Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
+    public BoundSql build(Object entity, boolean isIgnoreNull, MappingHandler mappingHandler) {
         StringBuilder sb = new StringBuilder();
         if (metaTable.hasAutoFields()) {
             sb.append(COMMAND_OPEN);

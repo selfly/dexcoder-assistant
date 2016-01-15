@@ -13,7 +13,7 @@ import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.dal.annotation.Column;
 import com.dexcoder.dal.annotation.Table;
 import com.dexcoder.dal.annotation.Transient;
-import com.dexcoder.dal.handler.NameHandler;
+import com.dexcoder.dal.handler.MappingHandler;
 
 /**
  * 表信息
@@ -50,7 +50,7 @@ public class MetaTable {
     /**
      * 名称处理器
      */
-    private NameHandler            nameHandler;
+    private MappingHandler mappingHandler;
 
     /**
      * 列
@@ -104,21 +104,21 @@ public class MetaTable {
 
     public String getPkColumnName() {
         if (StrUtils.isBlank(pkColumnName)) {
-            pkColumnName = nameHandler.getPkColumnName(tableClass);
+            pkColumnName = mappingHandler.getPkColumnName(tableClass);
         }
         return pkColumnName;
     }
 
     public String getPkFieldName() {
         if (StrUtils.isBlank(pkFieldName)) {
-            pkFieldName = this.nameHandler.getPkFieldName(tableClass);
+            pkFieldName = this.mappingHandler.getPkFieldName(tableClass);
         }
         return pkFieldName;
     }
 
-    public String getPkFieldName(NameHandler nameHandler) {
+    public String getPkFieldName(MappingHandler mappingHandler) {
         if (StrUtils.isBlank(pkFieldName)) {
-            pkFieldName = nameHandler.getPkFieldName(tableClass);
+            pkFieldName = mappingHandler.getPkFieldName(tableClass);
         }
         return pkFieldName;
     }
@@ -180,7 +180,7 @@ public class MetaTable {
     }
 
     public String getColumnAndTableAliasName(String fieldName) {
-        String columnName = StrUtils.equals(fieldName, getPkFieldName()) ? getPkColumnName() : nameHandler
+        String columnName = StrUtils.equals(fieldName, getPkFieldName()) ? getPkColumnName() : mappingHandler
             .getColumnName(tableClass, fieldName);
         if (StrUtils.isBlank(this.tableAlias)) {
             return columnName;
@@ -234,7 +234,7 @@ public class MetaTable {
      * 获取表名
      * <pre>
      *     如果有注解，直接返回注解的表名
-     *     否则用nameHandler获取，这个必须实时获取以便在水平分表时能正确处理表名
+     *     否则用mappingHandler获取，这个必须实时获取以便在水平分表时能正确处理表名
      * </pre>
      *
      * @return
@@ -243,7 +243,7 @@ public class MetaTable {
         if (StrUtils.isNotBlank(annotationTableName)) {
             return annotationTableName;
         }
-        return this.nameHandler.getTableName(this.tableClass, this.autoFields);
+        return this.mappingHandler.getTableName(this.tableClass, this.autoFields);
     }
 
     public boolean isFieldExclusion() {
@@ -304,8 +304,8 @@ public class MetaTable {
                 if (StrUtils.isBlank(metaTable.tableAlias)) {
                     metaTable.tableAlias = aTable.alias();
                 }
-                if (!Object.class.equals(aTable.nameHandler())) {
-                    metaTable.nameHandler = ((NameHandler) ClassUtils.newInstance(aTable.nameHandler()));
+                if (!Object.class.equals(aTable.mappingHandler())) {
+                    metaTable.mappingHandler = ((MappingHandler) ClassUtils.newInstance(aTable.mappingHandler()));
                 }
             }
             return this;
@@ -369,14 +369,14 @@ public class MetaTable {
             return this;
         }
 
-        public Builder nameHandler(NameHandler nameHandler) {
-            metaTable.nameHandler = nameHandler;
+        public Builder mappingHandler(MappingHandler mappingHandler) {
+            metaTable.mappingHandler = mappingHandler;
             return this;
         }
 
         public MetaTable build() {
             assert metaTable.tableClass != null;
-            //            assert metaTable.nameHandler != null;
+            //            assert metaTable.mappingHandler != null;
             return this.metaTable;
         }
     }

@@ -11,7 +11,7 @@ import com.dexcoder.dal.build.AutoField;
  * Date: 2/12/14
  * Time: 4:51 PM
  */
-public interface NameHandler {
+public interface MappingHandler {
 
     /**
      * 根据实体名获取表名

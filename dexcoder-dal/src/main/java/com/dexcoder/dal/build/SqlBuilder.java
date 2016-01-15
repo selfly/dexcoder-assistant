@@ -1,7 +1,7 @@
 package com.dexcoder.dal.build;
 
 import com.dexcoder.dal.BoundSql;
-import com.dexcoder.dal.handler.NameHandler;
+import com.dexcoder.dal.handler.MappingHandler;
 
 /**
  * Created by liyd on 2015-12-4.
@@ -42,9 +42,9 @@ public interface SqlBuilder {
      *
      * @param entity 可以为空
      * @param isIgnoreNull entity不为空的情况下是否忽略null属性
-     * @param nameHandler 名称处理器，如果注解指定了单独的nameHandler则会被覆盖
+     * @param mappingHandler 映射处理器，如果注解指定了单独的mappingHandler则会被覆盖
      * @return bound sql
      */
-    BoundSql build(Object entity, boolean isIgnoreNull, NameHandler nameHandler);
+    BoundSql build(Object entity, boolean isIgnoreNull, MappingHandler mappingHandler);
 
 }
