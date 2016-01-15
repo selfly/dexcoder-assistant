@@ -1,9 +1,11 @@
 package com.dexcoder.dal.build;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.dal.BoundSql;
 import com.dexcoder.dal.handler.NameHandler;
 
@@ -38,15 +40,23 @@ public class UpdateBuilder extends AbstractSqlBuilder {
 
     public BoundSql build(Object entity, boolean isIgnoreNull, NameHandler nameHandler) {
         metaTable = new MetaTable.Builder(metaTable).entity(entity, isIgnoreNull).nameHandler(nameHandler).build();
-        //更新，主键都是在where
-        AutoField pkAutoField = metaTable.getAutoFields().get(metaTable.getPkFieldName());
-        if (pkAutoField != null) {
-            metaTable.getAutoFields().remove(pkAutoField.getName());
-            if (!whereBuilder.getMetaTable().hasAutoField(pkAutoField.getName())) {
+
+        Iterator<Map.Entry<String, AutoField>> iterator = metaTable.getAutoFields().entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, AutoField> entry = iterator.next();
+            AutoField pkAutoField = entry.getValue();
+            if (StrUtils.equals(metaTable.getPkFieldName(), entry.getKey())) {
+                iterator.remove();
+                if (!whereBuilder.getMetaTable().hasAutoField(entry.getKey())) {
+                    this.whereBuilder.addCondition(pkAutoField.getName(), pkAutoField.getLogicalOperator(),
+                        pkAutoField.getFieldOperator(), pkAutoField.getType(), pkAutoField.getValue());
+                }
+            } else {
                 this.whereBuilder.addCondition(pkAutoField.getName(), pkAutoField.getLogicalOperator(),
-                    pkAutoField.getFieldOperator(), pkAutoField.getType(), pkAutoField.getValue());
+                    pkAutoField.getFieldOperator(), AutoFieldType.TRANSIENT, pkAutoField.getValue());
             }
         }
+
         //whereBuilder的metaTable
         new MetaTable.Builder(whereBuilder.getMetaTable()).tableAlias(metaTable.getTableAlias())
             .nameHandler(nameHandler).build();

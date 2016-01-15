@@ -25,5 +25,7 @@ public enum AutoFieldType {
 
     BRACKET_END,
 
-    FUNC
+    FUNC,
+
+    TRANSIENT
 }

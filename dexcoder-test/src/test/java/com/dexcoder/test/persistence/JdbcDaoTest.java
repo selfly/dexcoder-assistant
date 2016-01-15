@@ -616,77 +616,7 @@ public class JdbcDaoTest {
         return jdbcDao.insert(annotationUser);
     }
 
-    //    @Test
-    //    public void multiTableBook() {
-    //        for (int i = 1; i < 51; i++) {
-    //            Book book = new Book();
-    //            book.setBookId((long) i);
-    //            book.setBookName("测试book" + i);
-    //            book.setGmtCreate(new Date());
-    //            jdbcDao.save(book);
-    //        }
-    //        System.out.println("=================");
-    //    }
 
-    //    @Test
-    //    public void multiTableChapter() {
-    //        for (int i = 1; i < 51; i++) {
-    //            Chapter chapter = new Chapter();
-    //            chapter.setChapterId((long) i);
-    //            chapter.setBookId(5L);
-    //            chapter.setChapterName("章节一" + i);
-    //            chapter.setGmtCreate(new Date());
-    //            jdbcDao.save(chapter);
-    //        }
-    //        System.out.println("=================");
-    //        for (int i = 51; i < 101; i++) {
-    //            Chapter chapter = new Chapter();
-    //            chapter.setChapterId((long) i);
-    //            chapter.setBookId(6L);
-    //            chapter.setChapterName("章节二" + i);
-    //            chapter.setGmtCreate(new Date());
-    //            jdbcDao.save(chapter);
-    //        }
-    //        System.out.println("=================");
-    //    }
-    //
-    //    @Test
-    //    public void multiTableChapterQuery() {
-    //        Chapter chapter = new Chapter();
-    //        chapter.setChapterId(22L);
-    //        chapter.setBookId(5L);
-    //        chapter = jdbcDao.querySingleResult(chapter);
-    //        System.out.println(chapter.getChapterName());
-    //        chapter = jdbcDao.querySingleResult(Criteria.create(Chapter.class)
-    //                .where("chapterId", new Object[]{67L}).and("bookId", new Object[]{6L}));
-    //        System.out.println(chapter.getChapterName());
-    //    }
-    //
-    //    @Test
-    //    public void multiTableChapterUpdate() {
-    //        Chapter chapter = new Chapter();
-    //        chapter.setChapterId(22L);
-    //        chapter.setBookId(5L);
-    //        chapter.setChapterName("更新后章节名");
-    //        jdbcDao.update(chapter);
-    //
-    //        Chapter tmp = jdbcDao.querySingleResult(Criteria.create(Chapter.class)
-    //                .where("chapterId", new Object[]{22L}).and("bookId", new Object[]{5L}));
-    //        System.out.println(tmp.getChapterName());
-    //    }
-    //
-    //    @Test
-    //    public void multiTableChapterDelete() {
-    //        Chapter chapter = new Chapter();
-    //        chapter.setChapterId(23L);
-    //        chapter.setBookId(5L);
-    //        jdbcDao.delete(chapter);
-    //
-    //        Chapter tmp = jdbcDao.querySingleResult(Criteria.create(Chapter.class)
-    //                .where("chapterId", new Object[]{23L}).and("bookId", new Object[]{5L}));
-    //        Assert.assertNull(tmp);
-    //    }
-    //
     //    @Test
     //    public void dyDsInsert() {
     //        User user = new User();

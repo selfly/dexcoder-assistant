@@ -44,8 +44,12 @@ public class WhereBuilder extends AbstractSqlBuilder {
         List<Object> params = new ArrayList<Object>();
         AutoField preAutoFile = null;
         for (Map.Entry<String, AutoField> entry : metaTable.getAutoFields().entrySet()) {
-            String columnName = metaTable.getColumnAndTableAliasName(entry.getValue());
             AutoField autoField = entry.getValue();
+            //该属性水平分表时会用到，不作为where条件
+            if (autoField.getType() == AutoFieldType.TRANSIENT) {
+                continue;
+            }
+            String columnName = metaTable.getColumnAndTableAliasName(entry.getValue());
             if (StrUtils.isNotBlank(autoField.getLogicalOperator()) && sb.length() > COMMAND_OPEN.length()
                 && !isFieldBracketBegin(preAutoFile)) {
                 sb.append(autoField.getLogicalOperator()).append(" ");
