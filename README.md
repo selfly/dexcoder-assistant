@@ -2,21 +2,13 @@
 
 最近更新：
 
-### 版本 2.2.0-beta1 更新时间：2015-12-23
+### 版本 2.3.0 更新时间：2016-01-15
 
-update更新支持选择是否更新值为null的属性
-
-### 版本 2.1.0-beta1 更新时间：2015-12-22
-
-增加表别名支持
-
-具体请看：[增加表别名支持](http://www.dexcoder.com/selfly/article/4309)
-
-### 版本：v2.0.0-beta1 更新时间：2015-12-15
-
-本版本进行了彻底的重构，并且api做了一些细微的改变，具体可以看使用说明对比和原来的区别。
-
-需要旧版请看这里：[通用dao v1.2.4](https://github.com/selfly/dexcoder-assistant/tree/v1.2.4)
+- 实体类表名及属性名映射增加注解支持
+- 增加更多的执行自定义sql方法
+- 因为sql权限问题去掉使用TRUNCATE的deleteAll方法
+- 修正使用注解时注解的属性名不遵循规范时get方法主键错误问题
+- 修正水平拆分数据分表不根据主键拆分时update无法获取表名的问题
 
 [详细更新日志](md/update_log.md)
 
@@ -53,7 +45,7 @@ dexcoder-dal的一些特性：
     <dependency>
         <groupId>com.dexcoder</groupId>
         <artifactId>dexcoder-dal-spring</artifactId>
-        <version>2.2.0-beta1</version>
+        <version>${version}</version>
     </dependency>
 
 然后在spring的配置文件中声明如下bean：
@@ -96,212 +88,188 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
 
 ### insert操作
 
-    public void insert() {
-        User user = new User();
-        user.setLoginName("selfly_a");
-        user.setPassword("123456");
-        user.setEmail("javaer@live.com");
-        user.setUserAge(18);
-        user.setUserType("1");
-        user.setGmtCreate(new Date());
-        Long id = jdbcDao.insert(user);
-        System.out.println("insert:" + id);
-    }
+#### Entity方式
 
-	public void insert2() {
-        Criteria criteria = Criteria.insert(User.class).into("loginName", "selfly_b").into("password", "12345678")
-            .into("email", "selflly@foxmail.com").into("userAge", 22).into("userType", "2").into("gmtCreate", new Date());
-        Long id = jdbcDao.insert(criteria);
-        System.out.println("insert:" + id);
-    }
+    User user = new User();
+    user.setLoginName("selfly_a");
+    //......
+    Long userId = jdbcDao.insert(user);
 
-###save操作，和insert的区别在于不处理主键，由调用者指定
+#### Criteria 方式
 
-    public void save() {
-        User user = new User();
-        user.setUserId(-1L);
-        user.setLoginName("selfly-1");
-        user.setPassword("123456");
-        user.setEmail("javaer@live.com");
-        user.setUserAge(18);
-        user.setUserType("1");
-        user.setGmtCreate(new Date());
-        jdbcDao.save(user);
-    }
+    Criteria criteria = Criteria.insert(User.class).into("loginName", "selfly_b").into("password", "12345678")
+        .into("email", "selflly@foxmail.com").into("userAge", 22).into("userType", "2").into("gmtCreate", new Date());
+    Long userId = jdbcDao.insert(criteria);
 
-	public void save2() {
-        Criteria criteria = Criteria.insert(User.class).into("userId", -2L).into("loginName", "selfly-2")
-            .into("password", "12345678").into("email", "selflly@foxmail.com").into("userAge", 22).into("userType", "2")
-            .into("gmtCreate", new Date());
-        jdbcDao.save(criteria);
-    }
+### save操作，和insert的区别在于不处理主键，由调用者指定
 
-###update操作
+#### Entity方式
 
-    public void update() {
-        User user = new User();
-        user.setUserId(57L);
-        user.setPassword("abcdef");
-        user.setGmtModify(new Date());
-        jdbcDao.update(user);
-    }
+    User user = new User();
+    user.setUserId(-1L);
+    //......
+    jdbcDao.save(user);
 
-	public void update2() {
-        Criteria criteria = Criteria.update(User.class).set("password", "update222")
-            .where("userId", new Object[] { 56L, -1L, -2L });
-        jdbcDao.update(criteria);
-    }
+#### Criteria 方式
+
+    Criteria criteria = Criteria.insert(User.class).into("userId", -2L).into("loginName", "selfly-2")
+        .into("password", "12345678").into("email", "selflly@foxmail.com").into("userAge", 22).into("userType", "2")
+        .into("gmtCreate", new Date());
+    jdbcDao.save(criteria);
+
+### update操作
+
+#### Entity方式
+
+    User user = new User();
+    user.setUserId(57L);
+    user.setPassword("abcdef");
+    //方式一 为null的属性值将被忽略
+    jdbcDao.update(user);
+
+    //方式二 为null的属性值将更新到数据库
+    jdbcDao.update(user,true);
+
+#### Criteria方式
+
+    //criteria方式这里的email设为null也将被更新
+    Criteria criteria = Criteria.update(User.class).set("password", "update222").set("email",null)
+        .where("userId", new Object[] { 56L, -1L, -2L });
+    jdbcDao.update(criteria);
 
 ###get操作
 
-    public void get1() {
-        User u = jdbcDao.get(User.class, 63L);
-        Assert.assertNotNull(u);
-        System.out.println(u.getUserId() + " " + u.getLoginName() + " " + u.getUserType());
-    }
+#### 根据主键
 
-	public void get2() {
-        //criteria，主要用来指定字段白名单、黑名单等
-        Criteria criteria = Criteria.select(User.class).include("loginName");
-        User u = jdbcDao.get(criteria, 73L);
-        Assert.assertNotNull(u);
-        System.out.println(u.getUserId() + " " + u.getLoginName() + " " + u.getUserType());
-    }
+    User user = jdbcDao.get(User.class, 63L);
+
+### Criteria方式
+
+    //criteria，主要用来指定字段白名单、黑名单等
+    Criteria criteria = Criteria.select(User.class).include("loginName");
+    User user = jdbcDao.get(criteria, 73L);
 
 ###delete操作
 
-	public void delete() {
-        //会把不为空的属性做为where条件
-        User u = new User();
-        u.setLoginName("selfly-1");
-        u.setUserType("1");
-        jdbcDao.delete(u);
-    }
+#### 根据主键
 
-    public void delete2() {
-        //where条件使用了or
-        Criteria criteria = Criteria.delete(User.class).where("loginName", new Object[] { "liyd2" })
-            .or("userAge", new Object[]{64});
-        jdbcDao.delete(criteria);
-    }
+    jdbcDao.delete(User.class, 57L);
 
-    public void delete3() {
-        //根据主键
-        jdbcDao.delete(User.class, 57L);
-    }
+#### Entity方式
 
-###列表查询操作
+    //会把不为空的属性做为where条件
+    User u = new User();
+    u.setLoginName("selfly-1");
+    u.setUserType("1");
+    jdbcDao.delete(u);
 
-	public void queryList() {
-        //所有结果
-         List<User> users = jdbcDao.queryList(User.class);
-    }
+#### Criteria方式
 
-	public void queryList1() {
-        //以不为空的属性作为查询条件
-         User u = new User();
-        u.setUserType("1");
-        List<User> users = jdbcDao.queryList(u);
-    }
+    //where条件使用了or
+    Criteria criteria = Criteria.delete(User.class).where("loginName", new Object[] { "liyd2" })
+        .or("userAge", new Object[]{64});
+    jdbcDao.delete(criteria);
 
-    public void queryList2() {
-        //Criteria方式
-        Criteria criteria = Criteria.select(User.class).exclude("userId")
-            .where("loginName", new Object[]{"liyd"});
-        List<User> users = jdbcDao.queryList(criteria);
-    }
+### 列表查询操作
 
-    public void queryList3() {
-        //使用了like，可以换成!=、in、not in等
-        Criteria criteria = Criteria.select(User.class).where("loginName", "like",
-            new Object[] { "%liyd%" });
-        user.setUserAge(16);
-        //这里entity跟criteria方式混合使用了，建议少用
-        List<User> users = jdbcDao.queryList(user, criteria.include("userId"));
-    }
+#### 所有结果
 
-###count记录数查询，除了返回值不一样外，其它和列表查询一致
+    List<User> users = jdbcDao.queryList(User.class);
 
-    public void queryCount() {
-        user.setUserName("liyd");
-        int count = jdbcDao.queryCount(user);
-    }
+#### 以Entity中不为空的属性作为查询条件
 
-    public void queryCount2() {
-        Criteria criteria = Criteria.select(User.class).where("loginName", new Object[] { "liyd" })
-            .or("userAge", new Object[]{27});
-        int count = jdbcDao.queryCount(criteria);
-    }
+    User user = new User();
+    user.setUserType("1");
+    //......
+    List<User> users = jdbcDao.queryList(user);
 
-###查询单个结果
+#### Criteria方式，可以指定黑白名单、排序字段等
 
-    public void querySingleResult() {
-        user = jdbcDao.querySingleResult(user);
-    }
+    Criteria criteria = Criteria.select(User.class).exclude("userId")
+        .where("loginName", new Object[]{"liyd"}).asc("userAge").desc("userId");
+    List<User> users = jdbcDao.queryList(criteria);
 
-    public void querySingleResult2() {
-        Criteria criteria = Criteria.select(User.class).where("loginName", new Object[] { "liyd" })
-            .and("userId", new Object[]{23L});
-        User u = jdbcDao.querySingleResult(criteria);
-    }
+#### 指定逻辑操作符
 
-###指定字段白名单，在任何查询方法中都可以使用
+    //使用了like，可以换成!=、in、not in等
+    Criteria criteria = Criteria.select(User.class).where("loginName", "like",
+        new Object[] { "%liyd%" });
+    user.setUserAge(16);
+    //这里entity跟criteria方式混合使用了，建议少用
+    List<User> users = jdbcDao.queryList(user, criteria.include("userId"));
 
-    public void get(){
-        //将只返回loginName
-        Criteria criteria = Criteria.select(User.class).include("loginName");
-        User u = jdbcDao.get(criteria, 23L);
-    }
+### count记录数查询，除了返回值不一样外，其它和列表查询一致
 
-###指定字段黑名单，在任何查询方法中都可以使用
+    //Entity方式
+    user.setUserName("liyd");
+    int count = jdbcDao.queryCount(user);
 
-	public void get4(){
-        //将不返回loginName
-        Criteria criteria = Criteria.select(User.class).exclude("loginName");
-        User u = jdbcDao.get(criteria, 23L);
-    }
+    //Criteria方式
+    Criteria criteria = Criteria.select(User.class).where("loginName", new Object[] { "liyd" })
+        .or("userAge", new Object[]{27});
+    int count = jdbcDao.queryCount(criteria);
 
-###指定排序
+### 查询单个结果，参数使用方式同上
 
-    public void queryList() {
-        //指定多个排序字段，asc、desc
-        Criteria criteria = Criteria.select(User.class).exclude("userId")
-            .where("loginName", new Object[]{"liyd"}).asc("userId").desc("userAge");
-        List<User> users = jdbcDao.queryList(criteria);
-    }
+    //Entity
+    User user = jdbcDao.querySingleResult(user);
 
-###分页
+    //Criteria
+    Criteria criteria = Criteria.select(User.class).where("loginName", new Object[] { "liyd" })
+        .and("userId", new Object[]{23L});
+    User u = jdbcDao.querySingleResult(criteria);
 
-	public void queryList1() {
-		//进行分页
-		PageControl.performPage(user);
-		//分页后该方法即返回null，由PageControl中获取
-		jdbcDao.queryList(user);
-		Pager pager = PageControl.getPager();
-		//列表
-		List<User> users = pager.getList(User.class);
-		//总记录数
-		int itemsTotal = pager.getItemsTotal();
-	}
+### 指定属性白名单，在任何查询方法中都可以使用
 
-	public void queryList2() {
-		//直接传入页码和每页条数
-		PageControl.performPage(1, 10);
-		//使用Criteria方式，并指定排序字段方式为asc
-		Criteria criteria = Criteria.select(User.class).include("loginName", "userId")
-			.where("loginName", new Object[]{"liyd"}).asc("userId");
-		jdbcDao.queryList(criteria);
-		Pager pager = PageControl.getPager();
-	}
+    //将只返回loginName
+    Criteria criteria = Criteria.select(User.class).include("loginName");
+    User u = jdbcDao.get(criteria, 23L);
+
+### 指定属性黑名单，在任何查询方法中都可以使用
+
+    //将不返回loginName
+    Criteria criteria = Criteria.select(User.class).exclude("loginName");
+    User u = jdbcDao.get(criteria, 23L);
+
+### 指定排序
+
+    //指定多个排序字段，asc、desc
+    Criteria criteria = Criteria.select(User.class).exclude("userId")
+        .where("loginName", new Object[]{"liyd"}).asc("userId").desc("userAge");
+    List<User> users = jdbcDao.queryList(criteria);
+
+### 分页
+
+#### 直接传入Entity，继承于`Pageable`
+
+    //进行分页，只需要增加这行，列表查询方式跟上面没有任何区别
+    PageControl.performPage(user);
+    //分页后该方法即返回null，由PageControl中获取
+    jdbcDao.queryList(user);
+    Pager pager = PageControl.getPager();
+    //列表
+    List<User> users = pager.getList(User.class);
+    //总记录数
+    int itemsTotal = pager.getItemsTotal();
+
+#### 直接传入页码和每页大小
+
+    //直接传入页码和每页条数
+    PageControl.performPage(1, 10);
+    //使用Criteria方式，并指定排序字段方式为asc
+    Criteria criteria = Criteria.select(User.class).include("loginName", "userId")
+        .where("loginName", new Object[]{"liyd"}).asc("userId");
+    jdbcDao.queryList(criteria);
+    Pager pager = PageControl.getPager();
 
 ### 不同的属性在括号内or的情况：
 
-        Criteria criteria = Criteria.select(User.class)
-            .where("userType", new Object[] { "1" }).begin()
-            .and("loginName", new Object[] { "selfly" })
-            .or("email", new Object[] { "javaer@live.com" }).end()
-            .and("password", new Object[] { "123456" });
-        User user = jdbcDao.querySingleResult(criteria);
+    Criteria criteria = Criteria.select(User.class)
+        .where("userType", new Object[] { "1" }).begin()
+        .and("loginName", new Object[] { "selfly" })
+        .or("email", new Object[] { "javaer@live.com" }).end()
+        .and("password", new Object[] { "123456" });
+    User user = jdbcDao.querySingleResult(criteria);
 
 ### 执行函数
 
@@ -378,7 +346,7 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
 
 然后就可以直接传入sql执行了：
 
-    List<Map<String, Object>> list = jdbcDao.queryForSql("select * from USER where login_name = ?",
+    List<Map<String, Object>> list = jdbcDao.queryRowMapListForSql("select * from USER where login_name = ?",
         new Object[] { "selfly_a99" });
 
 这个实现比较简单，参数Object数组中不支持复杂的自定义对象。
@@ -390,7 +358,7 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
     <dependency>
         <groupId>com.dexcoder</groupId>
         <artifactId>dexcoder-dal-batis</artifactId>
-        <version>2.2.0-beta1</version>
+        <version>${version}</version>
     </dependency>
 
 之后同样注入`sqlFactory`，把上面的`SimpleSqlFactory`替换成`BatisSqlFactoryBean`：
@@ -421,7 +389,7 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
             <include refid="columns"/>
             from user
             <where>
-                <if test="params[0] != null">
+                <if test="params[0] != null and params[0].userType != null">
                     user_type = #{params[0].userType}
                 </if>
                 <if test="params[1] != null">
@@ -439,7 +407,7 @@ Pageable对象，用来保存页码、每页条数信息以支持分页
     User user = new User();
     user.setUserType("1");
     Object[] names = new Object[] { "selfly_a93", "selfly_a94", "selfly_a95" };
-    List<Map<String, Object>> mapList = jdbcDao.queryForSql("User.getUser", "params", new Object[] { user, names });
+    List<Map<String, Object>> mapList = jdbcDao.queryRowMapListForSql("User.getUser", "params", new Object[] { user, names });
     for (Map<String, Object> map : mapList) {
         System.out.println(map.get("userId"));
         System.out.println(map.get("loginName"));
@@ -527,8 +495,6 @@ JdbcDao在声明时可以根据需要注入其它几个参数：
  
 - 线程执行工具类`ThreadExecutionUtils`。方便执行多线程任务。
  
-- Sitemap工具类`SiteMapUtils`。做网站的可能会用到，生成sitemap用。
- 
 - Spring mvc中针对上面定义的IEnum从页面字符值到枚举的转换类`IEnumConverterFactory`。
 
 
@@ -539,5 +505,3 @@ JdbcDao在声明时可以根据需要注入其它几个参数：
 作者邮箱： javaer@live.com
 
 交流QQ群： 32261424
-
-[link_jdbc_dao_desc]: md/JdbcDao.md "JdbcDao使用说明"

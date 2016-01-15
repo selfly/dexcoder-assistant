@@ -616,6 +616,10 @@ public class JdbcDaoTest {
         return jdbcDao.insert(annotationUser);
     }
 
+    @Test
+    public void teaa(){
+        System.out.println(StrUtils.replace("${}","$","\\$"));
+    }
 
     //    @Test
     //    public void dyDsInsert() {
@@ -665,44 +669,5 @@ public class JdbcDaoTest {
     //            }
     //            i++;
     //        }
-    //    }
-    //
-    //    @Test
-    //    public void testSql() {
-    //        User user = new User();
-    //        user.setLoginName("selfly38");
-    //        user.setUserId(11L);
-    //        jdbcDao.queryForSql("getUser", "user", user);
-    //    }
-    //
-    //    @Test
-    //    public void testSql2() {
-    //        Map<String, Object> map = new HashMap<String, Object>();
-    //        List<String> list = new ArrayList<String>();
-    //        list.add("selfly");
-    //        list.add("selfly37");
-    //        list.add("selfly38");
-    //
-    //        map.put("list", list);
-    //
-    //        User user = new User();
-    //        user.setLoginName("selfly39");
-    //        user.setUserId(11L);
-    //
-    //        map.put("user", user);
-    //
-    //        jdbcDao.queryForSql("getUser2", map);
-    //    }
-    //
-    //
-    //    @Test
-    //    public void testSql3() {
-    ////        List<String> list = new ArrayList<String>();
-    ////        list.add("selfly37");
-    ////        list.add("selfly38");
-    ////        List<Map<String, Object>> result = jdbcDao.queryForSql("queryUserList2", "list", list);
-    ////        System.out.println(result.size());
-    ////        System.out.println(result.iterator().next().get("login_name"));
-    ////        System.out.println("===========");
     //    }
 }
