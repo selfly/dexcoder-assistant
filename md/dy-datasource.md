@@ -77,9 +77,9 @@ Tomcat的conf目录 -> project目录 -> classpath
     
 这就可以，大功告成了，接下来就可以在你的项目中尽情的使用动态数据源了。
 
-## 动态修改数据源
+### 扩展：如何动态修改数据源
 
-`DynamicDataSource`中提供了initDataSources方法来初始化数据源，它的参数是 List<Map<String, String>> dataSourceList，只需要将数据源的参数封装成map的list传入调用该方法就能实现动态修改了。以下是一个简单的候示例：
+`DynamicDataSource`中提供了`initDataSources`方法来初始化数据源，它的参数是`List<Map<String, String>> dataSourceList`，只需要将数据源的参数封装成map的list传入调用该方法就能实现动态修改了。以下是一个简单的候示例：
 
     List<Map<String, String>> dsList = new ArrayList<Map<String, String>>();
     Map<String, String> map = new HashMap<String, String>();
@@ -96,4 +96,4 @@ Tomcat的conf目录 -> project目录 -> classpath
     dsList.add(map);
     dynamicDataSource.initDataSources(dsList);
     
-在实际的场景中，根据项目使用技术的不同，你可以使用监听器、socket、配置中心等来实现该数据源动态修改的功能，只要保存调用initDataSources方法时传入的数据源信息是正确的就可以了。
+在实际的场景中，根据项目使用技术的不同，你可以使用监听器、socket、配置中心等来实现该数据源动态修改的功能，只要保证调用initDataSources方法时传入的数据源信息是正确的就可以了。
