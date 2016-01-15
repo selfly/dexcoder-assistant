@@ -12,9 +12,14 @@
 
 [详细更新日志](md/update-log.md)
 
+配置动态数据源：[在dexcoder-dal中使用动态数据源并设置读写分离](md/dy-datasource.md)
+
+数据水平分表：[在dexcoder-dal中实现分表数据水平拆分](md/multi-table.md)
+
 ##核心组件dexcoder-dal使用说明
 
 如果你不喜欢用`Hibernate`、`Mybaits`这类ORM框架，喜欢`JdbcTemplate`或`DbUtils`，那么可以试试这个封装的通用dal，这可能是目前封装的最方便易用的通用dal层了。
+
 
 dexcoder-dal的一些特性：
 
