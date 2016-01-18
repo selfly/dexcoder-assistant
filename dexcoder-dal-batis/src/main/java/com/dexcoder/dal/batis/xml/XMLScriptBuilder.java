@@ -5,14 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.dexcoder.dal.batis.build.BaseBuilder;
-import com.dexcoder.dal.batis.build.Configuration;
-import com.dexcoder.dal.batis.build.DynamicSqlSource;
-import com.dexcoder.dal.batis.build.RawSqlSource;
-import com.dexcoder.dal.batis.build.SqlSource;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.dexcoder.dal.batis.build.BaseBuilder;
+import com.dexcoder.dal.batis.build.Configuration;
+import com.dexcoder.dal.batis.build.DynamicSqlSource;
+import com.dexcoder.dal.batis.build.SqlSource;
 import com.dexcoder.dal.exceptions.JdbcAssistantException;
 
 /**
@@ -21,7 +20,6 @@ import com.dexcoder.dal.exceptions.JdbcAssistantException;
 public class XMLScriptBuilder extends BaseBuilder {
 
     private XNode context;
-    private boolean isDynamic;
 
     public XMLScriptBuilder(Configuration configuration, XNode context) {
         super(configuration);
@@ -32,12 +30,7 @@ public class XMLScriptBuilder extends BaseBuilder {
         List<SqlNode> contents = parseDynamicTags(context);
         MixedSqlNode rootSqlNode = new MixedSqlNode(contents);
         SqlSource sqlSource = null;
-//        if (isDynamic) {
-            sqlSource = new DynamicSqlSource(configuration, rootSqlNode);
-//        } else {
-//            sqlSource = new RawSqlSource(configuration, rootSqlNode);
-//        }
-        return sqlSource;
+        return new DynamicSqlSource(configuration, rootSqlNode);
     }
 
     List<SqlNode> parseDynamicTags(XNode node) {
@@ -51,18 +44,16 @@ public class XMLScriptBuilder extends BaseBuilder {
                 TextSqlNode textSqlNode = new TextSqlNode(data);
                 if (textSqlNode.isDynamic()) {
                     contents.add(textSqlNode);
-                    isDynamic = true;
                 } else {
                     contents.add(new StaticTextSqlNode(data));
                 }
-            } else if (child.getNode().getNodeType() == Node.ELEMENT_NODE) { // issue #628
+            } else if (child.getNode().getNodeType() == Node.ELEMENT_NODE) {
                 String nodeName = child.getNode().getNodeName();
                 NodeHandler handler = nodeHandlers(nodeName);
                 if (handler == null) {
                     throw new JdbcAssistantException("Unknown element <" + nodeName + "> in SQL statement.");
                 }
                 handler.handleNode(child, contents);
-                isDynamic = true;
             }
         }
         return contents;
