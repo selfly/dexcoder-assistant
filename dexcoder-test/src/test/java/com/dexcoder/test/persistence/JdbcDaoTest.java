@@ -440,13 +440,14 @@ public class JdbcDaoTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testSelectSql3() {
 
         PageControl.performPage(1, 10);
         jdbcDao
             .queryRowMapListForSql("select t.* ,t2.login_name lgName from USER t left join USER t2 on t.user_id=t2.user_id");
         Pager pager = PageControl.getPager();
-        List<Map<String, Object>> list = (List<Map<String, Object>>) pager.getList();
+		List<Map<String, Object>> list = (List<Map<String, Object>>) pager.getList();
         Assert.assertTrue(list.size() == 10);
     }
 

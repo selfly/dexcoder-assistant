@@ -18,11 +18,6 @@ import com.dexcoder.test.model.Chapter;
  */
 public class CustomMappingHandler extends DefaultMappingHandler {
 
-    /**
-     * 主键后缀
-     */
-    private static final String PRI_SUFFIX = "_ID";
-
     public String getTableName(Class<?> entityClass, Map<String, AutoField> fieldMap) {
         //Java属性的骆驼命名法转换回数据库下划线“_”分隔的格式
         String tableName = NameUtils.getUnderlineName(entityClass.getSimpleName());

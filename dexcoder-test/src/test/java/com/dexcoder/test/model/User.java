@@ -3,7 +3,6 @@ package com.dexcoder.test.model;
 import java.util.Date;
 
 import com.dexcoder.dal.annotation.Column;
-import com.dexcoder.dal.annotation.Table;
 import com.dexcoder.dal.annotation.Transient;
 import com.dexcoder.commons.pager.Pageable;
 
