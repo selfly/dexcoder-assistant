@@ -1,5 +1,9 @@
 #Dexcoder快速开发辅助工具包
 
+该通用dal是在开发过程中，对于简单封装的通用dao或数据访问层使用深感痛苦与不便，由此进行了整合和改进发展而来。
+
+如果你不喜欢用`Hibernate`、`Mybaits`这类ORM框架，喜欢`Spring JdbcTemplate`或`DbUtils`，那么可以试试这个封装的通用dal，这可能是目前封装的最方便易用的通用dal层了。
+
 最近更新：
 
 ### 版本 2.3.0 更新时间：2016-01-15
@@ -13,14 +17,11 @@
 
 [详细更新日志](md/update-log.md)
 
-配置动态数据源：[在dexcoder-dal中使用动态数据源并设置读写分离](md/dy-datasource.md)
+配置动态数据源请看这里：[在dexcoder-dal中使用动态数据源并设置读写分离](md/dy-datasource.md)
 
-数据水平分表：[在dexcoder-dal中实现分表数据水平拆分](md/multi-table.md)
+数据水平分表请看这里：[在dexcoder-dal中实现分表数据水平拆分](md/multi-table.md)
 
 ##核心组件dexcoder-dal使用说明
-
-如果你不喜欢用`Hibernate`、`Mybaits`这类ORM框架，喜欢`JdbcTemplate`或`DbUtils`，那么可以试试这个封装的通用dal，这可能是目前封装的最方便易用的通用dal层了。
-
 
 dexcoder-dal的一些特性：
 
@@ -37,7 +38,7 @@ dexcoder-dal的一些特性：
 11. 支持读写分离和动态数据源。
 12. 对于数据分表水平拆分支持友好。
 
-该通用dao是在使用过程中，针对常规的泛型dao经常遇到的一些不便问题进行了改进。命名上遵循了约定优于配置的原则，典型约定如下：
+命名上遵循了约定优于配置的原则，典型约定如下：
 
 - 表名约定 `USER_INFO`表实体类名为`UserInfo`。
 - 字段名约定 `USER_NAME`实体类中属性名为`userName`。

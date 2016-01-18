@@ -447,7 +447,7 @@ public class JdbcDaoTest {
         jdbcDao
             .queryRowMapListForSql("select t.* ,t2.login_name lgName from USER t left join USER t2 on t.user_id=t2.user_id");
         Pager pager = PageControl.getPager();
-		List<Map<String, Object>> list = (List<Map<String, Object>>) pager.getList();
+        List<Map<String, Object>> list = (List<Map<String, Object>>) pager.getList();
         Assert.assertTrue(list.size() == 10);
     }
 
@@ -609,6 +609,7 @@ public class JdbcDaoTest {
     }
 
     private Long insertAnnotationUser() {
+
         //注解对应了 USER_A 表
         AnnotationUser annotationUser = new AnnotationUser();
         annotationUser.setLoginName("annotation_12");
@@ -616,59 +617,4 @@ public class JdbcDaoTest {
         annotationUser.setGmtCreate(new Date());
         return jdbcDao.insert(annotationUser);
     }
-
-    @Test
-    public void teaa(){
-        System.out.println(StrUtils.replace("${}","$","\\$"));
-    }
-
-    //    @Test
-    //    public void dyDsInsert() {
-    //        User user = new User();
-    //        user.setLoginName("selfly");
-    //        user.setGmtCreate(new Date());
-    //        Long id = jdbcDao.insert(user);
-    //
-    //        User u = jdbcDao.get(Criteria.create(User.class)
-    //                .include("userId", "loginName", "gmtCreate"), id);
-    //        Assert.assertNotNull(u);
-    //        System.out.println(u.getUserId() + " : " + u.getLoginName());
-    //    }
-    //
-    //    @Test
-    //    public void dyDsGet() {
-    //        User u = jdbcDao.get(Criteria.create(User.class)
-    //                .include("userId", "loginName", "gmtCreate"), 6L);
-    //        Assert.assertNull(u);
-    //    }
-    //
-    //    @Test
-    //    public void dyDsGet2() {
-    //        List<Map<String, String>> dsList = new ArrayList<Map<String, String>>();
-    //
-    //        Map<String, String> map = new HashMap<String, String>();
-    //        map.put("id", "dataSource4");
-    //        map.put("class", "org.apache.commons.dbcp.BasicDataSource");
-    //        map.put("default", "true");
-    //        map.put("weight", "10");
-    //        map.put("mode", "rw");
-    //        map.put("driverClassName", "com.mysql.dal.Driver");
-    //        map.put("url",
-    //                "dal:mysql://localhost:3306/db1?useUnicode=true&amp;characterEncoding=utf-8");
-    //        map.put("username", "root");
-    //        map.put("password", "");
-    //        dsList.add(map);
-    //
-    //        int i = 0;
-    //        while (i < 100) {
-    //            User u = jdbcDao.get(
-    //                    Criteria.create(User.class).include("userId", "loginName", "gmtCreate"), 6L);
-    //            System.out.println(u == null ? "null" : u.getLoginName());
-    //
-    //            if (i == 70) {
-    //                dynamicDataSource.initDataSources(dsList);
-    //            }
-    //            i++;
-    //        }
-    //    }
 }
