@@ -86,9 +86,6 @@ public class WhereBuilder extends AbstractSqlBuilder {
     protected void processArrayArgs(StringBuilder sb, List<Object> params, String columnName, AutoField autoField,
                                     AutoField preAutoField) {
         Object[] args = (Object[]) autoField.getValue();
-        if (StrUtils.isNotBlank(autoField.getLogicalOperator()) && !isFieldBracketBegin(preAutoField)) {
-            sb.append(autoField.getLogicalOperator());
-        }
         if (StrUtils.indexOf(StrUtils.upperCase(autoField.getFieldOperator()), "IN") != -1) {
             sb.append(columnName).append(" ").append(autoField.getFieldOperator()).append(" (");
             for (int i = 0; i < args.length; i++) {
