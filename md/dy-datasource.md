@@ -2,7 +2,7 @@ dexcoder-dal可以十分方便的在配置文件中将原来的单数据源修�
 
 ### 第一步 当然是在spring中声明数据源bean了
 
-    <bean id="dynamicDataSource" class="com.dexcoder.assistant.persistence.DynamicDataSource">
+    <bean id="dynamicDataSource" class="com.dexcoder.dal.spring.datasource.DynamicDataSource">
         <property name="dsConfigFile" value="dynamic-ds.xml"/>
     </bean>
     
@@ -73,7 +73,7 @@ Tomcat的conf目录 -> project目录 -> classpath
         
 ### 第三步 声明使用动态数据源的拦截器：
 
-    <bean id="dynamicDsInterceptor" class="com.dexcoder.assistant.interceptor.DynamicDsInterceptor"></bean>
+    <bean id="dynamicDsInterceptor" class="com.dexcoder.dal.spring.datasource.DynamicDsInterceptor"></bean>
     
 这就可以，大功告成了，接下来就可以在你的项目中尽情的使用动态数据源了。
 
