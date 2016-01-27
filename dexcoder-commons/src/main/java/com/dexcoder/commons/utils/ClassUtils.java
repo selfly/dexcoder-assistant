@@ -28,7 +28,7 @@ public class ClassUtils {
      * for proper garbage collection in case of multiple class loaders.
      */
     private static final Map<Class<?>, BeanInfo> CLASS_CACHE = Collections
-                                                                .synchronizedMap(new WeakHashMap<Class<?>, BeanInfo>());
+                                                                 .synchronizedMap(new WeakHashMap<Class<?>, BeanInfo>());
 
     /**
      * 获取类本身的BeanInfo，不包含父类属性
@@ -204,6 +204,38 @@ public class ClassUtils {
         } catch (Exception e) {
             throw new CommonsAssistantException("根据class名称加载class失败:" + clazz, e);
         }
+    }
+
+    /**
+     * 将value的数据类型转换到实际目标类型
+     * 
+     * @param value
+     * @return
+     */
+    public static Object toTargetTypeValue(Object value, Class<?> targetType) {
+        String typeName = targetType.getName();
+        if (StrUtils.equals(typeName, boolean.class.getName()) || StrUtils.equals(typeName, Boolean.class.getName())) {
+            return Boolean.valueOf(value.toString());
+        }
+        if (StrUtils.equals(typeName, int.class.getName()) || StrUtils.equals(typeName, Integer.class.getName())) {
+            return Integer.valueOf(value.toString());
+        }
+        if (StrUtils.equals(typeName, long.class.getName()) || StrUtils.equals(typeName, Long.class.getName())) {
+            return Long.valueOf(value.toString());
+        }
+        if (StrUtils.equals(typeName, short.class.getName()) || StrUtils.equals(typeName, Short.class.getName())) {
+            return Short.valueOf(value.toString());
+        }
+        if (StrUtils.equals(typeName, float.class.getName()) || StrUtils.equals(typeName, Float.class.getName())) {
+            return Float.valueOf(value.toString());
+        }
+        if (StrUtils.equals(typeName, double.class.getName()) || StrUtils.equals(typeName, Double.class.getName())) {
+            return Double.valueOf(value.toString());
+        }
+        if (StrUtils.equals(typeName, byte.class.getName()) || StrUtils.equals(typeName, Byte.class.getName())) {
+            return Byte.valueOf(value.toString());
+        }
+        return value;
     }
 
     /**

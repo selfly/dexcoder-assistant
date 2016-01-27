@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dataources>
+<datasources>
     <datasource id="dataSource1" class="org.apache.commons.dbcp.BasicDataSource" default="true">
         <property name="weight" value="10"/>
         <property name="mode" value="w"/>
@@ -24,4 +24,4 @@
         <property name="username" value="root"/>
         <property name="password" value=""/>
     </datasource>
-</dataources>
+</datasources>

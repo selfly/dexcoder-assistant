@@ -71,7 +71,8 @@ public class DynamicDataSourceUtils {
             if (!Modifier.isPublic(writeMethod.getDeclaringClass().getModifiers())) {
                 writeMethod.setAccessible(true);
             }
-            ClassUtils.invokeMethod(writeMethod, dataSource, entry.getValue());
+            Object value = ClassUtils.toTargetTypeValue(entry.getValue(), propertyDescriptor.getPropertyType());
+            ClassUtils.invokeMethod(writeMethod, dataSource, value);
         }
     }
 
