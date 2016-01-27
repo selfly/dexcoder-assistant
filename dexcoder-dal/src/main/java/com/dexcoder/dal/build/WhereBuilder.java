@@ -59,15 +59,15 @@ public class WhereBuilder extends AbstractSqlBuilder {
                 String nativeValue = tokenParse(String.valueOf(autoField.getValue()), metaTable);
                 sb.append(nativeFieldName).append(" ").append(autoField.getFieldOperator()).append(" ")
                     .append(nativeValue).append(" ");
-            } else if (autoField.getType() == AutoFieldType.BRACKET_BEGIN
-                       || autoField.getType() == AutoFieldType.BRACKET_END) {
+            } else if (autoField.isBracket()) {
                 sb.append(autoField.getName()).append(" ");
             } else if (autoField.getValue() == null) {
                 sb.append(columnName).append(" IS NULL ");
             } else if (autoField.getValue() instanceof Object[]) {
-                this.processArrayArgs(sb, params, columnName, autoField, preAutoFile);
+                this.processArrayArgs(sb, params, columnName, autoField);
             } else {
-                sb.append(columnName).append(" ").append(autoField.getFieldOperator()).append(" ").append(" ? ");
+                sb.append(columnName).append(" ").append(autoField.getFieldOperator()).append(" ")
+                    .append(autoField.isFieldOperatorNeedBracket() ? " ( ? ) " : " ? ");
                 params.add(autoField.getValue());
             }
             preAutoFile = autoField;
@@ -81,12 +81,10 @@ public class WhereBuilder extends AbstractSqlBuilder {
      * @param sb
      * @param params
      * @param columnName
-     * @param autoField
      */
-    protected void processArrayArgs(StringBuilder sb, List<Object> params, String columnName, AutoField autoField,
-                                    AutoField preAutoField) {
+    protected void processArrayArgs(StringBuilder sb, List<Object> params, String columnName, AutoField autoField) {
         Object[] args = (Object[]) autoField.getValue();
-        if (StrUtils.indexOf(StrUtils.upperCase(autoField.getFieldOperator()), "IN") != -1) {
+        if (autoField.isFieldOperatorNeedBracket()) {
             sb.append(columnName).append(" ").append(autoField.getFieldOperator()).append(" (");
             for (int i = 0; i < args.length; i++) {
                 sb.append("?");

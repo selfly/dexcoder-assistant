@@ -1,5 +1,7 @@
 package com.dexcoder.dal.build;
 
+import com.dexcoder.commons.utils.StrUtils;
+
 /**
  * 组装sql时的列信息
  * <p/>
@@ -49,6 +51,24 @@ public class AutoField {
      */
     public boolean isNativeField() {
         return name.matches(REGEX_NATIVE_FIELD);
+    }
+
+    /**
+     * 是否括号
+     *
+     * @return
+     */
+    public boolean isBracket() {
+        return type == AutoFieldType.BRACKET_BEGIN || type == AutoFieldType.BRACKET_END;
+    }
+
+    /**
+     * fieldOperator是否需要括号
+     * 
+     * @return
+     */
+    public boolean isFieldOperatorNeedBracket() {
+        return StrUtils.indexOf(StrUtils.upperCase(fieldOperator), "IN") != -1;
     }
 
     public String getName() {
