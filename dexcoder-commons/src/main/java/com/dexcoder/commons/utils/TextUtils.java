@@ -45,7 +45,7 @@ public class TextUtils {
 
     public static String replaceChars(String str, String[][] chars) {
         for (String[] cs : chars) {
-            str = str.replace(cs[1], cs[2]);
+            str = str.replace(cs[0], cs[1]);
         }
         return str;
     }
