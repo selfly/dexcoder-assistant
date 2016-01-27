@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <datasources>
+    <!--数据源一-->
     <datasource id="dataSource1" class="com.alibaba.druid.pool.DruidDataSource" default="true">
         <property name="weight" value="10"/>
         <property name="mode" value="w"/>

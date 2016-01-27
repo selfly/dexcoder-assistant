@@ -110,7 +110,7 @@ public class DynamicDataSourceUtils {
             List<Map<String, String>> dataSourceList = new ArrayList<Map<String, String>>(10);
             for (int i = 0; i < datasourceNodes.getLength(); i++) {
                 Node node = datasourceNodes.item(i);
-                if (node.getNodeType() == Node.TEXT_NODE) {
+                if (node.getNodeType() != Node.ELEMENT_NODE) {
                     continue;
                 }
                 String dataSourceId = getAttr(node, DynamicDataSource.ATTR_ID);
