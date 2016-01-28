@@ -160,7 +160,7 @@ public class DynamicDataSourceUtils {
         }
         for (int i = 0; i < propertyNodeList.getLength(); i++) {
             Node node = propertyNodeList.item(i);
-            if (node.getNodeType() == Node.TEXT_NODE) {
+            if (node.getNodeType() != Node.ELEMENT_NODE) {
                 continue;
             }
             NamedNodeMap attributes = node.getAttributes();
