@@ -2,6 +2,7 @@ package com.dexcoder.commons.result;
 
 import java.util.List;
 
+import com.dexcoder.commons.exceptions.DexcoderException;
 import org.apache.commons.collections.CollectionUtils;
 
 import com.dexcoder.commons.exceptions.AssistantException;
@@ -23,7 +24,7 @@ public class RunBinder {
      *
      * @param e the e
      */
-    public static void addError(AssistantException e) {
+    public static void addError(DexcoderException e) {
         addResult(false, e.getResultCode(), e.getResultMsg());
     }
 

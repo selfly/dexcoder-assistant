@@ -42,6 +42,15 @@ public class ExcelRow {
         return true;
     }
 
+    public void addCell(Object value) {
+        ExcelCell excelCell = new ExcelCell(value);
+        this.cells.add(excelCell);
+    }
+
+    public ExcelCell getFirstCell() {
+        return cells == null ? null : cells.iterator().next();
+    }
+
     public ExcelCell getCell(int i) {
         return cells == null ? null : cells.get(i);
     }

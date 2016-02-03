@@ -10,6 +10,13 @@ public class ExcelCell {
     /** 列值 */
     private Object value;
 
+    public ExcelCell() {
+    }
+
+    public ExcelCell(Object value) {
+        this.value = value;
+    }
+
     /**
      * 获取value值的字符串形式
      * 

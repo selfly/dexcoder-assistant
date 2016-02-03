@@ -1,6 +1,7 @@
 package com.dexcoder.commons.office;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -31,7 +32,7 @@ public class ExcelSheet {
         if (!CollectionUtils.isEmpty(rowTitles)) {
             return rowTitles;
         }
-        if (!CollectionUtils.isEmpty(rows)) {
+        if (!CollectionUtils.isEmpty(rows) && !rows.iterator().next().isEmptyRow()) {
             List<ExcelCell> cells = rows.get(0).getCells();
             rowTitles = new ArrayList<String>(cells.size());
             for (ExcelCell excelCell : cells) {
@@ -56,7 +57,18 @@ public class ExcelSheet {
     }
 
     public boolean hasRows() {
-        return rows != null && !rows.isEmpty();
+        if (rows == null) {
+            return false;
+        }
+        boolean result = false;
+        Iterator<ExcelRow> iterator = rows.iterator();
+        while (iterator.hasNext()) {
+            boolean emptyRow = iterator.next().isEmptyRow();
+            if (!emptyRow) {
+                result = true;
+            }
+        }
+        return result;
     }
 
     public String getSheetName() {

@@ -41,6 +41,9 @@ public class ExcelWriteTools {
      */
     public static void addSheet(ExcelSheet excelSheet, File file, ExcelStyleCreator excelStyleCreator) {
 
+        if (!excelSheet.hasRows()) {
+            return;
+        }
         OutputStream out = null;
 
         try {
@@ -97,6 +100,9 @@ public class ExcelWriteTools {
             HSSFWorkbook workbook = new HSSFWorkbook();
 
             for (ExcelSheet excelSheet : excelSheetList) {
+                if (!excelSheet.hasRows()) {
+                    continue;
+                }
                 // 创建 sheet
                 HSSFSheet sheet = excelStyleCreator.createSheet(workbook, excelSheet);
 

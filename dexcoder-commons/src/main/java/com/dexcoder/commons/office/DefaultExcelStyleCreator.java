@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddressList;
 
@@ -57,7 +58,6 @@ public class DefaultExcelStyleCreator implements ExcelStyleCreator {
 
         // 创建表格标题行
         HSSFRow row = sheet.createRow(0);
-
         List<String> rowTitles = excelSheet.getRowTitles();
         for (int i = 0; i < rowTitles.size(); i++) {
             HSSFCell cell = row.createCell(i);
