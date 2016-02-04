@@ -138,6 +138,7 @@ public class ClassUtils {
      */
     public static void invokeMethod(Method method, Object bean, Object value) {
         try {
+            methodAccessible(method);
             method.invoke(bean, value);
         } catch (Exception e) {
             throw new CommonsAssistantException("执行invokeMethod失败:" + (method == null ? "null" : method.getName()), e);
@@ -152,12 +153,21 @@ public class ClassUtils {
      */
     public static Object invokeMethod(Method method, Object bean) {
         try {
-            if (!Modifier.isPublic(method.getDeclaringClass().getModifiers())) {
-                method.setAccessible(true);
-            }
+            methodAccessible(method);
             return method.invoke(bean);
         } catch (Exception e) {
             throw new CommonsAssistantException("执行invokeMethod失败:" + (method == null ? "null" : method.getName()), e);
+        }
+    }
+
+    /**
+     * 设置method访问权限
+     * 
+     * @param method
+     */
+    public static void methodAccessible(Method method) {
+        if (!Modifier.isPublic(method.getDeclaringClass().getModifiers())) {
+            method.setAccessible(true);
         }
     }
 

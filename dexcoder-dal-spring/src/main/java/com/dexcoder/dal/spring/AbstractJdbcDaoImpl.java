@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import com.dexcoder.commons.bean.BeanConverter;
 import com.dexcoder.commons.utils.ClassUtils;
 import com.dexcoder.commons.utils.NameUtils;
 import com.dexcoder.commons.utils.StrUtils;
@@ -26,30 +27,32 @@ import com.dexcoder.dal.handler.MappingHandler;
  */
 public abstract class AbstractJdbcDaoImpl {
 
+    protected static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
+
     /**
      * spring jdbcTemplate 对象
      */
-    protected JdbcOperations jdbcTemplate;
+    protected JdbcOperations        jdbcTemplate;
 
     /**
      * 名称处理器，为空按默认执行
      */
-    protected MappingHandler mappingHandler;
+    protected MappingHandler        mappingHandler;
 
     /**
      * rowMapper，为空按默认执行
      */
-    protected String         rowMapperClass;
+    protected String                rowMapperClass;
 
     /**
      * 自定义sql处理
      */
-    protected SqlFactory     sqlFactory;
+    protected SqlFactory            sqlFactory;
 
     /**
      * 数据库方言
      */
-    protected String         dialect;
+    protected String                dialect;
 
     /**
      * 插入数据
@@ -75,6 +78,30 @@ public abstract class AbstractJdbcDaoImpl {
     }
 
     /**
+     * map转bean
+     * 
+     * @param map
+     * @param beanClass
+     * @param <T>
+     * @return
+     */
+    protected <T> T mapToBean(Map<String, Object> map, Class<T> beanClass) {
+        return BeanConverter.mapToBean(map, beanClass);
+    }
+
+    /**
+     * map转bean
+     *
+     * @param <T>  the type parameter
+     * @param mapList the map list
+     * @param beanClass the bean class
+     * @return list
+     */
+    protected <T> List<T> mapToBean(List<Map<String, Object>> mapList, Class<T> beanClass) {
+        return BeanConverter.mapToBean(mapList, beanClass);
+    }
+
+    /**
      * 转换map中的key column为field
      *
      * @param map the map
@@ -87,7 +114,7 @@ public abstract class AbstractJdbcDaoImpl {
         Map<String, Object> resultMap = new HashMap<String, Object>(map.size());
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             String camelName = StrUtils.indexOf(entry.getKey(), "_") != -1 ? NameUtils.getCamelName(entry.getKey())
-                : entry.getKey();
+                : entry.getKey().toLowerCase();
             resultMap.put(camelName, entry.getValue());
         }
         return resultMap;

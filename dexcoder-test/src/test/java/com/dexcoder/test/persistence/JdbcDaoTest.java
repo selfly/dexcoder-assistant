@@ -409,6 +409,54 @@ public class JdbcDaoTest {
     }
 
     @Test
+    public void queryObjectForSql() {
+        this.save();
+        Long userId = (Long) jdbcDao.queryObjectForSql("select max(user_id) from USER");
+        Assert.assertNotNull(userId);
+    }
+
+    @Test
+    public void queryObjectForSql2() {
+        this.save();
+        this.save2();
+        Long userId = (Long) jdbcDao.queryObjectForSql("select max(user_id) from USER where user_id < ?",
+            new Object[] { 0L });
+        Assert.assertTrue(userId < 0);
+    }
+
+    @Test
+    public void querySingleResultForSql() {
+        this.save();
+        Map<String, Object> map = jdbcDao.querySingleResultForSql("select * from USER where user_id = -2");
+        Assert.assertTrue(map.get("userId").equals(-2L));
+    }
+
+    @Test
+    public void querySingleResultForSql2() {
+        this.save();
+        User user = jdbcDao.querySingleResultForSql("select * from USER where user_id = -2", User.class);
+        Assert.assertNotNull(user);
+        Assert.assertTrue(user.getUserId().equals(-2L));
+    }
+
+    @Test
+    public void querySingleResultForSql3() {
+        this.save();
+        Map<String, Object> map = jdbcDao.querySingleResultForSql("select * from USER where user_id = ?",
+            new Object[] { -2L });
+        Assert.assertTrue(map.get("userId").equals(-2L));
+    }
+
+    @Test
+    public void querySingleResultForSql4() {
+        this.save();
+        User user = jdbcDao.querySingleResultForSql("select * from USER where user_id = ?", new Object[] { -2 },
+            User.class);
+        Assert.assertNotNull(user);
+        Assert.assertTrue(user.getUserId().equals(-2L));
+    }
+
+    @Test
     public void testBracket() {
 
         this.save();
@@ -431,7 +479,7 @@ public class JdbcDaoTest {
     public void testSelectSql() {
 
         this.save();
-        List<Map<String, Object>> list = jdbcDao.queryRowMapListForSql("select * from USER where login_name = ?",
+        List<Map<String, Object>> list = jdbcDao.queryListForSql("select * from USER where login_name = ?",
             new Object[] { "selfly-2" });
         for (Map<String, Object> map : list) {
             Assert.assertTrue("selfly-2".equals(map.get("loginName")));
@@ -442,8 +490,7 @@ public class JdbcDaoTest {
     public void testSelectSql2() {
 
         this.save();
-        List<Map<String, Object>> list = jdbcDao
-            .queryRowMapListForSql("select * from USER where login_name = 'selfly-2'");
+        List<Map<String, Object>> list = jdbcDao.queryListForSql("select * from USER where login_name = 'selfly-2'");
         for (Map<String, Object> map : list) {
             Assert.assertTrue("selfly-2".equals(map.get("loginName")));
         }
@@ -455,7 +502,7 @@ public class JdbcDaoTest {
 
         PageControl.performPage(1, 10);
         jdbcDao
-            .queryRowMapListForSql("select t.* ,t2.login_name lgName from USER t left join USER t2 on t.user_id=t2.user_id");
+            .queryListForSql("select t.* ,t2.login_name lgName from USER t left join USER t2 on t.user_id=t2.user_id");
         Pager pager = PageControl.getPager();
         List<Map<String, Object>> list = (List<Map<String, Object>>) pager.getList();
         Assert.assertTrue(list.size() == 10);

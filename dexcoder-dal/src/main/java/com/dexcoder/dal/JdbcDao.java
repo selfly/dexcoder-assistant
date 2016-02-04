@@ -250,9 +250,19 @@ public interface JdbcDao {
      * 根据sql查询单个结果行的map
      *
      * @param refSql the ref sql
-     * @return map map
+     * @return
      */
-    Map<String, Object> querySingleRowMapForSql(String refSql);
+    Map<String, Object> querySingleResultForSql(String refSql);
+
+    /**
+     * 根据sql查询单个结果行的map
+     *
+     * @param <T>  the type parameter
+     * @param refSql the ref sql
+     * @param elementType the element type
+     * @return t
+     */
+    <T> T querySingleResultForSql(String refSql, Class<T> elementType);
 
     /**
      * 根据sql查询单个结果行的map
@@ -261,7 +271,18 @@ public interface JdbcDao {
      * @param params the params
      * @return map map
      */
-    Map<String, Object> querySingleRowMapForSql(String refSql, Object[] params);
+    Map<String, Object> querySingleResultForSql(String refSql, Object[] params);
+
+    /**
+     * 根据sql查询单个结果行的map
+     *
+     * @param <T>  the type parameter
+     * @param refSql the ref sql
+     * @param params the params
+     * @param elementType the element type
+     * @return map map
+     */
+    <T> T querySingleResultForSql(String refSql, Object[] params, Class<T> elementType);
 
     /**
      * 根据sql查询单个结果行的map
@@ -271,7 +292,19 @@ public interface JdbcDao {
      * @param params the params
      * @return map
      */
-    Map<String, Object> querySingleRowMapForSql(String refSql, String expectParamKey, Object[] params);
+    Map<String, Object> querySingleResultForSql(String refSql, String expectParamKey, Object[] params);
+
+    /**
+     * 根据sql查询单个结果行的map
+     *
+     * @param <T>  the type parameter
+     * @param refSql the ref sql
+     * @param expectParamKey 写sql时访问的参数变量名称
+     * @param params the params
+     * @param elementType the element type
+     * @return  t
+     */
+    <T> T querySingleResultForSql(String refSql, String expectParamKey, Object[] params, Class<T> elementType);
 
     /**
      * 根据sql查询行的map列表
@@ -279,7 +312,17 @@ public interface JdbcDao {
      * @param refSql
      * @return list
      */
-    List<Map<String, Object>> queryRowMapListForSql(String refSql);
+    List<Map<String, Object>> queryListForSql(String refSql);
+
+    /**
+     * 根据sql查询行的map列表
+     *
+     * @param <T>  the type parameter
+     * @param refSql the ref sql
+     * @param elementType the element type
+     * @return list list
+     */
+    <T> List<T> queryListForSql(String refSql, Class<T> elementType);
 
     /**
      * 根据sql查询行的map列表
@@ -288,7 +331,18 @@ public interface JdbcDao {
      * @param params the params
      * @return list
      */
-    List<Map<String, Object>> queryRowMapListForSql(String refSql, Object[] params);
+    List<Map<String, Object>> queryListForSql(String refSql, Object[] params);
+
+    /**
+     * 根据sql查询行的map列表
+     *
+     * @param <T>  the type parameter
+     * @param refSql the ref sql
+     * @param params the params
+     * @param elementType the element type
+     * @return list list
+     */
+    <T> List<T> queryListForSql(String refSql, Object[] params, Class<T> elementType);
 
     /**
      * 根据sql查询行的map列表
@@ -298,7 +352,19 @@ public interface JdbcDao {
      * @param params the params
      * @return list list
      */
-    List<Map<String, Object>> queryRowMapListForSql(String refSql, String expectParamKey, Object[] params);
+    List<Map<String, Object>> queryListForSql(String refSql, String expectParamKey, Object[] params);
+
+    /**
+     * 根据sql查询行的map列表
+     *
+     * @param <T>  the type parameter
+     * @param refSql the ref sql
+     * @param expectParamKey 写sql时访问的参数变量名称
+     * @param params the params
+     * @param elementType the element type
+     * @return list list
+     */
+    <T> List<T> queryListForSql(String refSql, String expectParamKey, Object[] params, Class<T> elementType);
 
     /**
      * 执行sql

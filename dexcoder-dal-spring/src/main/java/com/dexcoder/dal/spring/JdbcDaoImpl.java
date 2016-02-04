@@ -196,11 +196,11 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
     }
 
     public Object queryObjectForSql(String refSql) {
-        return this.queryObjectForSql(refSql, null, null);
+        return this.queryObjectForSql(refSql, "", EMPTY_OBJECT_ARRAY);
     }
 
     public Object queryObjectForSql(String refSql, Object[] params) {
-        return this.queryObjectForSql(refSql, null, params);
+        return this.queryObjectForSql(refSql, "", params);
     }
 
     public Object queryObjectForSql(String refSql, String expectParamKey, Object[] params) {
@@ -208,41 +208,71 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
         return jdbcTemplate.queryForObject(boundSql.getSql(), boundSql.getParameters().toArray(), Object.class);
     }
 
-    public Map<String, Object> querySingleRowMapForSql(String refSql) {
-        return this.querySingleRowMapForSql(refSql, null, null);
+    public Map<String, Object> querySingleResultForSql(String refSql) {
+        return this.querySingleResultForSql(refSql, "", EMPTY_OBJECT_ARRAY);
     }
 
-    public Map<String, Object> querySingleRowMapForSql(String refSql, Object[] params) {
-        return this.querySingleRowMapForSql(refSql, null, params);
+    public <T> T querySingleResultForSql(String refSql, Class<T> elementType) {
+        Map<String, Object> map = this.querySingleResultForSql(refSql, "", EMPTY_OBJECT_ARRAY);
+        return mapToBean(map, elementType);
     }
 
-    public Map<String, Object> querySingleRowMapForSql(String refSql, String expectParamKey, Object[] params) {
+    public Map<String, Object> querySingleResultForSql(String refSql, Object[] params) {
+        return this.querySingleResultForSql(refSql, "", params);
+    }
+
+    public <T> T querySingleResultForSql(String refSql, Object[] params, Class<T> elementType) {
+        Map<String, Object> map = this.querySingleResultForSql(refSql, "", params);
+        return mapToBean(map, elementType);
+    }
+
+    public Map<String, Object> querySingleResultForSql(String refSql, String expectParamKey, Object[] params) {
         BoundSql boundSql = this.sqlFactory.getBoundSql(refSql, expectParamKey, params);
         Map<String, Object> map = jdbcTemplate.queryForMap(boundSql.getSql(), boundSql.getParameters().toArray());
         return convertMapKeyToCamel(map);
     }
 
-    public List<Map<String, Object>> queryRowMapListForSql(String refSql) {
-        return this.queryRowMapListForSql(refSql, null, null);
+    public <T> T querySingleResultForSql(String refSql, String expectParamKey, Object[] params, Class<T> elementType) {
+        Map<String, Object> map = this.querySingleResultForSql(refSql, expectParamKey, params);
+        return mapToBean(map, elementType);
     }
 
-    public List<Map<String, Object>> queryRowMapListForSql(String refSql, Object[] params) {
-        return this.queryRowMapListForSql(refSql, null, params);
+    public List<Map<String, Object>> queryListForSql(String refSql) {
+        return this.queryListForSql(refSql, "", EMPTY_OBJECT_ARRAY);
     }
 
-    public List<Map<String, Object>> queryRowMapListForSql(String refSql, String expectParamKey, Object[] params) {
+    public <T> List<T> queryListForSql(String refSql, Class<T> elementType) {
+        List<Map<String, Object>> mapList = this.queryListForSql(refSql, "", EMPTY_OBJECT_ARRAY);
+        return mapToBean(mapList, elementType);
+    }
+
+    public List<Map<String, Object>> queryListForSql(String refSql, Object[] params) {
+        return this.queryListForSql(refSql, "", params);
+    }
+
+    public <T> List<T> queryListForSql(String refSql, Object[] params, Class<T> elementType) {
+        List<Map<String, Object>> mapList = this.queryListForSql(refSql, "", params);
+        return mapToBean(mapList, elementType);
+    }
+
+    public List<Map<String, Object>> queryListForSql(String refSql, String expectParamKey, Object[] params) {
         BoundSql boundSql = this.sqlFactory.getBoundSql(refSql, expectParamKey, params);
         List<Map<String, Object>> mapList = jdbcTemplate.queryForList(boundSql.getSql(), boundSql.getParameters()
             .toArray());
         return convertMapKeyToCamel(mapList);
     }
 
+    public <T> List<T> queryListForSql(String refSql, String expectParamKey, Object[] params, Class<T> elementType) {
+        List<Map<String, Object>> mapList = this.queryListForSql(refSql, expectParamKey, params);
+        return mapToBean(mapList, elementType);
+    }
+
     public int updateForSql(String refSql) {
-        return this.updateForSql(refSql, null, null);
+        return this.updateForSql(refSql, "", EMPTY_OBJECT_ARRAY);
     }
 
     public int updateForSql(String refSql, Object[] params) {
-        return this.updateForSql(refSql, null, params);
+        return this.updateForSql(refSql, "", params);
     }
 
     public int updateForSql(String refSql, String expectParamKey, Object[] params) {

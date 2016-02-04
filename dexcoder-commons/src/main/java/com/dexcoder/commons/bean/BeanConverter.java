@@ -2,11 +2,11 @@ package com.dexcoder.commons.bean;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.*;
 
 import com.dexcoder.commons.enums.IEnum;
 import com.dexcoder.commons.exceptions.CommonsAssistantException;
+import com.dexcoder.commons.utils.ClassUtils;
 
 /**
  * Java Bean 对象转换器
@@ -16,6 +16,54 @@ import com.dexcoder.commons.exceptions.CommonsAssistantException;
  * version $Id: BeanConverter.java, v 0.1 Exp $
  */
 public class BeanConverter {
+
+    /**
+     * map转为bean，map中的key和bean中的属性名相同
+     *
+     * @param <T>   the type parameter
+     * @param mapList the map list
+     * @param beanClass the bean class
+     * @return t list
+     */
+    public static <T> List<T> mapToBean(List<Map<String, Object>> mapList, Class<T> beanClass) {
+
+        List<T> beanList = new ArrayList<T>(mapList.size());
+        if (mapList == null) {
+            return beanList;
+        }
+        for (Map<String, Object> map : mapList) {
+
+            T t = mapToBean(map, beanClass);
+
+            beanList.add(t);
+        }
+        return beanList;
+    }
+
+    /**
+     * map转为bean，map中的key和bean中的属性名相同
+     * 
+     * @param map
+     * @param beanClass
+     * @param <T>
+     * @return
+     */
+    public static <T> T mapToBean(Map<String, Object> map, Class<T> beanClass) {
+
+        T bean = (T) ClassUtils.newInstance(beanClass);
+        if (map == null) {
+            return bean;
+        }
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+
+            PropertyDescriptor targetPd = getPropertyDescriptor(beanClass, entry.getKey());
+
+            Method writeMethod = targetPd.getWriteMethod();
+
+            ClassUtils.invokeMethod(writeMethod, bean, entry.getValue());
+        }
+        return bean;
+    }
 
     /**
      * 列表转换
@@ -114,38 +162,23 @@ public class BeanConverter {
 
         for (PropertyDescriptor targetPd : targetPds) {
 
-            try {
-                if (targetPd.getWriteMethod() == null
-                    || (ignoreList != null && ignoreList.contains(targetPd.getName()))) {
+            if (targetPd.getWriteMethod() == null || (ignoreList != null && ignoreList.contains(targetPd.getName()))) {
 
-                    continue;
-                }
-
-                PropertyDescriptor sourcePd = getPropertyDescriptor(source.getClass(), targetPd.getName());
-
-                if (sourcePd != null && sourcePd.getReadMethod() != null) {
-
-                    Method readMethod = sourcePd.getReadMethod();
-                    if (!Modifier.isPublic(readMethod.getDeclaringClass().getModifiers())) {
-                        readMethod.setAccessible(true);
-                    }
-                    Object value = readMethod.invoke(source);
-
-                    Method writeMethod = targetPd.getWriteMethod();
-
-                    //自定义转换
-                    value = typeConvert(sourcePd.getPropertyType(), targetPd.getPropertyType(), value);
-
-                    if (!Modifier.isPublic(writeMethod.getDeclaringClass().getModifiers())) {
-                        writeMethod.setAccessible(true);
-                    }
-
-                    writeMethod.invoke(target, value);
-                }
-            } catch (Exception e) {
-                throw new CommonsAssistantException("Bean转换时拷贝同名的属性失败field:" + targetPd.getName(), e);
+                continue;
             }
 
+            PropertyDescriptor sourcePd = getPropertyDescriptor(source.getClass(), targetPd.getName());
+
+            if (sourcePd != null && sourcePd.getReadMethod() != null) {
+
+                Method readMethod = sourcePd.getReadMethod();
+                Object value = ClassUtils.invokeMethod(readMethod, source);
+                Method writeMethod = targetPd.getWriteMethod();
+
+                //自定义转换
+                value = typeConvert(sourcePd.getPropertyType(), targetPd.getPropertyType(), value);
+                ClassUtils.invokeMethod(writeMethod, target, value);
+            }
         }
     }
 
