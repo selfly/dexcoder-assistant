@@ -87,7 +87,7 @@ public class XMLIncludeTransformer {
         try {
             XNode nodeToInclude = configuration.getSqlFragments().get(refid);
             return nodeToInclude.getNode().cloneNode(true);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             throw new JdbcAssistantException("Could not find SQL statement to include with refid '" + refid + "'", e);
         }
     }

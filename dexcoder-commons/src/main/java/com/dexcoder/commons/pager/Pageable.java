@@ -1,6 +1,8 @@
 package com.dexcoder.commons.pager;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.dexcoder.commons.bean.BeanConverter;
 import com.dexcoder.commons.exceptions.CommonsAssistantException;
@@ -15,22 +17,69 @@ public class Pageable implements Serializable {
     /**
      * serialVersionUID
      */
-    private static final long serialVersionUID = 4060766214127186912L;
+    private static final long   serialVersionUID = 4060766214127186912L;
 
     /**
      * 每页显示条数
      */
-    protected int             itemsPerPage     = 20;
+    private int                 itemsPerPage     = 20;
 
     /**
      * 当前页码
      */
-    protected int             curPage          = 1;
+    private int                 curPage          = 1;
 
     /**
      * 关键字
      */
-    protected String          keywords;
+    private String              keywords;
+
+    /**
+     * 数据map
+     */
+    private Map<String, Object> dataMap;
+
+    /**
+     * 放入数据
+     * 
+     * @param key
+     * @param obj
+     */
+    public void put(String key, Object obj) {
+        if (this.dataMap == null) {
+            dataMap = new HashMap<String, Object>();
+        }
+        dataMap.put(key, obj);
+    }
+
+    /**
+     * 获取数据
+     * 
+     * @param key
+     * @return
+     */
+    public Object get(String key) {
+        return this.get(key, Object.class);
+    }
+
+    /**
+     * 获取数据
+     * 
+     * @param key
+     * @param elementType
+     * @param <T>
+     * @return
+     */
+    public <T> T get(String key, Class<T> elementType) {
+        if (this.dataMap == null) {
+            return null;
+        }
+        Object obj = this.dataMap.get(key);
+        if (elementType.isAssignableFrom(obj.getClass())) {
+            throw new CommonsAssistantException("类型不匹配。expected:" + elementType.getName() + ",actual:" + obj.getClass());
+        }
+        return (T) obj;
+    }
 
     /**
      * 获取自动转换后的JavaBean对象
