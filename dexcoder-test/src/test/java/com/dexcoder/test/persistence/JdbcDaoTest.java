@@ -388,7 +388,17 @@ public class JdbcDaoTest {
     }
 
     @Test
+    public void queryRowMap() {
+        this.save();
+        Criteria criteria = Criteria.select(User.class).where("userId", new Object[] { -2L });
+        Map<String, Object> map = jdbcDao.queryRowMap(criteria);
+        Assert.assertNotNull(map);
+        Assert.assertTrue("selfly-2".equals(map.get("loginName")));
+    }
+
+    @Test
     public void queryRowMapList() {
+        this.save();
         Criteria criteria = Criteria.select(User.class).addSelectFunc("distinct [loginName]")
             .where("loginName", "is not", null).and("loginName", "!=", new Object[] { "" });
         List<Map<String, Object>> mapList = jdbcDao.queryRowMapList(criteria);

@@ -209,6 +209,14 @@ public interface JdbcDao {
      * @param criteria
      * @return
      */
+    Map<String, Object> queryRowMap(Criteria criteria);
+
+    /**
+     * 查询列表 例如使用函数后和列不排斥的情况
+     *
+     * @param criteria
+     * @return
+     */
     List<Map<String, Object>> queryRowMapList(Criteria criteria);
 
     /**
