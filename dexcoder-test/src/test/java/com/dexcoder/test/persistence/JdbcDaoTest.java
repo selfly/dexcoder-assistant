@@ -388,6 +388,13 @@ public class JdbcDaoTest {
     }
 
     @Test
+    public void queryObjectList() {
+        Criteria criteria = Criteria.select(User.class).include("loginName");
+        List<String> list = jdbcDao.queryObjectList(criteria, String.class);
+        Assert.assertNotNull(list);
+    }
+
+    @Test
     public void queryRowMap() {
         this.save();
         Criteria criteria = Criteria.select(User.class).where("userId", new Object[] { -2L });

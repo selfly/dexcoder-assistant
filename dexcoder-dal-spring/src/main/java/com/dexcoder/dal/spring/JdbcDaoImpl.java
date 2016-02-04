@@ -181,6 +181,11 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
         return (T) jdbcTemplate.queryForObject(boundSql.getSql(), boundSql.getParameters().toArray(), Object.class);
     }
 
+    public <T> List<T> queryObjectList(Criteria criteria, Class<T> elementType) {
+        final BoundSql boundSql = criteria.build(true, getMappingHandler());
+        return jdbcTemplate.queryForList(boundSql.getSql(), elementType, boundSql.getParameters().toArray());
+    }
+
     public Map<String, Object> queryRowMap(Criteria criteria) {
         BoundSql boundSql = criteria.build(true, getMappingHandler());
         List<Map<String, Object>> mapList = jdbcTemplate.queryForList(boundSql.getSql(), boundSql.getParameters()

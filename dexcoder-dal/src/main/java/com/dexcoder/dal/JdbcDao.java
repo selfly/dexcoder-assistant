@@ -204,6 +204,16 @@ public interface JdbcDao {
     <T> T queryObject(Criteria criteria);
 
     /**
+     * 查询单个对你的列表，例如id列表，name列表
+     * 
+     * @param criteria
+     * @param elementType
+     * @param <T>
+     * @return
+     */
+    <T> List<T> queryObjectList(Criteria criteria, Class<T> elementType);
+
+    /**
      * 查询列表 例如使用函数后和列不排斥的情况
      * 
      * @param criteria
