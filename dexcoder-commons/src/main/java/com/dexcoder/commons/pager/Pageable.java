@@ -37,7 +37,7 @@ public class Pageable implements Serializable {
     /**
      * 数据map
      */
-    private Map<String, Object> dataMap;
+    private Map<String, Object> attachData;
 
     /**
      * 放入数据
@@ -46,10 +46,10 @@ public class Pageable implements Serializable {
      * @param obj
      */
     public void put(String key, Object obj) {
-        if (this.dataMap == null) {
-            dataMap = new HashMap<String, Object>();
+        if (this.attachData == null) {
+            attachData = new HashMap<String, Object>();
         }
-        dataMap.put(key, obj);
+        attachData.put(key, obj);
     }
 
     /**
@@ -71,14 +71,18 @@ public class Pageable implements Serializable {
      * @return
      */
     public <T> T get(String key, Class<T> elementType) {
-        if (this.dataMap == null) {
+        if (this.attachData == null) {
             return null;
         }
-        Object obj = this.dataMap.get(key);
-        if (elementType.isAssignableFrom(obj.getClass())) {
+        Object obj = this.attachData.get(key);
+        if (!elementType.isAssignableFrom(obj.getClass())) {
             throw new CommonsAssistantException("类型不匹配。expected:" + elementType.getName() + ",actual:" + obj.getClass());
         }
         return (T) obj;
+    }
+
+    public Map<String, Object> getAttachData() {
+        return attachData;
     }
 
     /**
