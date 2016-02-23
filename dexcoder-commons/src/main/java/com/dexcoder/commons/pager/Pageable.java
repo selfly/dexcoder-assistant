@@ -75,6 +75,9 @@ public class Pageable implements Serializable {
             return null;
         }
         Object obj = this.attachData.get(key);
+        if (obj == null) {
+            return null;
+        }
         if (!elementType.isAssignableFrom(obj.getClass())) {
             throw new CommonsAssistantException("类型不匹配。expected:" + elementType.getName() + ",actual:" + obj.getClass());
         }
