@@ -52,6 +52,13 @@ public class Pageable implements Serializable {
         attachData.put(key, obj);
     }
 
+    public void remove(String key) {
+        if (this.attachData == null) {
+            return;
+        }
+        this.attachData.remove(key);
+    }
+
     /**
      * 获取数据
      * 
