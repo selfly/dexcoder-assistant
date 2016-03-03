@@ -23,15 +23,6 @@
 - 修正Commons包中TextUtils替换特殊字符时数组越界bug
 - 其它细节修正
 
-### 版本 2.3.0 更新时间：2016-01-18
-
-- 实体类表名及属性名映射增加注解支持
-- 增加更多的执行自定义sql方法
-- 因为sql权限问题去掉使用TRUNCATE的deleteAll方法
-- 修正使用注解时注解的属性名不遵循规范时get方法主键错误问题
-- 修正水平拆分数据分表不根据主键拆分时update无法获取表名的问题
-- 修改NameHandler类名为MappingHandler
-
 [详细更新日志](md/update-log.md)
 
 配置动态数据源请看这里：[在dexcoder-dal中使用动态数据源并设置读写分离](md/dy-datasource.md)
