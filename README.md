@@ -6,6 +6,23 @@
 
 最近更新：
 
+### 版本 2.3.1 更新时间：2016-03-03
+
+- 增加queryRowMap方法
+- 增加queryObjectList方法
+- 增加一系列执行自定义sql时返回实体重载方法
+- 保持命名统一，querySingleRowMapForSql方法改名为querySingleResultForSql，queryRowMapListForSql方法改名为queryListForSql
+- batis方式加载xml出错时提示信息细化
+- 实体父类Pageable增加put、get、remove等方法方便操作时在实体不增加属性的情况下保存想要的数据
+- Bean转换工具类BeanConverter增加map转实体bean方法
+- 修正多个参数使用or时操作符有时会出错的bug
+- 修正where条件使用in、not in等操作符当值只有一个时括号bug
+- 修正使用动态数据源时，数据源属性不是String是出错的bug
+- 修正动态数据源配置文件添加注释时导致出错bug
+- 优化Excel处理工具类
+- 修正Commons包中TextUtils替换特殊字符时数组越界bug
+- 其它细节修正
+
 ### 版本 2.3.0 更新时间：2016-01-18
 
 - 实体类表名及属性名映射增加注解支持

@@ -37,6 +37,12 @@ public class DexcoderException extends RuntimeException {
         this.resultMsg = message;
     }
 
+    public DexcoderException(IEnum msgEnum, Throwable e) {
+        super(msgEnum.getDesc(), e);
+        this.resultCode = msgEnum.getCode();
+        this.resultMsg = msgEnum.getDesc();
+    }
+
     /**
      * Instantiates a new DexcoderException.
      *

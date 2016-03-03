@@ -265,7 +265,7 @@ public interface JdbcDao {
     Map<String, Object> querySingleResultForSql(String refSql);
 
     /**
-     * 根据sql查询单个结果行的map
+     * 根据sql查询单个结果
      *
      * @param <T>  the type parameter
      * @param refSql the ref sql
@@ -284,7 +284,7 @@ public interface JdbcDao {
     Map<String, Object> querySingleResultForSql(String refSql, Object[] params);
 
     /**
-     * 根据sql查询单个结果行的map
+     * 根据sql查询单个结果
      *
      * @param <T>  the type parameter
      * @param refSql the ref sql
@@ -305,7 +305,7 @@ public interface JdbcDao {
     Map<String, Object> querySingleResultForSql(String refSql, String expectParamKey, Object[] params);
 
     /**
-     * 根据sql查询单个结果行的map
+     * 根据sql查询单个结果
      *
      * @param <T>  the type parameter
      * @param refSql the ref sql
