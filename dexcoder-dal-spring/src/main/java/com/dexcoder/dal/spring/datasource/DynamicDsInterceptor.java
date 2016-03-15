@@ -4,7 +4,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.stereotype.Component;
 
 import com.dexcoder.commons.utils.StrUtils;
 
@@ -14,7 +13,6 @@ import com.dexcoder.commons.utils.StrUtils;
  * Created by liyd on 2015-11-2.
  */
 @Aspect
-@Component
 public class DynamicDsInterceptor {
 
     @Pointcut("execution(* org.springframework.jdbc.core.JdbcOperations.*(..))")

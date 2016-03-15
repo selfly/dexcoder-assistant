@@ -110,23 +110,23 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
 
     public int queryCount(Class<?> clazz) {
         BoundSql boundSql = Criteria.select(clazz).addSelectFunc("count(*)").build(null, true, getMappingHandler());
-        return jdbcTemplate.queryForInt(boundSql.getSql(), boundSql.getParameters().toArray());
+        return jdbcTemplate.queryForObject(boundSql.getSql(), boundSql.getParameters().toArray(), Integer.class);
     }
 
     public int queryCount(Object entity, Criteria criteria) {
         BoundSql boundSql = criteria.addSelectFunc("count(*)").build(entity, true, getMappingHandler());
-        return jdbcTemplate.queryForInt(boundSql.getSql(), boundSql.getParameters().toArray());
+        return jdbcTemplate.queryForObject(boundSql.getSql(), boundSql.getParameters().toArray(), Integer.class);
     }
 
     public int queryCount(Object entity) {
         BoundSql boundSql = Criteria.select(entity.getClass()).addSelectFunc("count(*)")
             .build(entity, true, getMappingHandler());
-        return jdbcTemplate.queryForInt(boundSql.getSql(), boundSql.getParameters().toArray());
+        return jdbcTemplate.queryForObject(boundSql.getSql(), boundSql.getParameters().toArray(), Integer.class);
     }
 
     public int queryCount(Criteria criteria) {
         BoundSql boundSql = criteria.addSelectFunc("count(*)").build(true, getMappingHandler());
-        return jdbcTemplate.queryForInt(boundSql.getSql(), boundSql.getParameters().toArray());
+        return jdbcTemplate.queryForObject(boundSql.getSql(), boundSql.getParameters().toArray(), Integer.class);
     }
 
     public <T> T get(Class<T> clazz, Long id) {

@@ -8,7 +8,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
 
 import com.dexcoder.commons.pager.Pageable;
 import com.dexcoder.commons.pager.Pager;
@@ -19,7 +18,6 @@ import com.dexcoder.commons.pager.Pager;
  * Created by liyd on 6/26/14.
  */
 @Aspect
-@Component
 public class PageControl {
 
     /** 分页线程变量 */
@@ -122,7 +120,7 @@ public class PageControl {
                     countArgs = (Object[]) obj;
                 }
             }
-            int itemsTotal = target.queryForInt(countSql, countArgs);
+            int itemsTotal = target.queryForObject(countSql, countArgs, Integer.class);
             pager.setItemsTotal(itemsTotal);
         }
         Object result = pjp.proceed(args);

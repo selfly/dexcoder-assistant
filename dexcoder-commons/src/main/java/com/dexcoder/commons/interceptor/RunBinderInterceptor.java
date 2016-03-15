@@ -44,13 +44,13 @@ public class RunBinderInterceptor implements MethodInterceptor {
 
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             RunBinder.addError(dexcoderException);
-            LOG.info("出现已知异常，异常信息[resultCode={},resultMsg={}]", dexcoderException.getResultCode(),
+            LOG.info(String.format("已知异常,方法:[class=%s,method=%s],信息:[resultCode={},resultMsg={}]",targetClass,targetMethod), dexcoderException.getResultCode(),
                 dexcoderException.getResultMsg());
             //ignore
         } catch (Throwable throwable) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             RunBinder.addError("UN_KNOWN_EXCEPTION", "未知异常");
-            LOG.error("发现未知异常，异常信息", throwable);
+            LOG.error(String.format("未知异常,方法:[class=%s,method=%s]",targetClass,targetMethod), throwable);
             //ignore
         }
 
