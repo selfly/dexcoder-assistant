@@ -1,7 +1,10 @@
 package com.dexcoder.commons.interceptor;
 
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
+import org.apache.poi.ss.formula.functions.T;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -14,7 +17,8 @@ import com.dexcoder.commons.result.RunBinder;
  * 
  * Created by liyd on 4/9/14.
  */
-public class RunBinderInterceptor implements MethodInterceptor {
+@Aspect
+public class RunBinderInterceptor {
 
     /** 日志对象 */
     private static final Logger LOG         = LoggerFactory.getLogger(RunBinderInterceptor.class);
@@ -22,12 +26,24 @@ public class RunBinderInterceptor implements MethodInterceptor {
     /** 执行时间超过打印warn日志毫秒数 */
     private static final long   LOG_TIMEOUT = 1000;
 
-    public Object invoke(MethodInvocation invocation) throws Throwable {
+    @Pointcut("@within(org.springframework.stereotype.Service)")
+    public void serviceAnnotation() {
+
+    }
+
+    @Pointcut("bean(*ServiceImpl)")
+    public void serviceName() {
+
+    }
+
+    @Around("serviceAnnotation() || serviceName()")
+    public Object around(ProceedingJoinPoint pjp) {
+
         //被拦截的类
-        String targetClass = invocation.getThis().getClass().getName();
+        String targetClass = pjp.getTarget().getClass().getName();
 
         //被拦截方法
-        String targetMethod = invocation.getMethod().getName();
+        String targetMethod = pjp.getSignature().getName();
 
         //当前时间毫秒数
         long startTime = System.currentTimeMillis();
@@ -38,19 +54,19 @@ public class RunBinderInterceptor implements MethodInterceptor {
         Object result = null;
         try {
             //此处调用业务方法
-            result = invocation.proceed();
+            result = pjp.proceed();
 
         } catch (DexcoderException dexcoderException) {
 
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            RunBinderTransactionAspectSupport.setRollbackOnly();
             RunBinder.addError(dexcoderException);
-            LOG.info(String.format("已知异常,方法:[class=%s,method=%s],信息:[resultCode={},resultMsg={}]",targetClass,targetMethod), dexcoderException.getResultCode(),
-                dexcoderException.getResultMsg());
+            LOG.info(String.format("已知异常,方法:[class=%s,method=%s],信息:[resultCode={},resultMsg={}]", targetClass,
+                targetMethod), dexcoderException.getResultCode(), dexcoderException.getResultMsg());
             //ignore
         } catch (Throwable throwable) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            RunBinderTransactionAspectSupport.setRollbackOnly();
             RunBinder.addError("UN_KNOWN_EXCEPTION", "未知异常");
-            LOG.error(String.format("未知异常,方法:[class=%s,method=%s]",targetClass,targetMethod), throwable);
+            LOG.error(String.format("未知异常,方法:[class=%s,method=%s]", targetClass, targetMethod), throwable);
             //ignore
         }
 
@@ -66,5 +82,7 @@ public class RunBinderInterceptor implements MethodInterceptor {
                     targetMethod, useTime });
         }
         return result;
+
     }
+
 }

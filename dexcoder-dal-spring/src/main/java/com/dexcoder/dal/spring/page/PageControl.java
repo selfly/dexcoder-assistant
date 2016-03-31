@@ -126,7 +126,7 @@ public class PageControl {
         Object result = pjp.proceed(args);
         pager.setList((List<?>) result);
 
-        return null;
+        return result;
     }
 
     /**

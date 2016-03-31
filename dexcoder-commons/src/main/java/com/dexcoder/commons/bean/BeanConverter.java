@@ -27,7 +27,7 @@ public class BeanConverter {
      */
     public static <T> List<T> mapToBean(List<Map<String, Object>> mapList, Class<T> beanClass) {
 
-        List<T> beanList = new ArrayList<T>(mapList.size());
+        List<T> beanList = new ArrayList<T>(mapList == null ? 0 : mapList.size());
         if (mapList == null) {
             return beanList;
         }

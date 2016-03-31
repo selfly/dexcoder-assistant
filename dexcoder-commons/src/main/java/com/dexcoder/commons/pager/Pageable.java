@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.dexcoder.commons.bean.BeanConverter;
 import com.dexcoder.commons.exceptions.CommonsAssistantException;
+import com.dexcoder.commons.utils.ClassUtils;
 
 /**
  * 分页等常用信息存储
@@ -109,6 +110,16 @@ public class Pageable implements Serializable {
         } catch (Exception e) {
             throw new CommonsAssistantException("转换对象失败", e);
         }
+    }
+
+    /**
+     * 获取指定属性值
+     * 
+     * @param fieldName
+     * @return
+     */
+    public Object getFieldValue(String fieldName) {
+        return ClassUtils.getFieldValue(this.getClass(), this, fieldName);
     }
 
     public int getItemsPerPage() {

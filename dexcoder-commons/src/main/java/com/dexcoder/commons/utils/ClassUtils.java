@@ -104,6 +104,20 @@ public class ClassUtils {
     }
 
     /**
+     * 获取对象指定属性值
+     * 
+     * @param clazz
+     * @param obj
+     * @param fieldName
+     * @return
+     */
+    public static Object getFieldValue(Class<?> clazz, Object obj, String fieldName) {
+        PropertyDescriptor propertyDescriptor = getPropertyDescriptor(clazz, fieldName);
+        Method readMethod = propertyDescriptor.getReadMethod();
+        return invokeMethod(readMethod, obj);
+    }
+
+    /**
      * bean属性转换为map
      *
      * @param object
