@@ -5,7 +5,8 @@
 <mapper namespace="User">
 
     <sql id="columns">
-        login_name,password,user_age,user_type,email,gmt_create
+        ${com.dexcoder.test.model.User}
+        <!--login_name,password,user_age,user_type,email,gmt_create-->
     </sql>
 
     <insert id="insertUser">

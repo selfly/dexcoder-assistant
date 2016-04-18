@@ -1,5 +1,6 @@
 package com.dexcoder.commons.office;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.dexcoder.commons.utils.StrUtils;
@@ -23,15 +24,19 @@ public class ExcelRow {
     }
 
     public int getTotalCellsNum() {
-        return cells == null ? 0 : cells.size();
+        return cells.size();
     }
 
     public boolean hasCells() {
-        return cells != null && !cells.isEmpty();
+        return !cells.isEmpty();
+    }
+
+    public ExcelRow() {
+        cells = new ArrayList<ExcelCell>();
     }
 
     public boolean isEmptyRow() {
-        if (cells == null || cells.isEmpty()) {
+        if (cells.isEmpty()) {
             return true;
         }
         for (ExcelCell excelCell : cells) {
@@ -48,19 +53,19 @@ public class ExcelRow {
     }
 
     public ExcelCell getFirstCell() {
-        return cells == null ? null : cells.iterator().next();
+        return cells.isEmpty() ? null : cells.iterator().next();
     }
 
     public ExcelCell getCell(int i) {
-        return cells == null ? null : cells.get(i);
+        return cells.isEmpty() ? null : cells.get(i);
     }
 
     public Object getCellValue(int i) {
-        return cells == null ? null : cells.get(i).getValue();
+        return cells.isEmpty() ? null : cells.get(i).getValue();
     }
 
     public String getCellStringValue(int i) {
-        return cells == null ? null : cells.get(i).getStringValue();
+        return cells.isEmpty() ? null : cells.get(i).getStringValue();
     }
 
     @Override
