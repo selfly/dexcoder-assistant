@@ -6,7 +6,10 @@ import java.util.*;
 
 import com.dexcoder.commons.enums.IEnum;
 import com.dexcoder.commons.exceptions.CommonsAssistantException;
+import com.dexcoder.commons.pager.Pageable;
 import com.dexcoder.commons.utils.ClassUtils;
+import com.dexcoder.commons.utils.NameUtils;
+import com.dexcoder.commons.utils.StrUtils;
 
 /**
  * Java Bean 对象转换器
@@ -18,7 +21,19 @@ import com.dexcoder.commons.utils.ClassUtils;
 public class BeanConverter {
 
     /**
-     * map转为bean，map中的key和bean中的属性名相同
+     * map转为bean，key名为下划线命名方式
+     *
+     * @param <T>   the type parameter
+     * @param mapList the map list
+     * @param beanClass the bean class
+     * @return t list
+    */
+    public static <T> List<T> underlineKeyMapToBean(List<Map<String, Object>> mapList, Class<T> beanClass) {
+        return mapToBean(mapList, beanClass, '_');
+    }
+
+    /**
+     * map转为bean，key名为bean属性名
      *
      * @param <T>   the type parameter
      * @param mapList the map list
@@ -26,6 +41,20 @@ public class BeanConverter {
      * @return t list
      */
     public static <T> List<T> mapToBean(List<Map<String, Object>> mapList, Class<T> beanClass) {
+        return mapToBean(mapList, beanClass, null);
+    }
+
+    /**
+     * map转为bean，最后一个参数指定map中的key转换成骆驼命名法(JavaBean中惯用的属性命名)的分隔符,例如login_name转换成loginName,分隔符为下划线_
+     * 指定了分隔符进行转换时如果属性不带分隔符会统一转成小写,毕竟JavaBean中除了常量外应该不会定义有大写的属性
+     * 为空则不进行任何转换
+     *
+     * @param <T>   the type parameter
+     * @param mapList the map list
+     * @param beanClass the bean class
+     * @return t list
+     */
+    public static <T> List<T> mapToBean(List<Map<String, Object>> mapList, Class<T> beanClass, Character delimiter) {
 
         List<T> beanList = new ArrayList<T>(mapList == null ? 0 : mapList.size());
         if (mapList == null) {
@@ -33,7 +62,7 @@ public class BeanConverter {
         }
         for (Map<String, Object> map : mapList) {
 
-            T t = mapToBean(map, beanClass);
+            T t = mapToBean(map, beanClass, delimiter);
 
             beanList.add(t);
         }
@@ -41,14 +70,38 @@ public class BeanConverter {
     }
 
     /**
-     * map转为bean，map中的key和bean中的属性名相同
-     * 
-     * @param map
-     * @param beanClass
-     * @param <T>
-     * @return
+     * map转为bean
+     *
+     * @param map the map
+     * @param beanClass the bean class
+     * @return t
+     */
+    public static <T> T underlineKeyMapToBean(Map<String, Object> map, Class<T> beanClass) {
+        return mapToBean(map, beanClass, '_');
+    }
+
+    /**
+     * map转为bean
+     *
+     * @param map the map
+     * @param beanClass the bean class
+     * @return t
      */
     public static <T> T mapToBean(Map<String, Object> map, Class<T> beanClass) {
+        return mapToBean(map, beanClass, null);
+    }
+
+    /**
+     * map转为bean，最后一个参数指定map中的key转换成骆驼命名法(JavaBean中惯用的属性命名)的分隔符,例如login_name转换成loginName,分隔符为下划线_
+     * 指定了分隔符进行转换时如果属性不带分隔符会统一转成小写,毕竟JavaBean中除了常量外应该不会定义有大写的属性
+     * 为空则不进行任何转换
+     *
+     * @param map the map
+     * @param beanClass the bean class
+     * @param delimiter the delimiter
+     * @return t
+     */
+    public static <T> T mapToBean(Map<String, Object> map, Class<T> beanClass, Character delimiter) {
 
         T bean = (T) ClassUtils.newInstance(beanClass);
         if (map == null) {
@@ -56,11 +109,22 @@ public class BeanConverter {
         }
         for (Map.Entry<String, Object> entry : map.entrySet()) {
 
-            PropertyDescriptor targetPd = getPropertyDescriptor(beanClass, entry.getKey());
+            String name = entry.getKey();
+            if (delimiter != null) {
+                name = StrUtils.indexOf(name, delimiter) != -1 ? NameUtils.getCamelName(name, delimiter) : name
+                    .toLowerCase();
+            }
+            PropertyDescriptor targetPd = getPropertyDescriptor(beanClass, name);
 
-            Method writeMethod = targetPd.getWriteMethod();
+            Method writeMethod;
+            if (targetPd == null || (writeMethod = targetPd.getWriteMethod()) == null) {
 
-            ClassUtils.invokeMethod(writeMethod, bean, entry.getValue());
+                if (Pageable.class.isAssignableFrom(beanClass)) {
+                    ((Pageable) bean).put(name, entry.getValue());
+                }
+            } else {
+                ClassUtils.invokeMethod(writeMethod, bean, entry.getValue());
+            }
         }
         return bean;
     }

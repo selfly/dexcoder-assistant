@@ -190,14 +190,14 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
         BoundSql boundSql = criteria.build(true, getMappingHandler());
         List<Map<String, Object>> mapList = jdbcTemplate.queryForList(boundSql.getSql(), boundSql.getParameters()
             .toArray());
-        return mapList == null || mapList.isEmpty() ? null : convertMapKeyToCamel(mapList.iterator().next());
+        return mapList == null || mapList.isEmpty() ? null : mapList.iterator().next();
     }
 
     public List<Map<String, Object>> queryRowMapList(Criteria criteria) {
         BoundSql boundSql = criteria.build(true, getMappingHandler());
         List<Map<String, Object>> mapList = jdbcTemplate.queryForList(boundSql.getSql(), boundSql.getParameters()
             .toArray());
-        return convertMapKeyToCamel(mapList);
+        return mapList;
     }
 
     public Object queryObjectForSql(String refSql) {
@@ -234,7 +234,7 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
     public Map<String, Object> querySingleResultForSql(String refSql, String expectParamKey, Object[] params) {
         BoundSql boundSql = this.sqlFactory.getBoundSql(refSql, expectParamKey, params);
         Map<String, Object> map = jdbcTemplate.queryForMap(boundSql.getSql(), boundSql.getParameters().toArray());
-        return convertMapKeyToCamel(map);
+        return map;
     }
 
     public <T> T querySingleResultForSql(String refSql, String expectParamKey, Object[] params, Class<T> elementType) {
@@ -264,7 +264,7 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
         BoundSql boundSql = this.sqlFactory.getBoundSql(refSql, expectParamKey, params);
         List<Map<String, Object>> mapList = jdbcTemplate.queryForList(boundSql.getSql(), boundSql.getParameters()
             .toArray());
-        return convertMapKeyToCamel(mapList);
+        return mapList;
     }
 
     public <T> List<T> queryListForSql(String refSql, String expectParamKey, Object[] params, Class<T> elementType) {

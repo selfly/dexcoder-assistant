@@ -12,14 +12,14 @@ public interface TypeConverter {
     /**
      * 获取源类型class
      * 
-     * @return
+     * @return 源类型class
      */
     Class<?> getSourceTypeClass();
 
     /**
      * 获取目标类型class
      * 
-     * @return
+     * @return 目标类型class
      */
     Class<?> getTargetTypeClass();
 
