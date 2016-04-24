@@ -3,8 +3,6 @@ package com.dexcoder.dal.spring;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +13,6 @@ import org.springframework.jdbc.support.KeyHolder;
 
 import com.dexcoder.commons.bean.BeanConverter;
 import com.dexcoder.commons.utils.ClassUtils;
-import com.dexcoder.commons.utils.NameUtils;
 import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.dal.BoundSql;
 import com.dexcoder.dal.SqlFactory;
@@ -98,44 +95,7 @@ public abstract class AbstractJdbcDaoImpl {
      * @return list
      */
     protected <T> List<T> mapToBean(List<Map<String, Object>> mapList, Class<T> beanClass) {
-        return BeanConverter.mapToBean(mapList, beanClass);
-    }
-
-    /**
-     * 转换map中的key column为field
-     *
-     * @param map the map
-     * @return map
-     */
-    protected Map<String, Object> convertMapKeyToCamel(Map<String, Object> map) {
-        if (map == null) {
-            return null;
-        }
-        Map<String, Object> resultMap = new HashMap<String, Object>(map.size());
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-            String camelName = StrUtils.indexOf(entry.getKey(), "_") != -1 ? NameUtils.getCamelName(entry.getKey())
-                : entry.getKey().toLowerCase();
-            resultMap.put(camelName, entry.getValue());
-        }
-        return resultMap;
-    }
-
-    /**
-     * 转换map中的key column为field
-     *
-     * @param mapList
-     * @return
-     */
-    protected List<Map<String, Object>> convertMapKeyToCamel(List<Map<String, Object>> mapList) {
-        if (mapList == null) {
-            return null;
-        }
-        List<Map<String, Object>> resultMapList = new ArrayList<Map<String, Object>>(mapList.size());
-        for (Map<String, Object> map : mapList) {
-            Map<String, Object> resultMap = convertMapKeyToCamel(map);
-            resultMapList.add(resultMap);
-        }
-        return resultMapList;
+        return BeanConverter.underlineKeyMapToBean(mapList, beanClass);
     }
 
     /**
