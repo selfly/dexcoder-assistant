@@ -12,12 +12,14 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import com.dexcoder.commons.bean.BeanConverter;
+import com.dexcoder.commons.pager.Pager;
 import com.dexcoder.commons.utils.ClassUtils;
 import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.dal.BoundSql;
 import com.dexcoder.dal.SqlFactory;
 import com.dexcoder.dal.handler.DefaultMappingHandler;
 import com.dexcoder.dal.handler.MappingHandler;
+import com.dexcoder.dal.spring.page.PageControl;
 
 /**
  * Created by liyd on 2015-12-15.
@@ -83,7 +85,7 @@ public abstract class AbstractJdbcDaoImpl {
      * @return
      */
     protected <T> T mapToBean(Map<String, Object> map, Class<T> beanClass) {
-        return BeanConverter.mapToBean(map, beanClass);
+        return BeanConverter.underlineKeyMapToBean(map, beanClass);
     }
 
     /**
@@ -95,7 +97,13 @@ public abstract class AbstractJdbcDaoImpl {
      * @return list
      */
     protected <T> List<T> mapToBean(List<Map<String, Object>> mapList, Class<T> beanClass) {
-        return BeanConverter.underlineKeyMapToBean(mapList, beanClass);
+        List<T> beans = BeanConverter.underlineKeyMapToBean(mapList, beanClass);
+        Pager pager = PageControl.getPager();
+        if (pager != null) {
+            pager.setList(beans);
+            PageControl.setPager(pager);
+        }
+        return beans;
     }
 
     /**

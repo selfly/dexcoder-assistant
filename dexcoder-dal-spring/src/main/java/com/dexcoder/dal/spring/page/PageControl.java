@@ -85,6 +85,13 @@ public class PageControl {
         return pager;
     }
 
+    /**
+     * 设置pager对象
+     */
+    public static void setPager(Pager pager) {
+        LOCAL_PAGER.set(pager);
+    }
+
     @Pointcut("execution(* org.springframework.jdbc.core.JdbcOperations.query*(..))")
     public void queryMethod() {
         //该方法没实际作用，只是切面声明对象，声明一个切面的表达式
