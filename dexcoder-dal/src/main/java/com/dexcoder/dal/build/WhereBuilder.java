@@ -16,6 +16,8 @@ public class WhereBuilder extends AbstractSqlBuilder {
 
     protected static final String COMMAND_OPEN = " WHERE ";
 
+    private int                   fieldNum     = 0;
+
     public WhereBuilder(Class<?> clazz) {
         super(clazz);
     }
@@ -24,7 +26,12 @@ public class WhereBuilder extends AbstractSqlBuilder {
                          Object value) {
         AutoField autoField = new AutoField.Builder().name(fieldName).logicalOperator(logicalOperator)
             .fieldOperator(fieldOperator).type(type).value(value).build();
-        metaTable.getAutoFields().put(fieldName, autoField);
+        Map<String, AutoField> autoFields = metaTable.getAutoFields();
+        if (autoFields.containsKey(fieldName)) {
+            fieldName += this.fieldNum;
+            this.fieldNum++;
+        }
+        autoFields.put(fieldName, autoField);
     }
 
     public void addCondition(String fieldName, String logicalOperator, String fieldOperator, AutoFieldType type,

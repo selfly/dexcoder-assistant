@@ -516,6 +516,25 @@ public class JdbcDaoTest {
     }
 
     @Test
+    public void testSelectSql4() {
+
+        PageControl.performPage(1, 10);
+        List<User> users = jdbcDao.queryListForSql("select * from USER", User.class);
+        Pager pager = PageControl.getPager();
+        pager.setList(users);
+        List<User> list = pager.getList(User.class);
+        Assert.assertTrue(list.size() == 10);
+        Assert.assertNotNull(list.iterator().next().getUserId());
+    }
+
+    @Test
+    public void testSelectSql5() {
+
+        int count = jdbcDao.queryCount(Criteria.select(User.class).where("userId", ">", new Object[]{6})
+                .and("userId", "<", new Object[]{22}));
+    }
+
+    @Test
     public void testUpdateSql() {
         this.save();
         int i = jdbcDao.updateForSql("update USER set login_name = ? where user_id = ?", new Object[] { "aaaa", -2L });
