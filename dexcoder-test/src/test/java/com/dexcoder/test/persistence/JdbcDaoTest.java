@@ -400,7 +400,7 @@ public class JdbcDaoTest {
         Criteria criteria = Criteria.select(User.class).where("userId", new Object[] { -2L });
         Map<String, Object> map = jdbcDao.queryRowMap(criteria);
         Assert.assertNotNull(map);
-        Assert.assertTrue("selfly-2".equals(map.get("loginName")));
+        Assert.assertTrue("selfly-2".equals(map.get("LOGIN_NAME")));
     }
 
     @Test
@@ -435,7 +435,7 @@ public class JdbcDaoTest {
     public void querySingleResultForSql() {
         this.save();
         Map<String, Object> map = jdbcDao.querySingleResultForSql("select * from USER where user_id = -2");
-        Assert.assertTrue(map.get("userId").equals(-2L));
+        Assert.assertTrue(map.get("USER_ID").equals(-2L));
     }
 
     @Test
@@ -451,7 +451,7 @@ public class JdbcDaoTest {
         this.save();
         Map<String, Object> map = jdbcDao.querySingleResultForSql("select * from USER where user_id = ?",
             new Object[] { -2L });
-        Assert.assertTrue(map.get("userId").equals(-2L));
+        Assert.assertTrue(map.get("USER_ID").equals(-2L));
     }
 
     @Test
@@ -489,7 +489,7 @@ public class JdbcDaoTest {
         List<Map<String, Object>> list = jdbcDao.queryListForSql("select * from USER where login_name = ?",
             new Object[] { "selfly-2" });
         for (Map<String, Object> map : list) {
-            Assert.assertTrue("selfly-2".equals(map.get("loginName")));
+            Assert.assertTrue("selfly-2".equals(map.get("LOGIN_NAME")));
         }
     }
 
@@ -499,7 +499,7 @@ public class JdbcDaoTest {
         this.save();
         List<Map<String, Object>> list = jdbcDao.queryListForSql("select * from USER where login_name = 'selfly-2'");
         for (Map<String, Object> map : list) {
-            Assert.assertTrue("selfly-2".equals(map.get("loginName")));
+            Assert.assertTrue("selfly-2".equals(map.get("LOGIN_NAME")));
         }
     }
 

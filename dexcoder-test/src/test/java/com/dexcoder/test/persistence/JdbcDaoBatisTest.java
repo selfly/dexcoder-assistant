@@ -70,8 +70,8 @@ public class JdbcDaoBatisTest {
         List<Map<String, Object>> mapList = jdbcDao.queryListForSql("User.getUser", new Object[] { "1", user });
         Assert.assertNotNull(mapList);
         for (Map<String, Object> map : mapList) {
-            Assert.assertEquals("1", map.get("userType"));
-            Assert.assertEquals("batisUser2", map.get("loginName"));
+            Assert.assertEquals("1", map.get("USER_TYPE"));
+            Assert.assertEquals("batisUser2", map.get("LOGIN_NAME"));
         }
     }
 

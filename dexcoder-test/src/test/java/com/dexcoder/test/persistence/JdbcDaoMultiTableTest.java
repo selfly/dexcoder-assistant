@@ -31,6 +31,7 @@ public class JdbcDaoMultiTableTest {
         //50本书，这里是否分表插入了需要人工看数据库
         //毕竟如果没有分表，get也没分表还是能取到结果
         for (int i = 1; i < 51; i++) {
+            jdbcDao.delete(Book.class,(long)i);
             Book book = new Book();
             book.setBookId((long) i);
             book.setBookName("测试book" + i);
@@ -43,9 +44,12 @@ public class JdbcDaoMultiTableTest {
     public void multiTableChapter() {
         //两次插入bookId不同，根据CustomMappingHandler中的策略应该在不同的表中
         for (int i = 1; i < 51; i++) {
+
             Chapter chapter = new Chapter();
             chapter.setChapterId((long) i);
             chapter.setBookId(5L);
+            jdbcDao.delete(chapter);
+
             chapter.setChapterName("章节一" + i);
             chapter.setGmtCreate(new Date());
             jdbcDao.save(chapter);
@@ -54,6 +58,8 @@ public class JdbcDaoMultiTableTest {
             Chapter chapter = new Chapter();
             chapter.setChapterId((long) i);
             chapter.setBookId(6L);
+            jdbcDao.delete(chapter);
+
             chapter.setChapterName("章节二" + i);
             chapter.setGmtCreate(new Date());
             jdbcDao.save(chapter);

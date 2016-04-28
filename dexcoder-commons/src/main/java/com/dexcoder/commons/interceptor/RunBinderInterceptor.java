@@ -1,13 +1,11 @@
 package com.dexcoder.commons.interceptor;
 
-import org.apache.poi.ss.formula.functions.T;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.dexcoder.commons.exceptions.DexcoderException;
 import com.dexcoder.commons.result.RunBinder;
@@ -60,8 +58,8 @@ public class RunBinderInterceptor {
 
             RunBinderTransactionAspectSupport.setRollbackOnly();
             RunBinder.addError(dexcoderException);
-            LOG.info(String.format("已知异常,方法:[class=%s,method=%s],信息:[resultCode={},resultMsg={}]", targetClass,
-                targetMethod), dexcoderException.getResultCode(), dexcoderException.getResultMsg());
+            LOG.info(String.format("已知异常,方法:[class=%s,method=%s],信息:[resultCode=%s,resultMsg=%s]", targetClass,
+                targetMethod, dexcoderException.getResultCode(), dexcoderException.getResultMsg()), dexcoderException);
             //ignore
         } catch (Throwable throwable) {
             RunBinderTransactionAspectSupport.setRollbackOnly();

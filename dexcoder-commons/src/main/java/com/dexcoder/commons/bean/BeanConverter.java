@@ -109,6 +109,13 @@ public class BeanConverter {
         }
         for (Map.Entry<String, Object> entry : map.entrySet()) {
 
+            //自定义转换
+            Object value = entry.getValue();
+
+            if (value == null) {
+                continue;
+            }
+
             String name = entry.getKey();
             if (delimiter != null) {
                 name = StrUtils.indexOf(name, delimiter) != -1 ? NameUtils.getCamelName(name, delimiter) : name
@@ -120,10 +127,13 @@ public class BeanConverter {
             if (targetPd == null || (writeMethod = targetPd.getWriteMethod()) == null) {
 
                 if (Pageable.class.isAssignableFrom(beanClass)) {
-                    ((Pageable) bean).put(name, entry.getValue());
+                    ((Pageable) bean).put(name, value);
                 }
             } else {
-                ClassUtils.invokeMethod(writeMethod, bean, entry.getValue());
+
+                value = typeConvert(value.getClass(), targetPd.getPropertyType(), value);
+
+                ClassUtils.invokeMethod(writeMethod, bean, value);
             }
         }
         return bean;
