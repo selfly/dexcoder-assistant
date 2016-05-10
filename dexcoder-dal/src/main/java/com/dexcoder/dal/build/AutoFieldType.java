@@ -1,5 +1,7 @@
 package com.dexcoder.dal.build;
 
+import org.omg.CORBA.TRANSIENT;
+
 /**
  * Created by liyd on 2015-12-4.
  */
@@ -25,6 +27,7 @@ public enum AutoFieldType {
 
     BRACKET_END,
 
+    /** 函数 */
     FUNC,
 
     TRANSIENT

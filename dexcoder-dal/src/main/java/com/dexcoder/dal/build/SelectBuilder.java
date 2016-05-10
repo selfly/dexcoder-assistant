@@ -4,6 +4,7 @@ import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.dexcoder.commons.utils.ClassUtils;
@@ -69,9 +70,17 @@ public class SelectBuilder extends AbstractSqlBuilder {
             this.fetchClassFields(metaTable.getTableClass());
         }
         if (metaTable.hasFuncAutoField()) {
-            for (AutoField autoField : metaTable.getFuncAutoFields()) {
+            Iterator<AutoField> iterator = metaTable.getFuncAutoFields().iterator();
+            while (iterator.hasNext()) {
+                AutoField autoField = iterator.next();
                 String nativeFieldName = tokenParse(autoField, metaTable);
                 sb.append(nativeFieldName).append(",");
+                if (autoField.getValue() != null && Boolean.valueOf(autoField.getValue().toString())) {
+                    iterator.remove();
+                }
+            }
+            if (!metaTable.hasFuncAutoField()) {
+                new MetaTable.Builder(metaTable).isFieldExclusion(false);
             }
         }
         if (!metaTable.isFieldExclusion()) {

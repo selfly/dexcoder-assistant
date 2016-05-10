@@ -683,6 +683,13 @@ public class JdbcDaoTest {
         }
     }
 
+    @Test
+    public void testMultiCriteria() {
+        Criteria criteria = Criteria.select(User.class).where("userId", new Object[] { 1000L });
+        int i = jdbcDao.queryCount(criteria);
+        List<User> users = jdbcDao.queryList(criteria);
+    }
+
     private Long insertAnnotationUser() {
 
         //注解对应了 USER_A 表

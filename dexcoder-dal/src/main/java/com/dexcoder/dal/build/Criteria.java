@@ -282,8 +282,22 @@ public class Criteria {
      * @return
      */
     public Criteria addSelectFunc(String func, boolean isFieldExclusion, boolean isOrderBy) {
+        this.addSelectFunc(func, isFieldExclusion, isOrderBy, false);
+        return this;
+    }
+
+    /**
+     * 添加函数
+     *
+     * @param func 函数代码
+     * @param isFieldExclusion 是否与列互斥 默认true
+     * @param isOrderBy 是否需要排序 默认false
+     * @param isOnlyOne 是否只使用一次(用完就删,例如jdbcDao的queryCount方法使用,保证用后不影响下一次criteria的使用)
+     * @return criteria
+     */
+    public Criteria addSelectFunc(String func, boolean isFieldExclusion, boolean isOrderBy, boolean isOnlyOne) {
         this.sqlBuilder.addField(func, String.valueOf(isOrderBy), String.valueOf(isFieldExclusion), AutoFieldType.FUNC,
-            null);
+            isOnlyOne);
         return this;
     }
 

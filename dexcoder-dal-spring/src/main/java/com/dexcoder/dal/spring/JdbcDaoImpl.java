@@ -114,7 +114,8 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
     }
 
     public int queryCount(Object entity, Criteria criteria) {
-        BoundSql boundSql = criteria.addSelectFunc("count(*)").build(entity, true, getMappingHandler());
+        BoundSql boundSql = criteria.addSelectFunc("count(*)", true, false, true).build(entity, true,
+            getMappingHandler());
         return jdbcTemplate.queryForObject(boundSql.getSql(), boundSql.getParameters().toArray(), Integer.class);
     }
 
@@ -125,7 +126,7 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
     }
 
     public int queryCount(Criteria criteria) {
-        BoundSql boundSql = criteria.addSelectFunc("count(*)").build(true, getMappingHandler());
+        BoundSql boundSql = criteria.addSelectFunc("count(*)", true, false, true).build(true, getMappingHandler());
         return jdbcTemplate.queryForObject(boundSql.getSql(), boundSql.getParameters().toArray(), Integer.class);
     }
 
