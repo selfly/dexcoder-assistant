@@ -1,5 +1,9 @@
 ##更新日志
 
+### 版本 2.3.4 更新时间:2016-05-11
+
+- 修正使用Criteria方式调用queryCount方法后不能再queryList的bug
+
 ### 版本 2.3.3 更新时间:2016-04-28
 
 - 修正自定义sql查询使用PageControl分页时使用pager不能获取实体对象问题
