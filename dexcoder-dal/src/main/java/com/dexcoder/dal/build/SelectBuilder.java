@@ -79,9 +79,6 @@ public class SelectBuilder extends AbstractSqlBuilder {
                     iterator.remove();
                 }
             }
-            if (!metaTable.hasFuncAutoField()) {
-                new MetaTable.Builder(metaTable).isFieldExclusion(false);
-            }
         }
         if (!metaTable.isFieldExclusion()) {
             for (AutoField columnAutoField : metaTable.getColumnAutoFields()) {
@@ -104,6 +101,10 @@ public class SelectBuilder extends AbstractSqlBuilder {
             new MetaTable.Builder(orderByBuilder.getMetaTable()).tableAlias(metaTable.getTableAlias()).build();
             BoundSql orderByBoundSql = orderByBuilder.build(entity, isIgnoreNull, mappingHandler);
             sb.append(orderByBoundSql.getSql());
+        }
+        //恢复criteria,可能会多次使用,例如queryCount使用的count(*)函数
+        if (!metaTable.hasFuncAutoField()) {
+            new MetaTable.Builder(metaTable).isFieldExclusion(false).isOrderBy(true);
         }
         return new CriteriaBoundSql(sb.toString(), whereBoundSql.getParameters());
     }

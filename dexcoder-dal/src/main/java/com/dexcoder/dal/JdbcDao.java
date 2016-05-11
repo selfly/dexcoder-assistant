@@ -167,16 +167,6 @@ public interface JdbcDao {
     <T> T get(Class<T> clazz, Long id);
 
     /**
-     * 根据主键得到记录
-     *
-     * @param <T>  the type parameter
-     * @param criteria the criteria
-     * @param id the id
-     * @return t
-     */
-    <T> T get(Criteria criteria, Long id);
-
-    /**
      * 查询单个记录
      *
      * @param <T>   the type parameter

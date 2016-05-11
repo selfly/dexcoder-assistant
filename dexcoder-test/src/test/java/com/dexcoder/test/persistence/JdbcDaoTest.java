@@ -198,20 +198,6 @@ public class JdbcDaoTest {
     }
 
     @Test
-    public void get2() {
-        this.save();
-        Criteria criteria = Criteria.select(User.class).include("loginName");
-        User u = jdbcDao.get(criteria, -2L);
-        Assert.assertNotNull(u);
-        Assert.assertNotNull(u.getLoginName());
-        Assert.assertNull(u.getPassword());
-        Assert.assertNull(u.getEmail());
-        Assert.assertNull(u.getGmtCreate());
-        Assert.assertNull(u.getUserType());
-        Assert.assertNull(u.getUserAge());
-    }
-
-    @Test
     public void delete() {
         this.save();
         User u = new User();
@@ -685,7 +671,7 @@ public class JdbcDaoTest {
 
     @Test
     public void testMultiCriteria() {
-        Criteria criteria = Criteria.select(User.class).where("userId", new Object[] { 1000L });
+        Criteria criteria = Criteria.select(User.class).where("loginName", new Object[] { "selfly" });
         int i = jdbcDao.queryCount(criteria);
         List<User> users = jdbcDao.queryList(criteria);
     }
