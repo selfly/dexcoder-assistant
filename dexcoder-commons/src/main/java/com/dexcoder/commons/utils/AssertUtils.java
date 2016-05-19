@@ -54,13 +54,31 @@ public class AssertUtils {
         }
     }
 
+    public static void assertNotEmpty(Collection<?> collection, IEnum message) {
+        if (CollectionUtils.isEmpty(collection)) {
+            throw new CommonsAssistantException(message);
+        }
+    }
+
     public static void assertEmpty(Collection<?> collection, String message) {
         if (!CollectionUtils.isEmpty(collection)) {
             throw new CommonsAssistantException(message);
         }
     }
 
+    public static void assertEmpty(Collection<?> collection, IEnum message) {
+        if (!CollectionUtils.isEmpty(collection)) {
+            throw new CommonsAssistantException(message);
+        }
+    }
+
     public static void assertMinLength(String str, int length, String message) {
+        if (StrUtils.length(str) < length) {
+            throw new CommonsAssistantException(message);
+        }
+    }
+
+    public static void assertMinLength(String str, int length, IEnum message) {
         if (StrUtils.length(str) < length) {
             throw new CommonsAssistantException(message);
         }
