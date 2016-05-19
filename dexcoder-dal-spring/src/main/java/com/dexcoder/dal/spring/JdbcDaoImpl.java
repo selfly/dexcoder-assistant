@@ -143,6 +143,18 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
         return list.iterator().next();
     }
 
+    public <T> T get(Criteria criteria, Long id) {
+        BoundSql boundSql = criteria.where(criteria.getPkField(getMappingHandler()), new Object[] { id }).build(true,
+            getMappingHandler());
+        //采用list方式查询，当记录不存在时返回null而不会抛出异常
+        List<T> list = (List<T>) jdbcTemplate
+            .query(boundSql.getSql(), this.getRowMapper(criteria.getEntityClass()), id);
+        if (CollectionUtils.isEmpty(list)) {
+            return null;
+        }
+        return list.iterator().next();
+    }
+
     public <T> T querySingleResult(T entity) {
         BoundSql boundSql = Criteria.select(entity.getClass()).build(entity, true, getMappingHandler());
         //采用list方式查询，当记录不存在时返回null而不会抛出异常

@@ -14,4 +14,12 @@ public class RunBinderTransactionAspectSupport extends TransactionAspectSupport 
         }
     }
 
+    public static boolean isRollbackOnly() {
+        TransactionAspectSupport.TransactionInfo transactionInfo = currentTransactionInfo();
+        if (transactionInfo != null && transactionInfo.hasTransaction()) {
+            return transactionInfo.getTransactionStatus().isRollbackOnly();
+        }
+        return false;
+    }
+
 }

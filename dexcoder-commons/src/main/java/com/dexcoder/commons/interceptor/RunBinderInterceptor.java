@@ -37,6 +37,10 @@ public class RunBinderInterceptor {
     @Around("serviceAnnotation() || serviceName()")
     public Object around(ProceedingJoinPoint pjp) {
 
+        if (RunBinderTransactionAspectSupport.isRollbackOnly()) {
+            return null;
+        }
+
         //被拦截的类
         String targetClass = pjp.getTarget().getClass().getName();
 
@@ -44,9 +48,11 @@ public class RunBinderInterceptor {
         String targetMethod = pjp.getSignature().getName();
 
         //当前时间毫秒数
-        long startTime = System.currentTimeMillis();
+        long beginTime = System.currentTimeMillis();
 
-        LOG.debug("start:[class={},method={},startTime={}]", new Object[] { targetClass, targetMethod, startTime });
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("start:[class={},method={},beginTime={}]", new Object[] { targetClass, targetMethod, beginTime });
+        }
 
         //返回结果
         Object result = null;
@@ -55,7 +61,6 @@ public class RunBinderInterceptor {
             result = pjp.proceed();
 
         } catch (DexcoderException dexcoderException) {
-
             RunBinderTransactionAspectSupport.setRollbackOnly();
             RunBinder.addError(dexcoderException);
             LOG.info(String.format("已知异常,方法:[class=%s,method=%s],信息:[resultCode=%s,resultMsg=%s]", targetClass,
@@ -68,16 +73,18 @@ public class RunBinderInterceptor {
             //ignore
         }
 
-        long finishTime = System.currentTimeMillis();
+        long endTime = System.currentTimeMillis();
 
-        LOG.debug("finished:[class={},method={},finishTime={}]", new Object[] { targetClass, targetMethod, finishTime });
+        long useTime = endTime - beginTime;
 
-        long useTime = finishTime - startTime;
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("end:[class={},method={},endTime={},usedTime={}]", new Object[] { targetClass, targetMethod,
+                    endTime, useTime });
+        }
 
         if (useTime > LOG_TIMEOUT) {
-
-            LOG.warn("Long processing time:[class={},method={},used time={}]", new Object[] { targetClass,
-                    targetMethod, useTime });
+            LOG.warn("Long processing time:[class={},method={},usedTime={}]", new Object[] { targetClass, targetMethod,
+                    useTime });
         }
         return result;
 
