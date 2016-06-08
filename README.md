@@ -515,7 +515,9 @@ JdbcDao在声明时可以根据需要注入其它几个参数：
  
 [其它主要包含的组件](md/other-component.md)
  
-#相关链接
+# 感谢&相关链接
+
+分页部分参考使用了Mybatis通用分页插件: https://github.com/pagehelper/Mybatis-PageHelper
 
 博客：http://www.dexcoder.com/selfly
 
