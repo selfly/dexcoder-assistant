@@ -1,5 +1,11 @@
 ##更新日志
 
+### 版本 2.3.5 更新时间:2016-06-08
+
+- 重构分页功能,支持sql解析方式,用户可自由选择
+- 修正Criteria方式先使用queryCount再queryList,order by丢失问题
+- 修正RunBinder拦截器事务嵌套有错时,事务回滚出错问题
+
 ### 版本 2.3.4 更新时间:2016-05-11
 
 - 修正使用Criteria方式调用queryCount方法后不能再queryList的bug

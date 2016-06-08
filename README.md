@@ -6,9 +6,11 @@
 
 最近更新：
 
-### 版本 2.3.4 更新时间:2016-05-11
+### 版本 2.3.5 更新时间:2016-06-08
 
-- 修正使用Criteria方式调用queryCount方法后不能再queryList的bug
+- 重构分页功能,支持sql解析方式,用户可自由选择
+- 修正Criteria方式先使用queryCount再queryList,order by丢失问题
+- 修正RunBinder拦截器事务嵌套有错时,事务回滚出错问题
 
 [详细更新日志](md/update-log.md)
 
@@ -263,6 +265,27 @@ Criteria方式，可以指定黑白名单、排序字段等
         .where("loginName", new Object[]{"liyd"}).asc("userId");
     jdbcDao.queryList(criteria);
     Pager pager = PageControl.getPager();
+
+### 使用智能分页解析
+
+默认使用的简单分页在数据量较大,在自动做`count()`查询时可能会出现效率问题.
+
+这时可以选用sql解析的智能分页.
+
+只需要在声明`PageControl`时注入`SmartPageSqlHandler`来替换默认的`SimplePageSqlHandler`即可:
+
+    <bean id="pageControl" class="com.dexcoder.dal.spring.page.PageControl">
+        <property name="pageSqlHandler" ref="smartPageSqlHandler"/>
+    </bean>
+    <bean id="smartPageSqlHandler" class="com.dexcoder.dal.spring.page.SmartPageSqlHandler"/>
+
+同时别忘了,使用智能分页需要添加`JSqlParser`的依赖:
+
+    <dependency>
+        <groupId>com.github.jsqlparser</groupId>
+        <artifactId>jsqlparser</artifactId>
+        <version>${jsqlparser.version}</version>
+    </dependency>
 
 ### 不同的属性在括号内or的情况：
 
