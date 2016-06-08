@@ -96,6 +96,9 @@
     <bean id="sqlFactory" class="com.dexcoder.dal.SimpleSqlFactory">
         <!--<property name="sqlLocation" value="user-sql.xml"/>-->
     </bean>
-    <bean id="pageControl" class="com.dexcoder.dal.spring.page.PageControl"></bean>
+    <bean id="pageControl" class="com.dexcoder.dal.spring.page.PageControl">
+        <property name="pageSqlHandler" ref="smartPageSqlHandler"/>
+    </bean>
+    <bean id="smartPageSqlHandler" class="com.dexcoder.dal.spring.page.SmartPageSqlHandler"/>
 
 </beans>

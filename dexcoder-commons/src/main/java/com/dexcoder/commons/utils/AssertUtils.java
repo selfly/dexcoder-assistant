@@ -24,14 +24,24 @@ public class AssertUtils {
         }
     }
 
-    public static void assertNotEquals(String str1, String str2, String message) {
+    public static void assertEquals(String str1, String str2, String message) {
         if (!StrUtils.equals(str1, str2)) {
             throw new CommonsAssistantException(message);
         }
     }
 
-    public static void assertNotEquals(String str1, String str2, IEnum message) {
+    public static void assertEquals(String str1, String str2, IEnum message) {
         if (!StrUtils.equals(str1, str2)) {
+            throw new CommonsAssistantException(message);
+        }
+    }
+
+    public static void assertEquals(Object obj1, Object obj2, IEnum message) {
+        if (obj1 != null) {
+            if (!obj1.equals(obj2)) {
+                throw new CommonsAssistantException(message);
+            }
+        } else if (obj2 != null) {
             throw new CommonsAssistantException(message);
         }
     }

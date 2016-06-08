@@ -7,7 +7,7 @@
     <groupId>com.dexcoder</groupId>
     <artifactId>dexcoder-assistant</artifactId>
     <packaging>pom</packaging>
-    <version>2.3.4</version>
+    <version>2.3.5</version>
 
 
     <name>dexcoder-assistant</name>
@@ -62,6 +62,7 @@
         <slf4j-api.version>1.7.7</slf4j-api.version>
         <ognl.version>2.6.9</ognl.version>
         <junit.version>4.12</junit.version>
+        <jsqlparser.version>0.9.5</jsqlparser.version>
     </properties>
 
     <dependencyManagement>
@@ -183,6 +184,11 @@
                 <groupId>ognl</groupId>
                 <artifactId>ognl</artifactId>
                 <version>${ognl.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.jsqlparser</groupId>
+                <artifactId>jsqlparser</artifactId>
+                <version>${jsqlparser.version}</version>
             </dependency>
             <!--<dependency>-->
             <!--<groupId>org.apache.velocity</groupId>-->

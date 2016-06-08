@@ -13,10 +13,10 @@ public class RandomUtils {
      */
     public static final Random JVM_RANDOM = new Random();
 
-// should be possible for JVM_RANDOM?
-//    public static void nextBytes(byte[]) {
-//    public synchronized double nextGaussian();
-//    }
+    // should be possible for JVM_RANDOM?
+    //    public static void nextBytes(byte[]) {
+    //    public synchronized double nextGaussian();
+    //    }
 
     /**
      * <p>Returns the next pseudorandom, uniformly distributed int value
@@ -27,6 +27,17 @@ public class RandomUtils {
      */
     public static int nextInt() {
         return nextInt(JVM_RANDOM);
+    }
+
+    /**
+     * 指定区间的随机数
+     * 
+     * @param min
+     * @param max
+     * @return
+     */
+    public static int nextInt(int min, int max) {
+        return JVM_RANDOM.nextInt((max - min) + 1) + min;
     }
 
     /**

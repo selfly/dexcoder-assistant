@@ -29,6 +29,9 @@ public class PageControl {
     /** 数据库 */
     public static String                      DATABASE;
 
+    /** 分页sql处理器 */
+    private PageSqlHandler                    pageSqlHandler;
+
     /**
      * 执行分页
      *
@@ -116,11 +119,11 @@ public class PageControl {
         Object[] args = pjp.getArgs();
         String querySql = (String) args[0];
         Pager pager = LOCAL_PAGER.get();
-        args[0] = this.getPageSql(querySql, pager);
+        args[0] = this.getPageSqlHandler().getPageSql(querySql, pager, DATABASE);
 
         if (GET_ITEMS_TOTAL.get()) {
 
-            String countSql = this.getCountSql(querySql);
+            String countSql = this.getPageSqlHandler().getCountSql(querySql, pager, DATABASE);
             Object[] countArgs = null;
             for (Object obj : args) {
                 if (obj instanceof Object[]) {
@@ -136,30 +139,14 @@ public class PageControl {
         return result;
     }
 
-    /**
-     * 获取总数sql - 如果要支持其他数据库，修改这里就可以
-     *
-     * @param sql
-     * @return
-     */
-    private String getCountSql(String sql) {
-        return "select count(*) from (" + sql + ") tmp_count";
+    public PageSqlHandler getPageSqlHandler() {
+        if (pageSqlHandler == null) {
+            pageSqlHandler = new SimplePageSqlHandler();
+        }
+        return pageSqlHandler;
     }
 
-    private String getPageSql(String sql, Pager pager) {
-        StringBuilder pageSql = new StringBuilder(200);
-        if ("MYSQL".equals(DATABASE)) {
-            pageSql.append(sql);
-            pageSql.append(" limit ");
-            pageSql.append(pager.getBeginIndex());
-            pageSql.append(",");
-            pageSql.append(pager.getItemsPerPage());
-        } else if ("ORACLE".equals(DATABASE)) {
-            pageSql.append("select * from ( select rownum num,temp.* from (");
-            pageSql.append(sql);
-            pageSql.append(") temp where rownum <= ").append(pager.getEndIndex());
-            pageSql.append(") where num > ").append(pager.getBeginIndex());
-        }
-        return pageSql.toString();
+    public void setPageSqlHandler(PageSqlHandler pageSqlHandler) {
+        this.pageSqlHandler = pageSqlHandler;
     }
 }
