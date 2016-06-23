@@ -24,6 +24,18 @@ public class AssertUtils {
         }
     }
 
+    public static void assertEquals(int i1, int i2, IEnum message) {
+        if (i1 != i2) {
+            throw new CommonsAssistantException(message);
+        }
+    }
+
+    public static void assertEquals(long i1, long i2, IEnum message) {
+        if (i1 != i2) {
+            throw new CommonsAssistantException(message);
+        }
+    }
+
     public static void assertEquals(String str1, String str2, String message) {
         if (!StrUtils.equals(str1, str2)) {
             throw new CommonsAssistantException(message);
@@ -90,6 +102,30 @@ public class AssertUtils {
 
     public static void assertMinLength(String str, int length, IEnum message) {
         if (StrUtils.length(str) < length) {
+            throw new CommonsAssistantException(message);
+        }
+    }
+
+    public static void assertMaxVal(int i, int val, String message) {
+        if (i > val) {
+            throw new CommonsAssistantException(message);
+        }
+    }
+
+    public static void assertMaxVal(int i, int val, IEnum message) {
+        if (i > val) {
+            throw new CommonsAssistantException(message);
+        }
+    }
+
+    public static void assertMinVal(int i, int val, String message) {
+        if (i < val) {
+            throw new CommonsAssistantException(message);
+        }
+    }
+
+    public static void assertMinVal(int i, int val, IEnum message) {
+        if (i < val) {
             throw new CommonsAssistantException(message);
         }
     }

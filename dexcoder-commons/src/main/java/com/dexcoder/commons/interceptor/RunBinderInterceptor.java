@@ -1,5 +1,7 @@
 package com.dexcoder.commons.interceptor;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -9,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.dexcoder.commons.exceptions.DexcoderException;
 import com.dexcoder.commons.result.RunBinder;
+import com.dexcoder.commons.utils.ArrUtils;
 
 /**
  * 业务拦截器，主要拦截异常及错误信息，最好配合RunBinderOnMvcDestroyInterceptor使用防止内存溢出
@@ -19,10 +22,12 @@ import com.dexcoder.commons.result.RunBinder;
 public class RunBinderInterceptor {
 
     /** 日志对象 */
-    private static final Logger LOG         = LoggerFactory.getLogger(RunBinderInterceptor.class);
+    private static final Logger               LOG             = LoggerFactory.getLogger(RunBinderInterceptor.class);
+
+    private static ThreadLocal<AtomicInteger> methodHierarchy = new ThreadLocal<AtomicInteger>();
 
     /** 执行时间超过打印warn日志毫秒数 */
-    private static final long   LOG_TIMEOUT = 1000;
+    private static final long                 LOG_TIMEOUT     = 1000;
 
     @Pointcut("@within(org.springframework.stereotype.Service)")
     public void serviceAnnotation() {
@@ -37,8 +42,12 @@ public class RunBinderInterceptor {
     @Around("serviceAnnotation() || serviceName()")
     public Object around(ProceedingJoinPoint pjp) {
 
-        if (RunBinderTransactionAspectSupport.isRollbackOnly()) {
-            return null;
+        AtomicInteger ai = methodHierarchy.get();
+        if (ai == null) {
+            ai = new AtomicInteger(1);
+            methodHierarchy.set(ai);
+        } else {
+            ai.incrementAndGet();
         }
 
         //被拦截的类
@@ -61,16 +70,29 @@ public class RunBinderInterceptor {
             result = pjp.proceed();
 
         } catch (DexcoderException dexcoderException) {
+            if (ai.get() > 1) {
+                throw dexcoderException;
+            }
             RunBinderTransactionAspectSupport.setRollbackOnly();
             RunBinder.addError(dexcoderException);
-            LOG.info(String.format("已知异常,方法:[class=%s,method=%s],信息:[resultCode=%s,resultMsg=%s]", targetClass,
-                targetMethod, dexcoderException.getResultCode(), dexcoderException.getResultMsg()), dexcoderException);
+            LOG.warn(String.format("已知异常,方法:[class=%s,method=%s],信息:[resultCode=%s,resultMsg=%s],参数:[%s]", targetClass,
+                targetMethod, dexcoderException.getResultCode(), dexcoderException.getResultMsg(), argsToString(pjp)),
+                dexcoderException);
             //ignore
         } catch (Throwable throwable) {
+            if (ai.get() > 1) {
+                throw new RuntimeException(throwable);
+            }
             RunBinderTransactionAspectSupport.setRollbackOnly();
             RunBinder.addError("UN_KNOWN_EXCEPTION", "未知异常");
-            LOG.error(String.format("未知异常,方法:[class=%s,method=%s]", targetClass, targetMethod), throwable);
+            LOG.error(
+                String.format("未知异常,方法:[class=%s,method=%s],参数:[%s]", targetClass, targetMethod, argsToString(pjp)),
+                throwable);
             //ignore
+        } finally {
+            if (ai.decrementAndGet() == 0) {
+                methodHierarchy.remove();
+            }
         }
 
         long endTime = System.currentTimeMillis();
@@ -90,4 +112,21 @@ public class RunBinderInterceptor {
 
     }
 
+    /**
+     * 获取参数字符串
+     * 
+     * @param pjp
+     * @return
+     */
+    private String argsToString(ProceedingJoinPoint pjp) {
+        Object[] args = pjp.getArgs();
+        if (ArrUtils.isEmpty(args)) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (Object obj : args) {
+            sb.append(obj.getClass().getName()).append("=").append(obj).append(";");
+        }
+        return sb.toString();
+    }
 }

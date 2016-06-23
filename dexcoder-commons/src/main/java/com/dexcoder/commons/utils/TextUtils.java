@@ -59,7 +59,7 @@ public class TextUtils {
      */
     public static String substringForByte(String text, int length) {
 
-        return substringForByte(text, length, true);
+        return substringForByte(text, length, false);
     }
 
     /**
@@ -73,6 +73,10 @@ public class TextUtils {
 
         if (StrUtils.isBlank(text) || length < 1) {
             return text;
+        }
+        //转换特殊字符，页面显示时非常有用
+        if (isConvertSpecialChars) {
+            text = convertHtmlSpecialChars(text);
         }
         try {
             //防止中英文有长有短，转换成byte截取
@@ -93,10 +97,7 @@ public class TextUtils {
             }
 
             String contentName = new String(contentNameBytes, "GBK");
-            //转换特殊字符，页面显示时非常有用
-            if (isConvertSpecialChars) {
-                contentName = convertHtmlSpecialChars(contentName);
-            }
+
             return contentName;
         } catch (UnsupportedEncodingException e) {
             throw new CommonsAssistantException("根据byte截取字符串失败", e);
