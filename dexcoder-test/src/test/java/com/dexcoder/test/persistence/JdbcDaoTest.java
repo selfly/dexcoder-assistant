@@ -381,6 +381,15 @@ public class JdbcDaoTest {
     }
 
     @Test
+    public void queryObjectList2() {
+        Criteria criteria = Criteria.select(User.class).include("loginName").where("userType",new Object[]{"1"});
+        User user = new User();
+        user.setUserAge(22);
+        List<String> list = jdbcDao.queryObjectList(criteria, user, String.class);
+        Assert.assertNotNull(list);
+    }
+
+    @Test
     public void queryRowMap() {
         this.save();
         Criteria criteria = Criteria.select(User.class).where("userId", new Object[] { -2L });

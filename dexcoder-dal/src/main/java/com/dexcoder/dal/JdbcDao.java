@@ -204,7 +204,7 @@ public interface JdbcDao {
     <T> T queryObject(Criteria criteria);
 
     /**
-     * 查询单个对你的列表，例如id列表，name列表
+     * 查询单个对象的列表，例如id列表，name列表 criteria中必须且只能include一个属性
      * 
      * @param criteria
      * @param elementType
@@ -212,6 +212,17 @@ public interface JdbcDao {
      * @return
      */
     <T> List<T> queryObjectList(Criteria criteria, Class<T> elementType);
+
+    /**
+     * 查询单个对象的列表，例如id列表，name列表 criteria中必须且只能include一个属性 entity为实体查询条件
+     *
+     * @param <T>  the type parameter
+     * @param criteria the criteria
+     * @param entity the entity
+     * @param elementType the element type
+     * @return list
+     */
+    <T> List<T> queryObjectList(Criteria criteria, Object entity, Class<T> elementType);
 
     /**
      * 查询列表 例如使用函数后和列不排斥的情况
