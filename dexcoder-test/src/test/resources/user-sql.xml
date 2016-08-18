@@ -72,4 +72,18 @@
         </where>
     </select>
 
+    <select id="queryUser">
+        select user_id,
+        <include refid="columns"/>
+        from user
+        <where>
+            <if test="parameters[0] != null">
+                user_type = #{parameters[0]}
+            </if>
+            <if test="parameters[1] != null and parameters[1].loginName != null">
+                and login_name like "%"#{parameters[1].loginName}"%"
+            </if>
+        </where>
+    </select>
+
 </mapper>

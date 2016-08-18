@@ -51,6 +51,7 @@ public class JdbcDaoTest {
     @Test
     public void insert() {
         User user = new User();
+        user.setUserId(180003L);
         user.setLoginName("selfly_12");
         user.setPassword("123456");
         user.setEmail("javaer@live.com");

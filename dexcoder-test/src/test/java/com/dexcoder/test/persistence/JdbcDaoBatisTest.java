@@ -75,4 +75,13 @@ public class JdbcDaoBatisTest {
         }
     }
 
+    @Test
+    public void batisSelect2() {
+        this.batisInsert2();
+        User user = new User();
+        user.setLoginName("selfly_6");
+        List<Map<String, Object>> mapList = jdbcDao.queryListForSql("User.queryUser", new Object[] { "1", user });
+        Assert.assertNotNull(mapList);
+    }
+
 }

@@ -1,7 +1,9 @@
 package com.dexcoder.commons.pager;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.dexcoder.commons.bean.BeanConverter;
 
@@ -76,25 +78,28 @@ import com.dexcoder.commons.bean.BeanConverter;
 public class Pager implements Serializable {
 
     /** serialVersionUID */
-    private static final long serialVersionUID       = 8852394572921412518L;
+    private static final long   serialVersionUID       = 8852394572921412518L;
 
     /** 每页默认的项数 */
-    public static final int   DEFAULT_ITEMS_PER_PAGE = 50;
+    public static final int     DEFAULT_ITEMS_PER_PAGE = 50;
 
     /** 滑动窗口默认的大小 */
-    public static final int   DEFAULT_SLIDER_SIZE    = 7;
+    public static final int     DEFAULT_SLIDER_SIZE    = 7;
 
     /** 当前页码 */
-    private int               curPage;
+    private int                 curPage;
 
     /** 总记录数 */
-    private int               itemsTotal;
+    private int                 itemsTotal;
 
     /** 每页记录数 */
-    private int               itemsPerPage;
+    private int                 itemsPerPage;
 
     /** 分页的列表数据 */
-    private List<?>           list;
+    private List<?>             list;
+
+    /** 额外附加的一些数据 例如当查询一个分类下的内容列表时,传入的是分类id,网页title可能会需要显示分类名称,此时可以放在这里一同返回 */
+    private Map<String, Object> extraData;
 
     /**
      * 创建一个分页器，默认每页显示<code>50</code>项。
@@ -149,6 +154,17 @@ public class Pager implements Serializable {
 
     public void setList(List<?> list) {
         this.list = list;
+    }
+
+    public Object getExtraData(String key) {
+        return extraData != null ? extraData.get(key) : null;
+    }
+
+    public void addExtraData(String key, Object obj) {
+        if (this.extraData == null) {
+            this.extraData = new HashMap<String, Object>();
+        }
+        this.extraData.put(key, obj);
     }
 
     /**
