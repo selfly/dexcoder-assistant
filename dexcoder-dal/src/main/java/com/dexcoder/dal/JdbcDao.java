@@ -1,5 +1,6 @@
 package com.dexcoder.dal;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +19,7 @@ public interface JdbcDao {
      * @param entity
      * @return
      */
-    Long insert(Object entity);
+    <T> T insert(Object entity);
 
     /**
      * 插入一条记录 自动处理主键
@@ -26,7 +27,16 @@ public interface JdbcDao {
      * @param criteria the criteria
      * @return long long
      */
-    Long insert(Criteria criteria);
+    <T> T insert(Criteria criteria);
+
+    /**
+     * 插入一条记录
+     * 
+     * @param criteria
+     * @param entity
+     * @return
+     */
+    Serializable insert(Criteria criteria, Object entity);
 
     /**
      * 保存一条记录，不处理主键

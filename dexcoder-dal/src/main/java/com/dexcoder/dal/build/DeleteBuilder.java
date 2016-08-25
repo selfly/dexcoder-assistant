@@ -1,7 +1,6 @@
 package com.dexcoder.dal.build;
 
 import com.dexcoder.dal.BoundSql;
-import com.dexcoder.dal.handler.MappingHandler;
 
 /**
  * Created by liyd on 2015-12-7.
@@ -30,16 +29,15 @@ public class DeleteBuilder extends AbstractSqlBuilder {
         whereBuilder.addCondition(fieldName, logicalOperator, fieldOperator, type, value);
     }
 
-    public BoundSql build(Object entity, boolean isIgnoreNull, MappingHandler mappingHandler) {
-        metaTable = new MetaTable.Builder(metaTable).mappingHandler(mappingHandler).build();
+    public BoundSql buildBoundSql(Object entity, boolean isIgnoreNull) {
         //构建到whereBuilder
-        new MetaTable.Builder(whereBuilder.getMetaTable()).tableAlias(metaTable.getTableAlias())
-            .entity(entity, isIgnoreNull).mappingHandler(mappingHandler).build();
+        whereBuilder.getMetaTable().mappingHandler(metaTable.getMappingHandler()).tableAlias(metaTable.getTableAlias())
+            .entity(entity, isIgnoreNull);
         //这里必须从whereBuilder的MetaTable中获取表名，以便水平分表时能使用正确的表名
         String tableName = whereBuilder.getMetaTable().getTableAndAliasName();
         StringBuilder sb = new StringBuilder(COMMAND_OPEN);
         sb.append(tableName);
-        BoundSql boundSql = whereBuilder.build(entity, isIgnoreNull, mappingHandler);
+        BoundSql boundSql = whereBuilder.build(entity, isIgnoreNull);
         sb.append(boundSql.getSql());
         return new CriteriaBoundSql(sb.toString(), boundSql.getParameters());
     }

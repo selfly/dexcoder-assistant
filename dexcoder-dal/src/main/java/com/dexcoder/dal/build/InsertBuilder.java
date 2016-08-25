@@ -6,7 +6,6 @@ import java.util.Map;
 
 import com.dexcoder.dal.BoundSql;
 import com.dexcoder.dal.exceptions.JdbcAssistantException;
-import com.dexcoder.dal.handler.MappingHandler;
 
 /**
  * Created by liyd on 2015-12-7.
@@ -31,8 +30,8 @@ public class InsertBuilder extends AbstractSqlBuilder {
         throw new JdbcAssistantException("InsertBuilder不支持设置条件");
     }
 
-    public BoundSql build(Object entity, boolean isIgnoreNull, MappingHandler mappingHandler) {
-        metaTable = new MetaTable.Builder(metaTable).entity(entity, isIgnoreNull).mappingHandler(mappingHandler).build();
+    public BoundSql buildBoundSql(Object entity, boolean isIgnoreNull) {
+        metaTable.entity(entity, isIgnoreNull);
         StringBuilder sql = new StringBuilder(COMMAND_OPEN);
         StringBuilder args = new StringBuilder("(");
         List<Object> params = new ArrayList<Object>();

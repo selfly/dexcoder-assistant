@@ -3,9 +3,8 @@ package com.dexcoder.dal.build;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.dexcoder.commons.utils.NameUtils;
-import org.apache.commons.lang3.StringUtils;
-
+import com.dexcoder.commons.utils.AssertUtils;
+import com.dexcoder.dal.BoundSql;
 import com.dexcoder.dal.handler.GenericTokenParser;
 import com.dexcoder.dal.handler.NativeTokenHandler;
 import com.dexcoder.dal.handler.TokenHandler;
@@ -31,8 +30,15 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
     protected Set<GenericTokenParser> tokenParsers;
 
     public AbstractSqlBuilder(Class<?> clazz) {
-        metaTable = new MetaTable.Builder().initAutoFields().tableClass(clazz).build();
+        metaTable = new MetaTable().initAutoFields().tableClass(clazz);
     }
+
+    public BoundSql build(Object entity, boolean isIgnoreNull) {
+        AssertUtils.assertNotNull(metaTable.getMappingHandler(), "MappingHandler can not be null !");
+        return this.buildBoundSql(entity, isIgnoreNull);
+    }
+
+    public abstract BoundSql buildBoundSql(Object entity, boolean isIgnoreNull);
 
     public MetaTable getMetaTable() {
         return metaTable;

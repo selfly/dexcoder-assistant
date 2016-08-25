@@ -42,9 +42,8 @@ public interface SqlBuilder {
      *
      * @param entity 可以为空
      * @param isIgnoreNull entity不为空的情况下是否忽略null属性
-     * @param mappingHandler 映射处理器，如果注解指定了单独的mappingHandler则会被覆盖
      * @return bound sql
      */
-    BoundSql build(Object entity, boolean isIgnoreNull, MappingHandler mappingHandler);
+    BoundSql build(Object entity, boolean isIgnoreNull);
 
 }

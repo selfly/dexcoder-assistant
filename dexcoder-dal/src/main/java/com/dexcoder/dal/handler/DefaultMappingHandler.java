@@ -46,12 +46,4 @@ public class DefaultMappingHandler implements MappingHandler {
         return NameUtils.getUnderlineName(fieldName);
     }
 
-    public String getPkNativeValue(Class<?> entityClass, String dialect) {
-        if (StringUtils.equalsIgnoreCase(dialect, "oracle")) {
-            //获取序列就可以了，默认seq_加上表名为序列名
-            String tableName = this.getTableName(entityClass, null);
-            return String.format("SEQ_%s.NEXTVAL", tableName);
-        }
-        return null;
-    }
 }

@@ -9,10 +9,8 @@ import java.util.List;
 
 import com.dexcoder.commons.utils.ClassUtils;
 import com.dexcoder.dal.BoundSql;
-import com.dexcoder.dal.annotation.Column;
 import com.dexcoder.dal.annotation.Transient;
 import com.dexcoder.dal.exceptions.JdbcAssistantException;
-import com.dexcoder.dal.handler.MappingHandler;
 
 /**
  * Created by liyd on 2015-12-4.
@@ -26,8 +24,7 @@ public class SelectBuilder extends AbstractSqlBuilder {
 
     public SelectBuilder(Class<?> clazz) {
         super(clazz);
-        metaTable = new MetaTable.Builder(metaTable).initColumnAutoFields().initExcludeFields().initIncludeFields()
-            .initFuncAutoFields().build();
+        metaTable.initColumnAutoFields().initExcludeFields().initIncludeFields().initFuncAutoFields();
         whereBuilder = new WhereBuilder(clazz);
         orderByBuilder = new OrderByBuilder(clazz);
     }
@@ -43,8 +40,7 @@ public class SelectBuilder extends AbstractSqlBuilder {
         } else if (type == AutoFieldType.ORDER_BY_DESC) {
             orderByBuilder.addField(fieldName, logicalOperator, "DESC", type, value);
         } else if (type == AutoFieldType.FUNC) {
-            new MetaTable.Builder(metaTable).isFieldExclusion(Boolean.valueOf(fieldOperator)).isOrderBy(
-                Boolean.valueOf(logicalOperator));
+            metaTable.isFieldExclusion(Boolean.valueOf(fieldOperator)).isOrderBy(Boolean.valueOf(logicalOperator));
             AutoField autoField = new AutoField.Builder().name(fieldName).logicalOperator(logicalOperator)
                 .fieldOperator(fieldOperator).type(type).value(value).build();
             metaTable.getFuncAutoFields().add(autoField);
@@ -58,11 +54,10 @@ public class SelectBuilder extends AbstractSqlBuilder {
         whereBuilder.addCondition(fieldName, logicalOperator, fieldOperator, type, value);
     }
 
-    public BoundSql build(Object entity, boolean isIgnoreNull, MappingHandler mappingHandler) {
-        metaTable = new MetaTable.Builder(metaTable).mappingHandler(mappingHandler).build();
+    public BoundSql buildBoundSql(Object entity, boolean isIgnoreNull) {
         //构建到whereBuilder
-        new MetaTable.Builder(whereBuilder.getMetaTable()).tableAlias(metaTable.getTableAlias())
-            .entity(entity, isIgnoreNull).mappingHandler(mappingHandler).build();
+        whereBuilder.getMetaTable().mappingHandler(metaTable.getMappingHandler()).tableAlias(metaTable.getTableAlias())
+            .entity(entity, isIgnoreNull);
         //表名从whereBuilder获取
         String tableName = whereBuilder.getMetaTable().getTableAndAliasName();
         StringBuilder sb = new StringBuilder(COMMAND_OPEN);
@@ -95,16 +90,17 @@ public class SelectBuilder extends AbstractSqlBuilder {
         }
         sb.deleteCharAt(sb.length() - 1);
         sb.append(" FROM ").append(tableName);
-        BoundSql whereBoundSql = whereBuilder.build(entity, isIgnoreNull, mappingHandler);
+        BoundSql whereBoundSql = whereBuilder.build(entity, isIgnoreNull);
         sb.append(whereBoundSql.getSql());
         if (metaTable.isOrderBy()) {
-            new MetaTable.Builder(orderByBuilder.getMetaTable()).tableAlias(metaTable.getTableAlias()).build();
-            BoundSql orderByBoundSql = orderByBuilder.build(entity, isIgnoreNull, mappingHandler);
+            orderByBuilder.getMetaTable().mappingHandler(metaTable.getMappingHandler())
+                .tableAlias(metaTable.getTableAlias());
+            BoundSql orderByBoundSql = orderByBuilder.build(entity, isIgnoreNull);
             sb.append(orderByBoundSql.getSql());
         }
         //恢复criteria,可能会多次使用,例如queryCount使用的count(*)函数
         if (!metaTable.hasFuncAutoField()) {
-            new MetaTable.Builder(metaTable).isFieldExclusion(false).isOrderBy(true);
+            metaTable.isFieldExclusion(false).isOrderBy(true);
         }
         return new CriteriaBoundSql(sb.toString(), whereBoundSql.getParameters());
     }

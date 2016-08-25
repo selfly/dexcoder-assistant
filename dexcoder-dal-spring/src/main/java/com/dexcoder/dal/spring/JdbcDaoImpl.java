@@ -1,16 +1,21 @@
 package com.dexcoder.dal.spring;
 
+import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.util.CollectionUtils;
 
 import com.dexcoder.dal.BoundSql;
 import com.dexcoder.dal.JdbcDao;
-import com.dexcoder.dal.build.AbstractSqlBuilder;
 import com.dexcoder.dal.build.Criteria;
-import com.dexcoder.dal.handler.MappingHandler;
+import com.dexcoder.dal.handler.KeyGenerator;
 
 /**
  * jdbc操作dao
@@ -20,120 +25,142 @@ import com.dexcoder.dal.handler.MappingHandler;
 @SuppressWarnings("unchecked")
 public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
 
-    public Long insert(Object entity) {
-        MappingHandler handler = this.getMappingHandler();
+    public <T> T insert(Object entity) {
         Criteria criteria = Criteria.insert(entity.getClass());
-        String nativePKValue = handler.getPkNativeValue(entity.getClass(), getDialect());
-        if (StringUtils.isNotBlank(nativePKValue)) {
-            String pkFieldName = handler.getPkFieldName(entity.getClass());
-            criteria.into(AbstractSqlBuilder.NATIVE_TOKENS[2] + pkFieldName + AbstractSqlBuilder.NATIVE_TOKENS[3],
-                nativePKValue);
-        }
-        final BoundSql boundSql = criteria.build(entity, true, getMappingHandler());
-        return this.insert(boundSql, entity.getClass());
+        return (T) this.insert(criteria, entity);
     }
 
-    public Long insert(Criteria criteria) {
-        final BoundSql boundSql = criteria.build(true, getMappingHandler());
-        return this.insert(boundSql, criteria.getEntityClass());
+    public <T> T insert(Criteria criteria) {
+        return (T) this.insert(criteria, null);
+    }
+
+    public Serializable insert(Criteria criteria, Object entity) {
+        criteria.mappingHandler(getMappingHandler());
+        String pkFieldName = criteria.getPkField();
+        KeyGenerator keyGenerator = this.getKeyGenerator();
+        if (keyGenerator != null) {
+            pkFieldName = keyGenerator.handlePkFieldName(pkFieldName, getDialect());
+            Serializable pkValue = keyGenerator.generateKeyValue(criteria.getClass(), getDialect());
+            criteria.into(pkFieldName, pkValue);
+            BoundSql boundSql = criteria.build(entity, true);
+            return jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
+        } else {
+            final String pkColumn = criteria.getColumnName(pkFieldName);
+            final BoundSql boundSql = criteria.build(entity, true);
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+            jdbcTemplate.update(new PreparedStatementCreator() {
+                public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                    PreparedStatement ps = con.prepareStatement(boundSql.getSql(), new String[] { pkColumn });
+                    int index = 0;
+                    for (Object param : boundSql.getParameters()) {
+                        index++;
+                        ps.setObject(index, param);
+                    }
+                    return ps;
+                }
+            }, keyHolder);
+            return keyHolder.getKey().longValue();
+        }
     }
 
     public void save(Object entity) {
-        final BoundSql boundSql = Criteria.insert(entity.getClass()).build(entity, true, getMappingHandler());
+        final BoundSql boundSql = Criteria.insert(entity.getClass()).mappingHandler(getMappingHandler())
+            .build(entity, true);
         jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
     public void save(Criteria criteria) {
-        final BoundSql boundSql = criteria.build(true, getMappingHandler());
+        final BoundSql boundSql = criteria.mappingHandler(getMappingHandler()).build(true);
         jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
     public int update(Criteria criteria) {
-        BoundSql boundSql = criteria.build(true, getMappingHandler());
+        BoundSql boundSql = criteria.mappingHandler(getMappingHandler()).build(true);
         return jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
     public int update(Object entity) {
-        BoundSql boundSql = Criteria.update(entity.getClass()).build(entity, true, getMappingHandler());
+        BoundSql boundSql = Criteria.update(entity.getClass()).mappingHandler(getMappingHandler()).build(entity, true);
         return jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
     public int update(Object entity, boolean isIgnoreNull) {
-        BoundSql boundSql = Criteria.update(entity.getClass()).build(entity, isIgnoreNull, getMappingHandler());
+        BoundSql boundSql = Criteria.update(entity.getClass()).mappingHandler(getMappingHandler())
+            .build(entity, isIgnoreNull);
         return jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
     public int delete(Criteria criteria) {
-        BoundSql boundSql = criteria.build(true, getMappingHandler());
+        BoundSql boundSql = criteria.mappingHandler(getMappingHandler()).build(true);
         return jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
     public int delete(Object entity) {
-        BoundSql boundSql = Criteria.delete(entity.getClass()).build(entity, true, getMappingHandler());
+        BoundSql boundSql = Criteria.delete(entity.getClass()).mappingHandler(getMappingHandler()).build(entity, true);
         return jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
     public int delete(Class<?> clazz, Long id) {
-        Criteria criteria = Criteria.delete(clazz);
-        BoundSql boundSql = criteria.where(criteria.getPkField(getMappingHandler()), new Object[] { id }).build(true,
-            getMappingHandler());
+        Criteria criteria = Criteria.delete(clazz).mappingHandler(getMappingHandler());
+        BoundSql boundSql = criteria.where(criteria.getPkField(), new Object[] { id }).build(true);
         return jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
     }
 
     public <T> List<T> queryList(Criteria criteria) {
-        BoundSql boundSql = criteria.build(true, getMappingHandler());
+        BoundSql boundSql = criteria.mappingHandler(getMappingHandler()).build(true);
         List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParameters().toArray(),
             this.getRowMapper(criteria.getEntityClass()));
         return (List<T>) list;
     }
 
     public <T> List<T> queryList(Class<?> clazz) {
-        BoundSql boundSql = Criteria.select(clazz).build(true, getMappingHandler());
+        BoundSql boundSql = Criteria.select(clazz).mappingHandler(getMappingHandler()).build(true);
         List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParameters().toArray(),
             this.getRowMapper(clazz));
         return (List<T>) list;
     }
 
     public <T> List<T> queryList(T entity) {
-        BoundSql boundSql = Criteria.select(entity.getClass()).build(entity, true, getMappingHandler());
+        BoundSql boundSql = Criteria.select(entity.getClass()).mappingHandler(getMappingHandler()).build(entity, true);
         List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParameters().toArray(),
             this.getRowMapper(entity.getClass()));
         return (List<T>) list;
     }
 
     public <T> List<T> queryList(T entity, Criteria criteria) {
-        BoundSql boundSql = criteria.build(entity, true, getMappingHandler());
+        BoundSql boundSql = criteria.mappingHandler(getMappingHandler()).build(entity, true);
         List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParameters().toArray(),
             this.getRowMapper(entity.getClass()));
         return (List<T>) list;
     }
 
     public int queryCount(Class<?> clazz) {
-        BoundSql boundSql = Criteria.select(clazz).addSelectFunc("count(*)").build(null, true, getMappingHandler());
+        BoundSql boundSql = Criteria.select(clazz).addSelectFunc("count(*)").mappingHandler(getMappingHandler())
+            .build(null, true);
         return jdbcTemplate.queryForObject(boundSql.getSql(), boundSql.getParameters().toArray(), Integer.class);
     }
 
     public int queryCount(Object entity, Criteria criteria) {
-        BoundSql boundSql = criteria.addSelectFunc("count(*)", true, false, true).build(entity, true,
-            getMappingHandler());
+        BoundSql boundSql = criteria.addSelectFunc("count(*)", true, false, true).mappingHandler(getMappingHandler())
+            .build(entity, true);
         return jdbcTemplate.queryForObject(boundSql.getSql(), boundSql.getParameters().toArray(), Integer.class);
     }
 
     public int queryCount(Object entity) {
-        BoundSql boundSql = Criteria.select(entity.getClass()).addSelectFunc("count(*)")
-            .build(entity, true, getMappingHandler());
+        BoundSql boundSql = Criteria.select(entity.getClass()).mappingHandler(getMappingHandler())
+            .addSelectFunc("count(*)").build(entity, true);
         return jdbcTemplate.queryForObject(boundSql.getSql(), boundSql.getParameters().toArray(), Integer.class);
     }
 
     public int queryCount(Criteria criteria) {
-        BoundSql boundSql = criteria.addSelectFunc("count(*)", true, false, true).build(true, getMappingHandler());
+        BoundSql boundSql = criteria.mappingHandler(getMappingHandler()).addSelectFunc("count(*)", true, false, true)
+            .build(true);
         return jdbcTemplate.queryForObject(boundSql.getSql(), boundSql.getParameters().toArray(), Integer.class);
     }
 
     public <T> T get(Class<T> clazz, Long id) {
-        Criteria criteria = Criteria.select(clazz);
-        BoundSql boundSql = criteria.where(criteria.getPkField(getMappingHandler()), new Object[] { id }).build(true,
-            getMappingHandler());
+        Criteria criteria = Criteria.select(clazz).mappingHandler(getMappingHandler());
+        BoundSql boundSql = criteria.where(criteria.getPkField(), new Object[] { id }).build(true);
         //采用list方式查询，当记录不存在时返回null而不会抛出异常
         List<T> list = jdbcTemplate.query(boundSql.getSql(), this.getRowMapper(clazz), boundSql.getParameters()
             .toArray());
@@ -144,8 +171,8 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
     }
 
     public <T> T get(Criteria criteria, Long id) {
-        BoundSql boundSql = criteria.where(criteria.getPkField(getMappingHandler()), new Object[] { id }).build(true,
-            getMappingHandler());
+        BoundSql boundSql = criteria.mappingHandler(getMappingHandler())
+            .where(criteria.getPkField(), new Object[] { id }).build(true);
         //采用list方式查询，当记录不存在时返回null而不会抛出异常
         List<T> list = (List<T>) jdbcTemplate
             .query(boundSql.getSql(), this.getRowMapper(criteria.getEntityClass()), id);
@@ -156,7 +183,7 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
     }
 
     public <T> T querySingleResult(T entity) {
-        BoundSql boundSql = Criteria.select(entity.getClass()).build(entity, true, getMappingHandler());
+        BoundSql boundSql = Criteria.select(entity.getClass()).mappingHandler(getMappingHandler()).build(entity, true);
         //采用list方式查询，当记录不存在时返回null而不会抛出异常
         List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParameters().toArray(),
             this.getRowMapper(entity.getClass()));
@@ -167,7 +194,7 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
     }
 
     public <T> T querySingleResult(Criteria criteria) {
-        BoundSql boundSql = criteria.build(true, getMappingHandler());
+        BoundSql boundSql = criteria.mappingHandler(getMappingHandler()).build(true);
         //采用list方式查询，当记录不存在时返回null而不会抛出异常
         List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParameters().toArray(),
             this.getRowMapper(criteria.getEntityClass()));
@@ -178,29 +205,29 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
     }
 
     public <T> T queryObject(Criteria criteria) {
-        final BoundSql boundSql = criteria.build(true, getMappingHandler());
+        final BoundSql boundSql = criteria.mappingHandler(getMappingHandler()).build(true);
         return (T) jdbcTemplate.queryForObject(boundSql.getSql(), boundSql.getParameters().toArray(), Object.class);
     }
 
     public <T> List<T> queryObjectList(Criteria criteria, Class<T> elementType) {
-        final BoundSql boundSql = criteria.build(true, getMappingHandler());
+        final BoundSql boundSql = criteria.mappingHandler(getMappingHandler()).build(true);
         return jdbcTemplate.queryForList(boundSql.getSql(), elementType, boundSql.getParameters().toArray());
     }
 
     public <T> List<T> queryObjectList(Criteria criteria, Object entity, Class<T> elementType) {
-        BoundSql boundSql = criteria.build(entity, true, getMappingHandler());
+        BoundSql boundSql = criteria.mappingHandler(getMappingHandler()).build(entity, true);
         return jdbcTemplate.queryForList(boundSql.getSql(), elementType, boundSql.getParameters().toArray());
     }
 
     public Map<String, Object> queryRowMap(Criteria criteria) {
-        BoundSql boundSql = criteria.build(true, getMappingHandler());
+        BoundSql boundSql = criteria.mappingHandler(getMappingHandler()).build(true);
         List<Map<String, Object>> mapList = jdbcTemplate.queryForList(boundSql.getSql(), boundSql.getParameters()
             .toArray());
         return mapList == null || mapList.isEmpty() ? null : mapList.iterator().next();
     }
 
     public List<Map<String, Object>> queryRowMapList(Criteria criteria) {
-        BoundSql boundSql = criteria.build(true, getMappingHandler());
+        BoundSql boundSql = criteria.mappingHandler(getMappingHandler()).build(true);
         List<Map<String, Object>> mapList = jdbcTemplate.queryForList(boundSql.getSql(), boundSql.getParameters()
             .toArray());
         return mapList;

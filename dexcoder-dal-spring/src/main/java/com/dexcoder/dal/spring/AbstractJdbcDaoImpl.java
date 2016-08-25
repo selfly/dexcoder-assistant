@@ -1,26 +1,25 @@
 package com.dexcoder.dal.spring;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import com.dexcoder.dal.spring.mapper.JdbcRowMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.*;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.core.ConnectionCallback;
+import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.jdbc.core.RowMapper;
 
 import com.dexcoder.commons.bean.BeanConverter;
 import com.dexcoder.commons.bean.LongIntegerConverter;
 import com.dexcoder.commons.pager.Pager;
 import com.dexcoder.commons.utils.ClassUtils;
-import com.dexcoder.dal.BoundSql;
 import com.dexcoder.dal.SqlFactory;
 import com.dexcoder.dal.handler.DefaultMappingHandler;
+import com.dexcoder.dal.handler.KeyGenerator;
 import com.dexcoder.dal.handler.MappingHandler;
+import com.dexcoder.dal.spring.mapper.JdbcRowMapper;
 import com.dexcoder.dal.spring.page.PageControl;
 
 /**
@@ -40,6 +39,9 @@ public abstract class AbstractJdbcDaoImpl {
      */
     protected MappingHandler        mappingHandler;
 
+    /** 主键生成器 为空默认数据库自增 */
+    protected KeyGenerator          keyGenerator;
+
     /**
      * rowMapper，为空按默认执行
      */
@@ -54,29 +56,6 @@ public abstract class AbstractJdbcDaoImpl {
      * 数据库方言
      */
     protected String                dialect;
-
-    /**
-     * 插入数据
-     *
-     * @param boundSql the bound build
-     * @return long long
-     */
-    protected Long insert(final BoundSql boundSql, final Class<?> clazz) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(new PreparedStatementCreator() {
-            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                String pkFieldName = getMappingHandler().getPkFieldName(clazz);
-                PreparedStatement ps = con.prepareStatement(boundSql.getSql(), new String[] { pkFieldName });
-                int index = 0;
-                for (Object param : boundSql.getParameters()) {
-                    index++;
-                    ps.setObject(index, param);
-                }
-                return ps;
-            }
-        }, keyHolder);
-        return keyHolder.getKey().longValue();
-    }
 
     /**
      * map转bean
@@ -139,6 +118,10 @@ public abstract class AbstractJdbcDaoImpl {
         return this.mappingHandler;
     }
 
+    public KeyGenerator getKeyGenerator() {
+        return keyGenerator;
+    }
+
     protected String getDialect() {
         if (StringUtils.isBlank(dialect)) {
             dialect = jdbcTemplate.execute(new ConnectionCallback<String>() {
@@ -156,6 +139,10 @@ public abstract class AbstractJdbcDaoImpl {
 
     public void setMappingHandler(MappingHandler mappingHandler) {
         this.mappingHandler = mappingHandler;
+    }
+
+    public void setKeyGenerator(KeyGenerator keyGenerator) {
+        this.keyGenerator = keyGenerator;
     }
 
     public void setRowMapperClass(String rowMapperClass) {

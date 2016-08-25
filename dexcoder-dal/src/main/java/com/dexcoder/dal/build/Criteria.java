@@ -71,13 +71,24 @@ public class Criteria {
     }
 
     /**
+     * 设置mappingHandler
+     * 
+     * @param mappingHandler
+     * @return
+     */
+    public Criteria mappingHandler(MappingHandler mappingHandler) {
+        this.sqlBuilder.getMetaTable().mappingHandler(mappingHandler);
+        return this;
+    }
+
+    /**
      * 设置表别名
      * 
      * @param alias
      * @return
      */
     public Criteria tableAlias(String alias) {
-        new MetaTable.Builder(this.sqlBuilder.getMetaTable()).tableAlias(alias);
+        this.sqlBuilder.getMetaTable().tableAlias(alias);
         return this;
     }
 
@@ -306,29 +317,31 @@ public class Criteria {
      *
      * @param entity
      * @param isIgnoreNull
-     * @param mappingHandler
      * @return
      */
-    public BoundSql build(Object entity, boolean isIgnoreNull, MappingHandler mappingHandler) {
-        return this.sqlBuilder.build(entity, isIgnoreNull, mappingHandler);
+    public BoundSql build(Object entity, boolean isIgnoreNull) {
+        return this.sqlBuilder.build(entity, isIgnoreNull);
     }
 
     /**
      * 将设置的信息构建成BoundSql
      *
      * @param isIgnoreNull
-     * @param mappingHandler
      * @return
      */
-    public BoundSql build(boolean isIgnoreNull, MappingHandler mappingHandler) {
-        return build(null, isIgnoreNull, mappingHandler);
+    public BoundSql build(boolean isIgnoreNull) {
+        return build(null, isIgnoreNull);
     }
 
     public Class<?> getEntityClass() {
         return entityClass;
     }
 
-    public String getPkField(MappingHandler mappingHandler) {
-        return this.sqlBuilder.getMetaTable().getPkFieldName(mappingHandler);
+    public String getPkField() {
+        return this.sqlBuilder.getMetaTable().getPkFieldName();
+    }
+
+    public String getColumnName(String fieldName) {
+        return this.sqlBuilder.getMetaTable().getColumnName(fieldName);
     }
 }

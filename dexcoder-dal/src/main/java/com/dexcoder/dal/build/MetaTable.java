@@ -83,7 +83,7 @@ public class MetaTable {
     /** field -> column 映射 */
     private Map<String, String>    mappedFieldColumns;
 
-    private MetaTable() {
+    public MetaTable() {
     }
 
     public List<String> getIncludeFields() {
@@ -101,13 +101,6 @@ public class MetaTable {
     public String getPkFieldName() {
         if (StringUtils.isBlank(pkFieldName)) {
             pkFieldName = this.mappingHandler.getPkFieldName(tableClass);
-        }
-        return pkFieldName;
-    }
-
-    public String getPkFieldName(MappingHandler mappingHandler) {
-        if (StringUtils.isBlank(pkFieldName)) {
-            pkFieldName = mappingHandler.getPkFieldName(tableClass);
         }
         return pkFieldName;
     }
@@ -161,6 +154,10 @@ public class MetaTable {
 
     public Map<String, AutoField> getAutoFields() {
         return autoFields;
+    }
+
+    public MappingHandler getMappingHandler() {
+        return mappingHandler;
     }
 
     /**
@@ -249,137 +246,116 @@ public class MetaTable {
         return isOrderBy;
     }
 
-    /**
-     * MetaTable Builder
-     */
-    public static class Builder {
+    public MetaTable initAutoFields() {
+        this.autoFields = new LinkedHashMap<String, AutoField>();
+        return this;
+    }
 
-        private MetaTable metaTable;
+    public MetaTable initColumnAutoFields() {
+        this.columnAutoFields = new ArrayList<AutoField>();
+        return this;
+    }
 
-        public Builder() {
-            metaTable = new MetaTable();
-        }
+    public MetaTable initIncludeFields() {
+        this.includeFields = new ArrayList<String>();
+        return this;
+    }
 
-        public Builder(MetaTable metaTable) {
-            this.metaTable = metaTable;
-        }
+    public MetaTable initExcludeFields() {
+        this.excludeFields = new ArrayList<String>();
+        return this;
+    }
 
-        public Builder initAutoFields() {
-            metaTable.autoFields = new LinkedHashMap<String, AutoField>();
-            return this;
-        }
+    public MetaTable initFuncAutoFields() {
+        this.funcAutoFields = new ArrayList<AutoField>();
+        return this;
+    }
 
-        public Builder initColumnAutoFields() {
-            metaTable.columnAutoFields = new ArrayList<AutoField>();
-            return this;
-        }
-
-        public Builder initIncludeFields() {
-            metaTable.includeFields = new ArrayList<String>();
-            return this;
-        }
-
-        public Builder initExcludeFields() {
-            metaTable.excludeFields = new ArrayList<String>();
-            return this;
-        }
-
-        public Builder initFuncAutoFields() {
-            metaTable.funcAutoFields = new ArrayList<AutoField>();
-            return this;
-        }
-
-        public Builder tableClass(Class<?> tableClass) {
-            metaTable.mappedFieldColumns = new HashMap<String, String>();
-            metaTable.tableClass = tableClass;
-            Table aTable = tableClass.getAnnotation(Table.class);
-            if (aTable != null) {
-                metaTable.annotationTableName = aTable.name();
-                metaTable.pkFieldName = aTable.pkField();
-                if (StringUtils.isBlank(metaTable.tableAlias)) {
-                    metaTable.tableAlias = aTable.alias();
-                }
-                if (!Object.class.equals(aTable.mappingHandler())) {
-                    metaTable.mappingHandler = ((MappingHandler) ClassUtils.newInstance(aTable.mappingHandler()));
-                }
+    public MetaTable tableClass(Class<?> tableClass) {
+        this.mappedFieldColumns = new HashMap<String, String>();
+        this.tableClass = tableClass;
+        Table aTable = tableClass.getAnnotation(Table.class);
+        if (aTable != null) {
+            this.annotationTableName = aTable.name();
+            this.pkFieldName = aTable.pkField();
+            if (StringUtils.isBlank(this.tableAlias)) {
+                this.tableAlias = aTable.alias();
             }
-            BeanInfo selfBeanInfo = ClassUtils.getSelfBeanInfo(tableClass);
-            PropertyDescriptor[] propertyDescriptors = selfBeanInfo.getPropertyDescriptors();
-            for (PropertyDescriptor pd : propertyDescriptors) {
-                Method readMethod = pd.getReadMethod();
-                if (readMethod == null) {
-                    continue;
-                }
-                Column column = readMethod.getAnnotation(Column.class);
-                if (column == null) {
-                    continue;
-                }
-                metaTable.mappedFieldColumns.put(pd.getName(), column.value());
+            if (!Object.class.equals(aTable.mappingHandler())) {
+                this.mappingHandler = ((MappingHandler) ClassUtils.newInstance(aTable.mappingHandler()));
             }
-            return this;
         }
-
-        public Builder tableAlias(String tableAlias) {
-            metaTable.tableAlias = tableAlias;
-            return this;
-        }
-
-        public Builder entity(Object entity, boolean isIgnoreNull) {
-            if (entity == null) {
-                return this;
+        BeanInfo selfBeanInfo = ClassUtils.getSelfBeanInfo(tableClass);
+        PropertyDescriptor[] propertyDescriptors = selfBeanInfo.getPropertyDescriptors();
+        for (PropertyDescriptor pd : propertyDescriptors) {
+            Method readMethod = pd.getReadMethod();
+            if (readMethod == null) {
+                continue;
             }
-            BeanInfo selfBeanInfo = ClassUtils.getSelfBeanInfo(entity.getClass());
-            PropertyDescriptor[] propertyDescriptors = selfBeanInfo.getPropertyDescriptors();
-            for (PropertyDescriptor pd : propertyDescriptors) {
-                Method readMethod = pd.getReadMethod();
-                if (readMethod == null) {
-                    continue;
-                }
-                Transient aTransient = readMethod.getAnnotation(Transient.class);
-                if (aTransient != null) {
-                    continue;
-                }
-                String fieldName = pd.getName();
-                if (metaTable.columnAutoFields != null) {
-                    AutoField autoField = new AutoField.Builder().name(fieldName).build();
-                    metaTable.columnAutoFields.add(autoField);
-                }
-                //已经有了，以Criteria中为准
-                if (metaTable.hasAutoField(fieldName)) {
-                    continue;
-                }
-                Object value = ClassUtils.invokeMethod(readMethod, entity);
-
-                //忽略掉null
-                if (value == null && isIgnoreNull) {
-                    continue;
-                }
-                AutoField autoField = new AutoField.Builder().name(fieldName).logicalOperator("and").fieldOperator("=")
-                    .type(AutoFieldType.NORMAL).value(value).build();
-                metaTable.getAutoFields().put(fieldName, autoField);
+            Column column = readMethod.getAnnotation(Column.class);
+            if (column == null) {
+                continue;
             }
+            this.mappedFieldColumns.put(pd.getName(), column.value());
+        }
+        return this;
+    }
+
+    public MetaTable tableAlias(String tableAlias) {
+        this.tableAlias = tableAlias;
+        return this;
+    }
+
+    public MetaTable entity(Object entity, boolean isIgnoreNull) {
+        if (entity == null) {
             return this;
         }
+        BeanInfo selfBeanInfo = ClassUtils.getSelfBeanInfo(entity.getClass());
+        PropertyDescriptor[] propertyDescriptors = selfBeanInfo.getPropertyDescriptors();
+        for (PropertyDescriptor pd : propertyDescriptors) {
+            Method readMethod = pd.getReadMethod();
+            if (readMethod == null) {
+                continue;
+            }
+            Transient aTransient = readMethod.getAnnotation(Transient.class);
+            if (aTransient != null) {
+                continue;
+            }
+            String fieldName = pd.getName();
+            if (this.columnAutoFields != null) {
+                AutoField autoField = new AutoField.Builder().name(fieldName).build();
+                this.columnAutoFields.add(autoField);
+            }
+            //已经有了，以Criteria中为准
+            if (this.hasAutoField(fieldName)) {
+                continue;
+            }
+            Object value = ClassUtils.invokeMethod(readMethod, entity);
 
-        public Builder isFieldExclusion(boolean isFieldExclusion) {
-            metaTable.isFieldExclusion = isFieldExclusion;
-            return this;
+            //忽略掉null
+            if (value == null && isIgnoreNull) {
+                continue;
+            }
+            AutoField autoField = new AutoField.Builder().name(fieldName).logicalOperator("and").fieldOperator("=")
+                .type(AutoFieldType.NORMAL).value(value).build();
+            this.getAutoFields().put(fieldName, autoField);
         }
+        return this;
+    }
 
-        public Builder isOrderBy(boolean isOrderBy) {
-            metaTable.isOrderBy = isOrderBy;
-            return this;
-        }
+    public MetaTable isFieldExclusion(boolean isFieldExclusion) {
+        this.isFieldExclusion = isFieldExclusion;
+        return this;
+    }
 
-        public Builder mappingHandler(MappingHandler mappingHandler) {
-            metaTable.mappingHandler = mappingHandler;
-            return this;
-        }
+    public MetaTable isOrderBy(boolean isOrderBy) {
+        this.isOrderBy = isOrderBy;
+        return this;
+    }
 
-        public MetaTable build() {
-            assert metaTable.tableClass != null;
-            return this.metaTable;
-        }
+    public MetaTable mappingHandler(MappingHandler mappingHandler) {
+        this.mappingHandler = mappingHandler;
+        return this;
     }
 
 }
