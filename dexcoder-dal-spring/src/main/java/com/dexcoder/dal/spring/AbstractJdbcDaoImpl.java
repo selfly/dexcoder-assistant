@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -15,7 +16,6 @@ import com.dexcoder.commons.bean.BeanConverter;
 import com.dexcoder.commons.bean.LongIntegerConverter;
 import com.dexcoder.commons.pager.Pager;
 import com.dexcoder.commons.utils.ClassUtils;
-import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.dal.BoundSql;
 import com.dexcoder.dal.SqlFactory;
 import com.dexcoder.dal.handler.DefaultMappingHandler;
@@ -118,7 +118,7 @@ public abstract class AbstractJdbcDaoImpl {
     @SuppressWarnings("unchecked")
     protected <T> RowMapper<T> getRowMapper(Class<T> clazz) {
 
-        if (StrUtils.isBlank(rowMapperClass)) {
+        if (StringUtils.isBlank(rowMapperClass)) {
             return BeanPropertyRowMapper.newInstance(clazz);
         } else {
             return (RowMapper<T>) ClassUtils.newInstance(rowMapperClass);
@@ -139,7 +139,7 @@ public abstract class AbstractJdbcDaoImpl {
     }
 
     protected String getDialect() {
-        if (StrUtils.isBlank(dialect)) {
+        if (StringUtils.isBlank(dialect)) {
             dialect = jdbcTemplate.execute(new ConnectionCallback<String>() {
                 public String doInConnection(Connection con) throws SQLException, DataAccessException {
                     return con.getMetaData().getDatabaseProductName().toUpperCase();

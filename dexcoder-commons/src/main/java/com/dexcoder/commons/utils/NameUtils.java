@@ -1,5 +1,7 @@
 package com.dexcoder.commons.utils;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * 名称操作辅助类
  * <p/>
@@ -16,11 +18,11 @@ public class NameUtils {
      * @return
      */
     public static String getFirstUpperName(String name) {
-        if (StrUtils.isBlank(name)) {
+        if (StringUtils.isBlank(name)) {
             return null;
         }
-        String firstChar = StrUtils.substring(name, 0, 1).toUpperCase();
-        return firstChar + StrUtils.substring(name, 1);
+        String firstChar = StringUtils.substring(name, 0, 1).toUpperCase();
+        return firstChar + StringUtils.substring(name, 1);
     }
 
     /**
@@ -30,18 +32,18 @@ public class NameUtils {
      * @return
      */
     public static String getFirstLowerName(String name) {
-        if (StrUtils.isBlank(name)) {
+        if (StringUtils.isBlank(name)) {
             return null;
         }
-        String firstChar = StrUtils.substring(name, 0, 1).toLowerCase();
-        return firstChar + StrUtils.substring(name, 1);
+        String firstChar = StringUtils.substring(name, 0, 1).toLowerCase();
+        return firstChar + StringUtils.substring(name, 1);
     }
 
     public static void main(String[] args) {
-        System.out.println(NameUtils.getCamelName("login-name-info",'-'));
-        System.out.println(NameUtils.getCamelName("LOGIN-NAME-INFO",'-'));
-        System.out.println(NameUtils.getCamelName("-login-name-info-",'-'));
-        System.out.println(NameUtils.getCamelName("-LOGIN-NAME-INFO-",'-'));
+        System.out.println(NameUtils.getCamelName("login-name-info", '-'));
+        System.out.println(NameUtils.getCamelName("LOGIN-NAME-INFO", '-'));
+        System.out.println(NameUtils.getCamelName("-login-name-info-", '-'));
+        System.out.println(NameUtils.getCamelName("-LOGIN-NAME-INFO-", '-'));
     }
 
     /**
@@ -61,17 +63,17 @@ public class NameUtils {
      * @return
      */
     public static String getCamelName(String name, char delimiter) {
-        if (StrUtils.isBlank(name)) {
+        if (StringUtils.isBlank(name)) {
             return null;
         }
-        name = StrUtils.lowerCase(name);
+        name = StringUtils.lowerCase(name);
         //去掉前面的 delimiter
         while (name.charAt(0) == delimiter) {
-            name = StrUtils.substring(name, 1);
+            name = StringUtils.substring(name, 1);
         }
         //去掉后面的 delimiter
         while (name.charAt(name.length() - 1) == delimiter) {
-            name = StrUtils.substring(name, 0, name.length() - 1);
+            name = StringUtils.substring(name, 0, name.length() - 1);
         }
 
         StringBuilder sb = new StringBuilder();
@@ -132,7 +134,7 @@ public class NameUtils {
      */
     public static String getLowerDelimiterName(String name, String delimiter) {
 
-        if (StrUtils.isBlank(name)) {
+        if (StringUtils.isBlank(name)) {
             return "";
         }
 
@@ -160,8 +162,8 @@ public class NameUtils {
      */
     public static String createUniqueFileName(String fileName) {
 
-        int index = StrUtils.lastIndexOf(fileName, ".");
-        String suffix = StrUtils.substring(fileName, index);
+        int index = StringUtils.lastIndexOf(fileName, ".");
+        String suffix = StringUtils.substring(fileName, index);
         String uqName = UUIDUtils.getUUID16() + suffix;
         return uqName;
     }
@@ -174,9 +176,9 @@ public class NameUtils {
      * @return
      */
     public static String createEndSuffixFileName(String fileName, String endSuffix) {
-        int index = StrUtils.lastIndexOf(fileName, ".");
-        String preFileName = StrUtils.substring(fileName, 0, index);
-        String suffix = StrUtils.substring(fileName, index);
+        int index = StringUtils.lastIndexOf(fileName, ".");
+        String preFileName = StringUtils.substring(fileName, 0, index);
+        String suffix = StringUtils.substring(fileName, index);
         return preFileName + endSuffix + suffix;
     }
 

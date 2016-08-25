@@ -1,6 +1,6 @@
 package com.dexcoder.dal.build;
 
-import com.dexcoder.commons.utils.StrUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 组装sql时的列信息
@@ -68,7 +68,7 @@ public class AutoField {
      * @return
      */
     public boolean isFieldOperatorNeedBracket() {
-        return StrUtils.indexOf(StrUtils.upperCase(fieldOperator), "IN") != -1;
+        return StringUtils.indexOf(StringUtils.upperCase(fieldOperator), "IN") != -1;
     }
 
     public String getName() {

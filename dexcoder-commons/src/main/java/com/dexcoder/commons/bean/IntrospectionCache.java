@@ -10,8 +10,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.dexcoder.commons.exceptions.CommonsAssistantException;
-import com.dexcoder.commons.utils.StrUtils;
 
 /**
  * JavaBean信息缓存
@@ -131,7 +132,7 @@ public class IntrospectionCache {
 
         PropertyDescriptor pd = this.propertyDescriptorCache.get(name);
 
-        if (pd == null && StrUtils.isNotBlank(name)) {
+        if (pd == null && StringUtils.isNotBlank(name)) {
             // Same lenient fallback checking as in PropertyTypeDescriptor...
             pd = this.propertyDescriptorCache.get(name.substring(0, 1).toLowerCase() + name.substring(1));
             if (pd == null) {

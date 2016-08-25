@@ -9,11 +9,11 @@ import javax.sql.DataSource;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.*;
 
 import com.dexcoder.commons.utils.ClassUtils;
 import com.dexcoder.commons.utils.PropertyUtils;
-import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.dal.exceptions.JdbcAssistantException;
 
 /**
@@ -32,15 +32,15 @@ public class DynamicDataSourceUtils {
     public static void addWeightDataSource(List<String> readDsList, List<String> writeDsList, String dsId, int weight,
                                            String mode) {
 
-        if (StrUtils.equalsIgnoreCase(mode, DynamicDataSource.DS_MODE_R)) {
+        if (StringUtils.equalsIgnoreCase(mode, DynamicDataSource.DS_MODE_R)) {
             for (int i = 0; i < weight; i++) {
                 readDsList.add(dsId);
             }
-        } else if (StrUtils.equalsIgnoreCase(mode, DynamicDataSource.DS_MODE_W)) {
+        } else if (StringUtils.equalsIgnoreCase(mode, DynamicDataSource.DS_MODE_W)) {
             for (int i = 0; i < weight; i++) {
                 writeDsList.add(dsId);
             }
-        } else if (StrUtils.equalsIgnoreCase(mode, DynamicDataSource.DS_MODE_RW)) {
+        } else if (StringUtils.equalsIgnoreCase(mode, DynamicDataSource.DS_MODE_RW)) {
             for (int i = 0; i < weight; i++) {
                 readDsList.add(dsId);
                 writeDsList.add(dsId);
@@ -85,10 +85,10 @@ public class DynamicDataSourceUtils {
     public static String getAndRemoveValue(Map<String, String> map, String key, String defaultValue) {
         String value = map.get(key);
         map.remove(key);
-        if (StrUtils.isBlank(value) && StrUtils.isBlank(defaultValue)) {
+        if (StringUtils.isBlank(value) && StringUtils.isBlank(defaultValue)) {
             throw new JdbcAssistantException("属性不能为空:" + key);
         }
-        return StrUtils.isBlank(value) ? defaultValue : value;
+        return StringUtils.isBlank(value) ? defaultValue : value;
     }
 
     /**

@@ -1,9 +1,10 @@
 package com.dexcoder.commons.office;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dexcoder.commons.utils.StrUtils;
 
 /**
  * sheet中的一行数据
@@ -40,7 +41,7 @@ public class ExcelRow {
             return true;
         }
         for (ExcelCell excelCell : cells) {
-            if (excelCell != null && excelCell.getValue() != null && StrUtils.isNotBlank(excelCell.getStringValue())) {
+            if (excelCell != null && excelCell.getValue() != null && StringUtils.isNotBlank(excelCell.getStringValue())) {
                 return false;
             }
         }

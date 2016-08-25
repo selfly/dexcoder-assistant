@@ -15,12 +15,12 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.util.IOUtils;
 
 import com.dexcoder.commons.exceptions.CommonsAssistantException;
-import com.dexcoder.commons.utils.StrUtils;
 
 /**
  * excel解析工具，兼容03,07以上格式
@@ -169,7 +169,7 @@ public class ExcelReadTools {
                 if (HSSFDateUtil.isCellDateFormatted(cell)) {
                     Date date = cell.getDateCellValue();
                     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    value = StrUtils.replace(dateFormat.format(date), " 00:00:00", "");
+                    value = StringUtils.replace(dateFormat.format(date), " 00:00:00", "");
                 } else {
                     value = cell.getNumericCellValue();
                     DecimalFormat df = new DecimalFormat("0");

@@ -2,6 +2,9 @@ package com.dexcoder.commons.utils;
 
 import java.io.UnsupportedEncodingException;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.dexcoder.commons.exceptions.CommonsAssistantException;
 
 /**
@@ -19,7 +22,7 @@ public class TextUtils {
      * @return
      */
     public static String convertHtmlSpecialChars(String str) {
-        if (StrUtils.isBlank(str)) {
+        if (StringUtils.isBlank(str)) {
             return null;
         }
         //最后一个中文全角空格换成英文，防止strin的trim方法失效
@@ -35,7 +38,7 @@ public class TextUtils {
      * @return
      */
     public static String reverseHtmlSpecialChars(String str) {
-        if (StrUtils.isBlank(str)) {
+        if (StringUtils.isBlank(str)) {
             return null;
         }
         String[][] chars = new String[][] { { "&amp;", "&" }, { "&lt;", "<" }, { "&gt;", ">" }, { "&quot;", "\"" },
@@ -71,7 +74,7 @@ public class TextUtils {
      */
     public static String substringForByte(String text, int length, boolean isConvertSpecialChars) {
 
-        if (StrUtils.isBlank(text) || length < 1) {
+        if (StringUtils.isBlank(text) || length < 1) {
             return text;
         }
         //转换特殊字符，页面显示时非常有用
@@ -83,7 +86,7 @@ public class TextUtils {
             byte[] bytes = text.getBytes("GBK");
 
             //截取
-            byte[] contentNameBytes = ArrUtils.subarray(bytes, 0, length);
+            byte[] contentNameBytes = ArrayUtils.subarray(bytes, 0, length);
 
             //处理截取了半个汉字的情况
             int count = 0;
@@ -93,7 +96,7 @@ public class TextUtils {
                 }
             }
             if (count % 2 != 0) {
-                contentNameBytes = ArrUtils.subarray(contentNameBytes, 0, contentNameBytes.length - 1);
+                contentNameBytes = ArrayUtils.subarray(contentNameBytes, 0, contentNameBytes.length - 1);
             }
 
             String contentName = new String(contentNameBytes, "GBK");

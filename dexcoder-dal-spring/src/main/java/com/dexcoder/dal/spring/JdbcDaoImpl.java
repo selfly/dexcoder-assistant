@@ -3,9 +3,9 @@ package com.dexcoder.dal.spring;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
-import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.dal.BoundSql;
 import com.dexcoder.dal.JdbcDao;
 import com.dexcoder.dal.build.AbstractSqlBuilder;
@@ -24,7 +24,7 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
         MappingHandler handler = this.getMappingHandler();
         Criteria criteria = Criteria.insert(entity.getClass());
         String nativePKValue = handler.getPkNativeValue(entity.getClass(), getDialect());
-        if (StrUtils.isNotBlank(nativePKValue)) {
+        if (StringUtils.isNotBlank(nativePKValue)) {
             String pkFieldName = handler.getPkFieldName(entity.getClass());
             criteria.into(AbstractSqlBuilder.NATIVE_TOKENS[2] + pkFieldName + AbstractSqlBuilder.NATIVE_TOKENS[3],
                 nativePKValue);

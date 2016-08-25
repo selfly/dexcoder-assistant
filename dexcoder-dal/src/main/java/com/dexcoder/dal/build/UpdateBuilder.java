@@ -5,7 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.dexcoder.commons.utils.StrUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.dexcoder.dal.BoundSql;
 import com.dexcoder.dal.handler.MappingHandler;
 
@@ -39,13 +40,14 @@ public class UpdateBuilder extends AbstractSqlBuilder {
     }
 
     public BoundSql build(Object entity, boolean isIgnoreNull, MappingHandler mappingHandler) {
-        metaTable = new MetaTable.Builder(metaTable).entity(entity, isIgnoreNull).mappingHandler(mappingHandler).build();
+        metaTable = new MetaTable.Builder(metaTable).entity(entity, isIgnoreNull).mappingHandler(mappingHandler)
+            .build();
 
         Iterator<Map.Entry<String, AutoField>> iterator = metaTable.getAutoFields().entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, AutoField> entry = iterator.next();
             AutoField pkAutoField = entry.getValue();
-            if (StrUtils.equals(metaTable.getPkFieldName(), entry.getKey())) {
+            if (StringUtils.equals(metaTable.getPkFieldName(), entry.getKey())) {
                 iterator.remove();
                 if (!whereBuilder.getMetaTable().hasAutoField(entry.getKey())) {
                     this.whereBuilder.addCondition(pkAutoField.getName(), pkAutoField.getLogicalOperator(),

@@ -16,6 +16,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import com.dexcoder.commons.exceptions.CommonsAssistantException;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 图片工具
@@ -540,7 +541,7 @@ public final class ImageUtils {
         try {
             bos = new ByteArrayOutputStream();
 
-            ImageIO.write(bufferedImage, (StrUtils.isBlank(imageFormat) ? DEFAULT_IMAGE_FORMAT : imageFormat), bos);
+            ImageIO.write(bufferedImage, (StringUtils.isBlank(imageFormat) ? DEFAULT_IMAGE_FORMAT : imageFormat), bos);
 
             byte[] data = bos.toByteArray();
 

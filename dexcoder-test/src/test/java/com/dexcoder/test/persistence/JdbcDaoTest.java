@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +13,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.dexcoder.commons.pager.Pager;
-import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.dal.JdbcDao;
 import com.dexcoder.dal.build.Criteria;
 import com.dexcoder.dal.spring.page.PageControl;
@@ -306,7 +306,7 @@ public class JdbcDaoTest {
         for (User us : users) {
             Assert.assertNull(us.getEmail());
             Assert.assertEquals("1", us.getUserType());
-            Assert.assertTrue(StrUtils.indexOf(us.getLoginName(), "selfly") != -1);
+            Assert.assertTrue(StringUtils.indexOf(us.getLoginName(), "selfly") != -1);
         }
     }
 
@@ -383,7 +383,7 @@ public class JdbcDaoTest {
 
     @Test
     public void queryObjectList2() {
-        Criteria criteria = Criteria.select(User.class).include("loginName").where("userType",new Object[]{"1"});
+        Criteria criteria = Criteria.select(User.class).include("loginName").where("userType", new Object[] { "1" });
         User user = new User();
         user.setUserAge(22);
         List<String> list = jdbcDao.queryObjectList(criteria, user, String.class);

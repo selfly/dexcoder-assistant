@@ -8,8 +8,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.dexcoder.commons.utils.ClassUtils;
-import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.dal.annotation.Column;
 import com.dexcoder.dal.annotation.Table;
 import com.dexcoder.dal.annotation.Transient;
@@ -50,7 +51,7 @@ public class MetaTable {
     /**
      * 名称处理器
      */
-    private MappingHandler mappingHandler;
+    private MappingHandler         mappingHandler;
 
     /**
      * 列
@@ -103,21 +104,21 @@ public class MetaTable {
     }
 
     public String getPkColumnName() {
-        if (StrUtils.isBlank(pkColumnName)) {
+        if (StringUtils.isBlank(pkColumnName)) {
             pkColumnName = mappingHandler.getPkColumnName(tableClass);
         }
         return pkColumnName;
     }
 
     public String getPkFieldName() {
-        if (StrUtils.isBlank(pkFieldName)) {
+        if (StringUtils.isBlank(pkFieldName)) {
             pkFieldName = this.mappingHandler.getPkFieldName(tableClass);
         }
         return pkFieldName;
     }
 
     public String getPkFieldName(MappingHandler mappingHandler) {
-        if (StrUtils.isBlank(pkFieldName)) {
+        if (StringUtils.isBlank(pkFieldName)) {
             pkFieldName = mappingHandler.getPkFieldName(tableClass);
         }
         return pkFieldName;
@@ -170,26 +171,26 @@ public class MetaTable {
      * @return
      */
     public String getColumnAndTableAliasName(AutoField autoField) {
-        if (StrUtils.isBlank(autoField.getAnnotationName())) {
+        if (StringUtils.isBlank(autoField.getAnnotationName())) {
             return getColumnAndTableAliasName(autoField.getName());
         }
-        if (StrUtils.isBlank(this.tableAlias)) {
+        if (StringUtils.isBlank(this.tableAlias)) {
             return autoField.getAnnotationName();
         }
         return new StringBuilder(this.tableAlias).append(".").append(autoField.getAnnotationName()).toString();
     }
 
     public String getColumnAndTableAliasName(String fieldName) {
-        String columnName = StrUtils.equals(fieldName, getPkFieldName()) ? getPkColumnName() : mappingHandler
+        String columnName = StringUtils.equals(fieldName, getPkFieldName()) ? getPkColumnName() : mappingHandler
             .getColumnName(tableClass, fieldName);
-        if (StrUtils.isBlank(this.tableAlias)) {
+        if (StringUtils.isBlank(this.tableAlias)) {
             return columnName;
         }
         return new StringBuilder(this.tableAlias).append(".").append(columnName).toString();
     }
 
     public String applyColumnTableAlias(String columnName) {
-        if (StrUtils.isBlank(this.tableAlias)) {
+        if (StringUtils.isBlank(this.tableAlias)) {
             return columnName;
         }
         return new StringBuilder(this.tableAlias).append(".").append(columnName).toString();
@@ -201,7 +202,7 @@ public class MetaTable {
      */
     public String getTableAndAliasName() {
         String tableName = getTableName();
-        if (StrUtils.isBlank(this.tableAlias)) {
+        if (StringUtils.isBlank(this.tableAlias)) {
             return tableName;
         }
         return new StringBuilder(tableName).append(" ").append(this.tableAlias).toString();
@@ -240,7 +241,7 @@ public class MetaTable {
      * @return
      */
     public String getTableName() {
-        if (StrUtils.isNotBlank(annotationTableName)) {
+        if (StringUtils.isNotBlank(annotationTableName)) {
             return annotationTableName;
         }
         return this.mappingHandler.getTableName(this.tableClass, this.autoFields);
@@ -301,7 +302,7 @@ public class MetaTable {
                 metaTable.annotationTableName = aTable.name();
                 metaTable.pkColumnName = aTable.pkColumn();
                 metaTable.pkFieldName = aTable.pkField();
-                if (StrUtils.isBlank(metaTable.tableAlias)) {
+                if (StringUtils.isBlank(metaTable.tableAlias)) {
                     metaTable.tableAlias = aTable.alias();
                 }
                 if (!Object.class.equals(aTable.mappingHandler())) {

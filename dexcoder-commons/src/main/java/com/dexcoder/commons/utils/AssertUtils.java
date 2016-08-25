@@ -3,6 +3,7 @@ package com.dexcoder.commons.utils;
 import java.util.Collection;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.dexcoder.commons.enums.IEnum;
 import com.dexcoder.commons.exceptions.CommonsAssistantException;
@@ -37,13 +38,13 @@ public class AssertUtils {
     }
 
     public static void assertEquals(String str1, String str2, String message) {
-        if (!StrUtils.equals(str1, str2)) {
+        if (!StringUtils.equals(str1, str2)) {
             throw new CommonsAssistantException(message);
         }
     }
 
     public static void assertEquals(String str1, String str2, IEnum message) {
-        if (!StrUtils.equals(str1, str2)) {
+        if (!StringUtils.equals(str1, str2)) {
             throw new CommonsAssistantException(message);
         }
     }
@@ -59,13 +60,13 @@ public class AssertUtils {
     }
 
     public static void assertNotBlank(String str, String message) {
-        if (StrUtils.isBlank(str)) {
+        if (StringUtils.isBlank(str)) {
             throw new CommonsAssistantException(message);
         }
     }
 
     public static void assertNotBlank(String str, IEnum message) {
-        if (StrUtils.isBlank(str)) {
+        if (StringUtils.isBlank(str)) {
             throw new CommonsAssistantException(message);
         }
     }
@@ -95,13 +96,13 @@ public class AssertUtils {
     }
 
     public static void assertMinLength(String str, int length, String message) {
-        if (StrUtils.length(str) < length) {
+        if (StringUtils.length(str) < length) {
             throw new CommonsAssistantException(message);
         }
     }
 
     public static void assertMinLength(String str, int length, IEnum message) {
-        if (StrUtils.length(str) < length) {
+        if (StringUtils.length(str) < length) {
             throw new CommonsAssistantException(message);
         }
     }

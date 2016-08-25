@@ -5,8 +5,9 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.dexcoder.commons.utils.ClassUtils;
-import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.dal.annotation.Column;
 import com.dexcoder.dal.annotation.Transient;
 import com.dexcoder.dal.build.AutoField;
@@ -26,7 +27,7 @@ public class ClassFieldHandler implements TokenHandler {
     }
 
     public String handleToken(String content) {
-        Class<?> clazz = ClassUtils.loadClass(StrUtils.trim(content));
+        Class<?> clazz = ClassUtils.loadClass(StringUtils.trim(content));
         BeanInfo selfBeanInfo = ClassUtils.getSelfBeanInfo(clazz);
         PropertyDescriptor[] propertyDescriptors = selfBeanInfo.getPropertyDescriptors();
 

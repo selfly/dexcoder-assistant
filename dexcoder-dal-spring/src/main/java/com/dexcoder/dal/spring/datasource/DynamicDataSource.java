@@ -7,14 +7,14 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.util.CollectionUtils;
 
 import com.dexcoder.commons.utils.ClassUtils;
-import com.dexcoder.commons.utils.RandomUtils;
-import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.commons.utils.UUIDUtils;
 
 /**
@@ -33,7 +33,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
     public static final String  DS_MODE_W              = "w";
     public static final String  DS_MODE_RW             = "rw";
 
-    private static final Logger       LOG                    = LoggerFactory.getLogger(DynamicDataSource.class);
+    private static final Logger LOG                    = LoggerFactory.getLogger(DynamicDataSource.class);
 
     /**
      * 默认配置文件名
@@ -60,15 +60,15 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
 
         DataSourceContext dsContent = DynamicDataSourceHolder.getDsContent();
         //已设置过数据源，直接返回
-        if (StrUtils.isNotBlank(dsContent.getDsKey())) {
+        if (StringUtils.isNotBlank(dsContent.getDsKey())) {
             return dsContent.getDsKey();
         }
 
         if (dsContent.getIsWrite()) {
-            String dsKey = writeDataSourceKeyList.get(RandomUtils.nextInt(writeDataSourceKeyList.size()));
+            String dsKey = writeDataSourceKeyList.get(RandomUtils.nextInt(0, writeDataSourceKeyList.size()));
             dsContent.setDsKey(dsKey);
         } else {
-            String dsKey = readDataSourceKeyList.get(RandomUtils.nextInt(readDataSourceKeyList.size()));
+            String dsKey = readDataSourceKeyList.get(RandomUtils.nextInt(0, readDataSourceKeyList.size()));
             dsContent.setDsKey(dsKey);
         }
         if (LOG.isDebugEnabled()) {
@@ -131,7 +131,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
     }
 
     public String getDsConfigFile() {
-        if (StrUtils.isBlank(this.dsConfigFile)) {
+        if (StringUtils.isBlank(this.dsConfigFile)) {
             return DEFAULT_DS_CONFIG_FILE;
         }
         return dsConfigFile;

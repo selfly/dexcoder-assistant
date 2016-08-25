@@ -3,7 +3,8 @@ package com.dexcoder.dal.build;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.dexcoder.commons.utils.StrUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.dexcoder.dal.handler.GenericTokenParser;
 import com.dexcoder.dal.handler.NativeTokenHandler;
 import com.dexcoder.dal.handler.TokenHandler;
@@ -61,7 +62,7 @@ public abstract class AbstractSqlBuilder implements SqlBuilder {
      * @return string string
      */
     protected String tokenParse(AutoField autoField, MetaTable metaTable) {
-        String content = StrUtils.isBlank(autoField.getAnnotationName()) ? autoField.getName() : autoField
+        String content = StringUtils.isBlank(autoField.getAnnotationName()) ? autoField.getName() : autoField
             .getAnnotationName();
         return tokenParse(content, metaTable);
     }

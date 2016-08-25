@@ -3,6 +3,8 @@ package com.dexcoder.commons.utils;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
+
 
 /**
  * Created by liyd on 7/30/14.
@@ -113,10 +115,10 @@ public class TimeUtils {
      */
     public static String getAgo(String ago, String line) {
 
-        if (StrUtils.equals("one", line)) {
+        if (StringUtils.equals("one", line)) {
             return ago;
         }
-        if (StrUtils.equals("two", line)) {
+        if (StringUtils.equals("two", line)) {
             return "<br>" + ago;
         }
 

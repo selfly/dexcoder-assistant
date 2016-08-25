@@ -2,6 +2,7 @@ package com.dexcoder.commons.interceptor;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -11,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import com.dexcoder.commons.exceptions.DexcoderException;
 import com.dexcoder.commons.result.RunBinder;
-import com.dexcoder.commons.utils.ArrUtils;
 
 /**
  * 业务拦截器，主要拦截异常及错误信息，最好配合RunBinderOnMvcDestroyInterceptor使用防止内存溢出
@@ -120,12 +120,16 @@ public class RunBinderInterceptor {
      */
     private String argsToString(ProceedingJoinPoint pjp) {
         Object[] args = pjp.getArgs();
-        if (ArrUtils.isEmpty(args)) {
+        if (ArrayUtils.isEmpty(args)) {
             return "";
         }
         StringBuilder sb = new StringBuilder();
         for (Object obj : args) {
-            sb.append(obj.getClass().getName()).append("=").append(obj).append(";");
+            if (obj == null) {
+                sb.append("null;");
+            } else {
+                sb.append(obj.getClass().getName()).append("=").append(obj).append(";");
+            }
         }
         return sb.toString();
     }

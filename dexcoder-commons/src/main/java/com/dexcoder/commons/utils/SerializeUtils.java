@@ -8,6 +8,7 @@ import java.io.*;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.dexcoder.commons.exceptions.CommonsAssistantException;
 
@@ -60,7 +61,7 @@ public final class SerializeUtils {
      */
     public static Object stringToObject(String strObj) {
 
-        if (StrUtils.isBlank(strObj)) {
+        if (StringUtils.isBlank(strObj)) {
             return null;
         }
 

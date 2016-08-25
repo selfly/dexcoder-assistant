@@ -6,6 +6,7 @@ import java.io.StringWriter;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
@@ -20,7 +21,6 @@ import org.eclipse.text.edits.TextEdit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.commons.utils.TextUtils;
 
 /**
@@ -38,10 +38,10 @@ public class SourceCodeFormatter {
      */
     public static String formatEscapeCode(String source) {
 
-        source = StrUtils.trim(source);
+        source = StringUtils.trim(source);
         //需要先还原，因为提交过来页面显示的代码都是转义后的
         source = TextUtils.reverseHtmlSpecialChars(source);
-        if (StrUtils.startsWith(source, "<")) {
+        if (StringUtils.startsWith(source, "<")) {
             source = formatXML(source);
         } else {
             source = formatCode(source);
@@ -66,18 +66,18 @@ public class SourceCodeFormatter {
             boolean isHeader = true;
             String line;
             while ((line = reader.readLine()) != null) {
-                line = StrUtils.trim(line);
-                if (StrUtils.isBlank(line)) {
+                line = StringUtils.trim(line);
+                if (StringUtils.isBlank(line)) {
                     continue;
                 }
-                if (isHeader && (StrUtils.startsWith(line, "package") || StrUtils.startsWith(line, "import"))) {
+                if (isHeader && (StringUtils.startsWith(line, "package") || StringUtils.startsWith(line, "import"))) {
                     header.append(line).append(lineSeparator);
                 } else {
                     isHeader = false;
                     content.append(line).append(lineSeparator);
                 }
             }
-            String finalCode = StrUtils.trim(content.toString());
+            String finalCode = StringUtils.trim(content.toString());
             finalCode = formatBodyCode(finalCode);
             return header.append(finalCode).toString();
 

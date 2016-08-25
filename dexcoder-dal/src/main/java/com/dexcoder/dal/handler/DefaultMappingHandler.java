@@ -2,8 +2,9 @@ package com.dexcoder.dal.handler;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.dexcoder.commons.utils.NameUtils;
-import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.dal.build.AutoField;
 
 /**
@@ -44,14 +45,14 @@ public class DefaultMappingHandler implements MappingHandler {
     public String getColumnName(Class<?> entityClass, String fieldName) {
         //主键field跟column不一致的情况
         String pkFieldName = this.getPkFieldName(entityClass);
-        if (StrUtils.equals(pkFieldName, fieldName)) {
+        if (StringUtils.equals(pkFieldName, fieldName)) {
             return this.getPkColumnName(entityClass);
         }
         return NameUtils.getUnderlineName(fieldName);
     }
 
     public String getPkNativeValue(Class<?> entityClass, String dialect) {
-        if (StrUtils.equalsIgnoreCase(dialect, "oracle")) {
+        if (StringUtils.equalsIgnoreCase(dialect, "oracle")) {
             //获取序列就可以了，默认seq_加上表名为序列名
             String tableName = this.getTableName(entityClass, null);
             return String.format("SEQ_%s.NEXTVAL", tableName);

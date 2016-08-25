@@ -3,8 +3,9 @@ package com.dexcoder.dal.batis;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.dexcoder.commons.utils.ArrUtils;
-import com.dexcoder.commons.utils.StrUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.dexcoder.dal.BoundSql;
 import com.dexcoder.dal.SqlFactory;
 import com.dexcoder.dal.batis.build.Configuration;
@@ -44,10 +45,10 @@ public class BatisSqlFactory implements SqlFactory {
      */
     private Map<String, Object> processParameters(String expectParamKey, Object[] parameters) {
 
-        if (ArrUtils.isEmpty(parameters)) {
+        if (ArrayUtils.isEmpty(parameters)) {
             return null;
         }
-        String paramKey = StrUtils.isBlank(expectParamKey) ? DEFAULT_PARAMETERS_KEY : expectParamKey;
+        String paramKey = StringUtils.isBlank(expectParamKey) ? DEFAULT_PARAMETERS_KEY : expectParamKey;
         Map<String, Object> map = new HashMap<String, Object>();
         if (parameters.length == 1) {
             map.put(paramKey, parameters[0]);

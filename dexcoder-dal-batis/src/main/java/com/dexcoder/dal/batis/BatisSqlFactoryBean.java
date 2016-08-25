@@ -1,12 +1,12 @@
 package com.dexcoder.dal.batis;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
-import com.dexcoder.commons.utils.StrUtils;
 import com.dexcoder.dal.batis.build.Configuration;
 import com.dexcoder.dal.batis.xml.XMLMapperBuilder;
 import com.dexcoder.dal.exceptions.JdbcAssistantException;
@@ -24,7 +24,7 @@ public class BatisSqlFactoryBean implements FactoryBean<BatisSqlFactory>, Initia
 
     public void afterPropertiesSet() throws Exception {
         this.configuration = new Configuration();
-        String[] sqlLocations = StrUtils.split(this.sqlLocation, ",");
+        String[] sqlLocations = StringUtils.split(this.sqlLocation, ",");
         ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
         for (String location : sqlLocations) {
             try {

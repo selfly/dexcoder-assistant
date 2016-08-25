@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.dexcoder.commons.exceptions.CommonsAssistantException;
 
 /**
@@ -56,7 +58,7 @@ public final class PropertyUtils {
     public static void loadProperties(String resourceName) {
 
         try {
-            if (!StrUtils.endsWith(resourceName, PRO_SUFFIX)) {
+            if (!StringUtils.endsWith(resourceName, PRO_SUFFIX)) {
                 resourceName += PRO_SUFFIX;
             }
             Properties prop = new Properties();
@@ -93,7 +95,7 @@ public final class PropertyUtils {
      * @return property
      */
     public static String getProperty(String resourceName, String key, String defaultValue) {
-        if (!StrUtils.endsWith(resourceName, PRO_SUFFIX)) {
+        if (!StringUtils.endsWith(resourceName, PRO_SUFFIX)) {
             resourceName += PRO_SUFFIX;
         }
         String finalKey = resourceName + key;
@@ -101,7 +103,7 @@ public final class PropertyUtils {
             loadProperties(resourceName);
         }
         String value = propMap.get(finalKey);
-        return StrUtils.isBlank(value) ? defaultValue : value;
+        return StringUtils.isBlank(value) ? defaultValue : value;
     }
 
     /**

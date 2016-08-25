@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.dexcoder.commons.utils.StrUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.dexcoder.dal.BoundSql;
 import com.dexcoder.dal.handler.MappingHandler;
 
@@ -57,7 +58,7 @@ public class WhereBuilder extends AbstractSqlBuilder {
                 continue;
             }
             String columnName = metaTable.getColumnAndTableAliasName(entry.getValue());
-            if (StrUtils.isNotBlank(autoField.getLogicalOperator()) && sb.length() > COMMAND_OPEN.length()
+            if (StringUtils.isNotBlank(autoField.getLogicalOperator()) && sb.length() > COMMAND_OPEN.length()
                 && !isFieldBracketBegin(preAutoFile)) {
                 sb.append(autoField.getLogicalOperator()).append(" ");
             }

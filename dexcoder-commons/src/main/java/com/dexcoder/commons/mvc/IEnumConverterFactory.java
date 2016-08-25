@@ -1,11 +1,11 @@
 package com.dexcoder.commons.mvc;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 
 import com.dexcoder.commons.enums.IEnum;
 import com.dexcoder.commons.utils.EnumUtils;
-import com.dexcoder.commons.utils.StrUtils;
 
 /**
  * 枚举转换工厂
@@ -53,7 +53,7 @@ public class IEnumConverterFactory implements ConverterFactory<String, Enum> {
          * @return
          */
         public T convert(String source) {
-            if (StrUtils.isBlank(source)) {
+            if (StringUtils.isBlank(source)) {
                 return null;
             }
             return EnumUtils.getEnum(enumType, source);

@@ -4,12 +4,13 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.*;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.dexcoder.commons.enums.IEnum;
 import com.dexcoder.commons.exceptions.CommonsAssistantException;
 import com.dexcoder.commons.pager.Pageable;
 import com.dexcoder.commons.utils.ClassUtils;
 import com.dexcoder.commons.utils.NameUtils;
-import com.dexcoder.commons.utils.StrUtils;
 
 /**
  * Java Bean 对象转换器
@@ -118,7 +119,7 @@ public class BeanConverter {
 
             String name = entry.getKey();
             if (delimiter != null) {
-                name = StrUtils.indexOf(name, delimiter) != -1 ? NameUtils.getCamelName(name, delimiter) : name
+                name = StringUtils.indexOf(name, delimiter) != -1 ? NameUtils.getCamelName(name, delimiter) : name
                     .toLowerCase();
             }
             PropertyDescriptor targetPd = getPropertyDescriptor(beanClass, name);
