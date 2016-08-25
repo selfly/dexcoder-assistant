@@ -19,13 +19,13 @@ public interface JdbcDao {
      * @param entity
      * @return
      */
-    <T> T insert(Object entity);
+    <T> T insert(Serializable entity);
 
     /**
      * 插入一条记录 自动处理主键
      *
      * @param criteria the criteria
-     * @return long long
+     * @return T
      */
     <T> T insert(Criteria criteria);
 
@@ -36,14 +36,14 @@ public interface JdbcDao {
      * @param entity
      * @return
      */
-    Serializable insert(Criteria criteria, Object entity);
+    <T> T insert(Criteria criteria, Serializable entity);
 
     /**
      * 保存一条记录，不处理主键
      *
      * @param entity
      */
-    void save(Object entity);
+    void save(Serializable entity);
 
     /**
      * 保存一条记录，不处理主键
@@ -64,7 +64,7 @@ public interface JdbcDao {
      *
      * @param entity the entity
      */
-    int update(Object entity);
+    int update(Serializable entity);
 
     /**
      * 根据实体更新
@@ -73,7 +73,7 @@ public interface JdbcDao {
      * @param isIgnoreNull 是否忽略null值的属性 默认true
      * @return
      */
-    int update(Object entity, boolean isIgnoreNull);
+    int update(Serializable entity, boolean isIgnoreNull);
 
     /**
      * 根据Criteria删除
@@ -87,7 +87,7 @@ public interface JdbcDao {
      *
      * @param entity
      */
-    int delete(Object entity);
+    int delete(Serializable entity);
 
     /**
      * 删除记录
@@ -95,7 +95,7 @@ public interface JdbcDao {
      * @param clazz the clazz
      * @param id the id
      */
-    int delete(Class<?> clazz, Long id);
+    int delete(Class<?> clazz, Serializable id);
 
     /**
      * 按设置的条件查询
@@ -147,7 +147,7 @@ public interface JdbcDao {
      * @param entity
      * @return
      */
-    int queryCount(Object entity);
+    int queryCount(Serializable entity);
 
     /**
      * 查询记录数
@@ -164,7 +164,7 @@ public interface JdbcDao {
      * @param criteria the criteria
      * @return int int
      */
-    int queryCount(Object entity, Criteria criteria);
+    int queryCount(Serializable entity, Criteria criteria);
 
     /**
      * 根据主键得到记录
@@ -174,7 +174,7 @@ public interface JdbcDao {
      * @param id the id
      * @return t
      */
-    <T> T get(Class<T> clazz, Long id);
+    <T> T get(Class<T> clazz, Serializable id);
 
     /**
      * 根据主键得到记录
@@ -184,7 +184,7 @@ public interface JdbcDao {
      * @param <T>
      * @return
      */
-    <T> T get(Criteria criteria, Long id);
+    <T> T get(Criteria criteria, Serializable id);
 
     /**
      * 查询单个记录
@@ -232,7 +232,7 @@ public interface JdbcDao {
      * @param elementType the element type
      * @return list
      */
-    <T> List<T> queryObjectList(Criteria criteria, Object entity, Class<T> elementType);
+    <T> List<T> queryObjectList(Criteria criteria, Serializable entity, Class<T> elementType);
 
     /**
      * 查询列表 例如使用函数后和列不排斥的情况
