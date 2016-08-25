@@ -12,6 +12,27 @@ import org.apache.commons.lang3.StringUtils;
 public class NameUtils {
 
     /**
+     * 获取合法的变量名(只允许字母,数字,下划线)
+     * 
+     * @param name
+     * @return
+     */
+    public static String getLegalName(String name) {
+
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < name.length(); i++) {
+
+            char c = name.charAt(i);
+
+            if (Character.isLetter(c) || Character.isDigit(c) || c == '_') {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
      * 首字母大写
      *
      * @param name

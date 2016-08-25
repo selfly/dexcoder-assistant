@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import com.dexcoder.dal.spring.mapper.JdbcRowMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.*;
@@ -64,8 +65,8 @@ public abstract class AbstractJdbcDaoImpl {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                String pkColumnName = getMappingHandler().getPkColumnName(clazz);
-                PreparedStatement ps = con.prepareStatement(boundSql.getSql(), new String[] { pkColumnName });
+                String pkFieldName = getMappingHandler().getPkFieldName(clazz);
+                PreparedStatement ps = con.prepareStatement(boundSql.getSql(), new String[] { pkFieldName });
                 int index = 0;
                 for (Object param : boundSql.getParameters()) {
                     index++;
@@ -119,7 +120,7 @@ public abstract class AbstractJdbcDaoImpl {
     protected <T> RowMapper<T> getRowMapper(Class<T> clazz) {
 
         if (StringUtils.isBlank(rowMapperClass)) {
-            return BeanPropertyRowMapper.newInstance(clazz);
+            return JdbcRowMapper.newInstance(clazz);
         } else {
             return (RowMapper<T>) ClassUtils.newInstance(rowMapperClass);
         }

@@ -19,10 +19,10 @@ public class AutoField {
      */
     private String             name;
 
-    /**
-     * 别名
-     */
-    private String             annotationName;
+    //    /**
+    //     * 别名
+    //     */
+    //    private String             annotationName;
 
     /**
      * 逻辑操作符 and or
@@ -75,9 +75,9 @@ public class AutoField {
         return name;
     }
 
-    public String getAnnotationName() {
-        return annotationName;
-    }
+    //    public String getAnnotationName() {
+    //        return annotationName;
+    //    }
 
     public String getLogicalOperator() {
         return logicalOperator;
@@ -124,13 +124,13 @@ public class AutoField {
             return this;
         }
 
-        public Builder annotationName(String annotationName) {
-            autoField.annotationName = annotationName;
-            return this;
-        }
+        //        public Builder annotationName(String annotationName) {
+        //            autoField.annotationName = annotationName;
+        //            return this;
+        //        }
 
         public AutoField build() {
-            assert autoField.name != null || autoField.annotationName != null;
+            assert autoField.name != null;
             return autoField;
         }
     }

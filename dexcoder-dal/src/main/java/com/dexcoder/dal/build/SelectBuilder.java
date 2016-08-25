@@ -128,13 +128,7 @@ public class SelectBuilder extends AbstractSqlBuilder {
             if (aTransient != null) {
                 continue;
             }
-            String fieldAnnotationName = null;
-            Column aColumn = readMethod.getAnnotation(Column.class);
-            if (aColumn != null) {
-                fieldAnnotationName = aColumn.name();
-            }
-            AutoField autoField = new AutoField.Builder().name(pd.getName()).annotationName(fieldAnnotationName)
-                .build();
+            AutoField autoField = new AutoField.Builder().name(pd.getName()).build();
             columnAutoFields.add(autoField);
         }
         metaTable.getColumnAutoFields().addAll(columnAutoFields);

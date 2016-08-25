@@ -51,7 +51,7 @@ public class JdbcDaoTest {
     @Test
     public void insert() {
         User user = new User();
-        user.setUserId(180003L);
+        user.setUserId(180006L);
         user.setLoginName("selfly_12");
         user.setPassword("123456");
         user.setEmail("javaer@live.com");
@@ -355,8 +355,15 @@ public class JdbcDaoTest {
     }
 
     @Test
-    public void queryObject() {
+    public void queryAnnObject() {
         Criteria criteria = Criteria.select(User.class).addSelectFunc("max([userId])");
+        Long userId = jdbcDao.queryObject(criteria);
+        Assert.assertTrue(userId > 0);
+    }
+
+    @Test
+    public void queryObject() {
+        Criteria criteria = Criteria.select(AnnotationUser.class).addSelectFunc("max([usernameId])");
         Long userId = jdbcDao.queryObject(criteria);
         Assert.assertTrue(userId > 0);
     }
@@ -537,16 +544,16 @@ public class JdbcDaoTest {
 
         //注解对应了 USER_A 表
         AnnotationUser annotationUser = new AnnotationUser();
-        annotationUser.setLoginName("annotation_12");
+        annotationUser.setUsername("annotation_12");
         //数据库中desc是关键字 注解名称
-        annotationUser.setDesc("test desc");
+        annotationUser.setDescription("test desc");
         annotationUser.setGmtCreate(new Date());
         Long userId = jdbcDao.insert(annotationUser);
         Assert.assertNotNull(userId);
 
         //查询时表中没有gmtCreate字段，注解进行了忽略
         AnnotationUser annotationUser1 = jdbcDao.get(AnnotationUser.class, userId);
-        Assert.assertEquals(annotationUser1.getLoginName(), "annotation_12");
+        Assert.assertEquals(annotationUser1.getUsername(), "annotation_12");
     }
 
     @Test
@@ -560,7 +567,7 @@ public class JdbcDaoTest {
 
         //查询时表中没有gmtCreate字段，注解进行了忽略
         AnnotationUser annotationUser1 = jdbcDao.get(AnnotationUser.class, userId);
-        Assert.assertEquals(annotationUser1.getLoginName(), "annUser");
+        Assert.assertEquals(annotationUser1.getUsername(), "annUser");
     }
 
     @Test
@@ -569,10 +576,10 @@ public class JdbcDaoTest {
         jdbcDao.delete(AnnotationUser.class, -1L);
         //注解对应了 USER_A 表
         AnnotationUser annotationUser = new AnnotationUser();
-        annotationUser.setUserId(-1L);
-        annotationUser.setLoginName("annotation_12");
+        annotationUser.setUsernameId(-1L);
+        annotationUser.setUsername("annotation_12");
         //数据库中desc是关键字 注解名称
-        annotationUser.setDesc("test desc");
+        annotationUser.setDescription("test desc");
         annotationUser.setGmtCreate(new Date());
         jdbcDao.save(annotationUser);
 
@@ -587,16 +594,16 @@ public class JdbcDaoTest {
         Long userId = this.insertAnnotationUser();
         //注解对应了 USER_A 表
         AnnotationUser updateUser = new AnnotationUser();
-        updateUser.setUserId(userId);
-        updateUser.setLoginName("annotation_update");
+        updateUser.setUsernameId(userId);
+        updateUser.setUsername("annotation_update");
         //数据库中desc是关键字 注解名称
-        updateUser.setDesc("test desc update");
+        updateUser.setDescription("test desc update");
         int i = jdbcDao.update(updateUser);
         Assert.assertTrue(i > 0);
 
         //查询时表中没有gmtCreate字段，注解进行了忽略
         AnnotationUser annotationUser1 = jdbcDao.get(AnnotationUser.class, userId);
-        Assert.assertEquals(annotationUser1.getLoginName(), "annotation_update");
+        Assert.assertEquals(annotationUser1.getUsername(), "annotation_update");
     }
 
     @Test
@@ -612,14 +619,14 @@ public class JdbcDaoTest {
 
         //查询时表中没有gmtCreate字段，注解进行了忽略
         AnnotationUser annotationUser1 = jdbcDao.get(AnnotationUser.class, userId);
-        Assert.assertEquals(annotationUser1.getLoginName(), "criteriaUserUpdate");
+        Assert.assertEquals(annotationUser1.getUsername(), "criteriaUserUpdate");
     }
 
     @Test
     public void testAnnotationDelete() {
         Long userId = this.insertAnnotationUser();
         AnnotationUser annotationUser = new AnnotationUser();
-        annotationUser.setUserId(userId);
+        annotationUser.setUsernameId(userId);
         int i = jdbcDao.delete(annotationUser);
         Assert.assertTrue(i > 0);
         //查询时表中没有gmtCreate字段，注解进行了忽略
@@ -659,10 +666,9 @@ public class JdbcDaoTest {
 
     @Test
     public void testAnnotationSelect2() {
-        this.insertAnnotationUser();
         Long userId = this.insertAnnotationUser();
         AnnotationUser annotationUser = new AnnotationUser();
-        annotationUser.setUserId(userId);
+        annotationUser.setUsernameId(userId);
         List<AnnotationUser> userList = jdbcDao.queryList(annotationUser);
         Assert.assertTrue(userList.size() == 1);
     }
@@ -671,12 +677,25 @@ public class JdbcDaoTest {
     public void testAnnotationSelect3() {
         this.insertAnnotationUser();
         this.insertAnnotationUser();
-        Criteria criteria = Criteria.select(AnnotationUser.class).exclude("userId");
+        Criteria criteria = Criteria.select(AnnotationUser.class).exclude("usernameId");
         List<AnnotationUser> userList = jdbcDao.queryList(criteria);
         Assert.assertTrue(userList.size() > 1);
         for (AnnotationUser annotationUser : userList) {
-            Assert.assertNull(annotationUser.getUserId());
+            Assert.assertNull(annotationUser.getUsernameId());
         }
+    }
+
+    @Test
+    public void testAnnotationSelect4() {
+        Long userId = this.insertAnnotationUser();
+
+        AnnotationUser username = jdbcDao.querySingleResult(Criteria.select(AnnotationUser.class).where("usernameId",
+            new Object[] { userId }));
+        Assert.assertNotNull(username);
+        Assert.assertNotNull(username.getUsername());
+
+        AnnotationUser user = jdbcDao.get(AnnotationUser.class, userId);
+        Assert.assertNotNull(user.getDescription());
     }
 
     @Test
@@ -690,8 +709,8 @@ public class JdbcDaoTest {
 
         //注解对应了 USER_A 表
         AnnotationUser annotationUser = new AnnotationUser();
-        annotationUser.setLoginName("annotation_12");
-        annotationUser.setDesc("test desc");
+        annotationUser.setUsername("annotation_123");
+        annotationUser.setDescription("test desc");
         annotationUser.setGmtCreate(new Date());
         return jdbcDao.insert(annotationUser);
     }

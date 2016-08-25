@@ -76,7 +76,7 @@ public class User extends Pageable {
         this.password = password;
     }
 
-    @Column(name = "`USER_AGE`")
+    @Column("`USER_AGE`")
     public Integer getUserAge() {
         return userAge;
     }

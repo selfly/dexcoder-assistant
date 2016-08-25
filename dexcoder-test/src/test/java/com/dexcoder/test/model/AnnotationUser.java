@@ -10,19 +10,19 @@ import com.dexcoder.dal.annotation.Transient;
 /**
  * Created by liyd on 2016-1-14.
  */
-@Table(name = "USER_A", pkField = "userId", pkColumn = "USER_ID")
+@Table(name = "USER_A", pkField = "usernameId")
 public class AnnotationUser extends Pageable {
 
     private static final long serialVersionUID = -3902415084403784275L;
 
     /** 用户id */
-    private Long              userId;
+    private Long              usernameId;
 
     /** 登录名 */
-    private String            loginName;
+    private String            username;
 
     /** 注释 数据库关键字 */
-    private String            desc;
+    private String            description;
 
     /** 创建时间 */
     private Date              gmtCreate;
@@ -30,29 +30,32 @@ public class AnnotationUser extends Pageable {
     /** 修改时间 数据库无 */
     private Date              gmtModify;
 
-    public Long getUserId() {
-        return userId;
+
+    @Column("user_id")
+    public Long getUsernameId() {
+        return usernameId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUsernameId(Long usernameId) {
+        this.usernameId = usernameId;
     }
 
-    @Column(name = "`DESC`")
-    public String getDesc() {
-        return desc;
+    @Column("`DESC`")
+    public String getDescription() {
+        return description;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getLoginName() {
-        return loginName;
+    @Column("login_name")
+    public String getUsername() {
+        return username;
     }
 
-    public void setLoginName(String loginName) {
-        this.loginName = loginName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Date getGmtCreate() {

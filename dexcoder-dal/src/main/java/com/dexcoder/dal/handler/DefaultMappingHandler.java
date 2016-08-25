@@ -37,16 +37,11 @@ public class DefaultMappingHandler implements MappingHandler {
         return firstLowerName + PRI_FIELD_SUFFIX;
     }
 
-    public String getPkColumnName(Class<?> entityClass) {
-        String underlineName = NameUtils.getUnderlineName(entityClass.getSimpleName());
-        return underlineName + PRI_COLUMN_SUFFIX;
-    }
+    public String getColumnName(Class<?> entityClass, String fieldName, String annColumnName) {
 
-    public String getColumnName(Class<?> entityClass, String fieldName) {
-        //主键field跟column不一致的情况
-        String pkFieldName = this.getPkFieldName(entityClass);
-        if (StringUtils.equals(pkFieldName, fieldName)) {
-            return this.getPkColumnName(entityClass);
+        //默认如果有注解的列名,直接返回
+        if (StringUtils.isNotBlank(annColumnName)) {
+            return annColumnName;
         }
         return NameUtils.getUnderlineName(fieldName);
     }

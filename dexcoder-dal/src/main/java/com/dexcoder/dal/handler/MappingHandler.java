@@ -30,13 +30,13 @@ public interface MappingHandler {
      */
     String getPkFieldName(Class<?> entityClass);
 
-    /**
-     * 根据类名获取主键列名
-     *
-     * @param entityClass the entity class
-     * @return pK name
-     */
-    String getPkColumnName(Class<?> entityClass);
+//    /**
+//     * 根据类名获取主键列名
+//     *
+//     * @param entityClass the entity class
+//     * @return pK name
+//     */
+//    String getPkColumnName(Class<?> entityClass);
 
     /**
      * 根据属性名获取列名
@@ -45,7 +45,7 @@ public interface MappingHandler {
      * @param fieldName the field name
      * @return column name
      */
-    String getColumnName(Class<?> entityClass, String fieldName);
+    String getColumnName(Class<?> entityClass, String fieldName,String annColumnName);
 
     /**
      * 根据实体名获取主键序列名 oracle才有用 自增类主键数据库直接返回null即可

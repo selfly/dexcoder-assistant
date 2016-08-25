@@ -17,8 +17,6 @@ public @interface Table {
 
     String alias() default "";
 
-    String pkColumn() default "";
-
     String pkField() default "";
 
     Class<?> mappingHandler() default Object.class;

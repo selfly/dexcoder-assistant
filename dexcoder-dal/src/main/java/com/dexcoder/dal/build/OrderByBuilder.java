@@ -32,7 +32,8 @@ public class OrderByBuilder extends AbstractSqlBuilder {
         metaTable = new MetaTable.Builder(metaTable).mappingHandler(mappingHandler).build();
         StringBuilder sb = new StringBuilder(COMMAND_OPEN);
         if (metaTable.getAutoFields().isEmpty()) {
-            sb.append(metaTable.applyColumnTableAlias(metaTable.getPkColumnName())).append(" DESC");
+            sb.append(metaTable.applyColumnTableAlias(metaTable.getColumnName(metaTable.getPkFieldName()))).append(
+                " DESC");
         } else {
             for (Map.Entry<String, AutoField> entry : metaTable.getAutoFields().entrySet()) {
                 String columnName = metaTable.getColumnAndTableAliasName(entry.getValue());

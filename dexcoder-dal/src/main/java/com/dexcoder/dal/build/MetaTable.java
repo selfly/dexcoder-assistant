@@ -3,10 +3,7 @@ package com.dexcoder.dal.build;
 import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -34,11 +31,6 @@ public class MetaTable {
     private String                 tableAlias;
 
     /**
-     * 主键列名
-     */
-    private String                 pkColumnName;
-
-    /**
      * 类
      */
     private Class<?>               tableClass;
@@ -54,12 +46,12 @@ public class MetaTable {
     private MappingHandler         mappingHandler;
 
     /**
-     * 列
+     * select 列
      */
     private List<AutoField>        columnAutoFields;
 
     /**
-     * 操作的字段
+     * 操作的各类字段
      */
     private Map<String, AutoField> autoFields;
 
@@ -88,6 +80,9 @@ public class MetaTable {
      */
     private boolean                isOrderBy        = true;
 
+    /** field -> column 映射 */
+    private Map<String, String>    mappedFieldColumns;
+
     private MetaTable() {
     }
 
@@ -101,13 +96,6 @@ public class MetaTable {
 
     public List<AutoField> getFuncAutoFields() {
         return funcAutoFields;
-    }
-
-    public String getPkColumnName() {
-        if (StringUtils.isBlank(pkColumnName)) {
-            pkColumnName = mappingHandler.getPkColumnName(tableClass);
-        }
-        return pkColumnName;
     }
 
     public String getPkFieldName() {
@@ -133,7 +121,18 @@ public class MetaTable {
     }
 
     /**
-     * 是否拥用列
+     * 根据属性名获取列名
+     *
+     * @param fieldName
+     * @return
+     */
+    public String getColumnName(String fieldName) {
+        String annColumnName = this.mappedFieldColumns.get(fieldName);
+        return this.mappingHandler.getColumnName(tableClass, fieldName, annColumnName);
+    }
+
+    /**
+     * 是否拥有列
      *
      * @return
      */
@@ -171,18 +170,13 @@ public class MetaTable {
      * @return
      */
     public String getColumnAndTableAliasName(AutoField autoField) {
-        if (StringUtils.isBlank(autoField.getAnnotationName())) {
-            return getColumnAndTableAliasName(autoField.getName());
-        }
-        if (StringUtils.isBlank(this.tableAlias)) {
-            return autoField.getAnnotationName();
-        }
-        return new StringBuilder(this.tableAlias).append(".").append(autoField.getAnnotationName()).toString();
+
+        return getColumnAndTableAliasName(autoField.getName());
     }
 
     public String getColumnAndTableAliasName(String fieldName) {
-        String columnName = StringUtils.equals(fieldName, getPkFieldName()) ? getPkColumnName() : mappingHandler
-            .getColumnName(tableClass, fieldName);
+        String annColumnName = this.mappedFieldColumns.get(fieldName);
+        String columnName = mappingHandler.getColumnName(tableClass, fieldName, annColumnName);
         if (StringUtils.isBlank(this.tableAlias)) {
             return columnName;
         }
@@ -296,11 +290,11 @@ public class MetaTable {
         }
 
         public Builder tableClass(Class<?> tableClass) {
+            metaTable.mappedFieldColumns = new HashMap<String, String>();
             metaTable.tableClass = tableClass;
             Table aTable = tableClass.getAnnotation(Table.class);
             if (aTable != null) {
                 metaTable.annotationTableName = aTable.name();
-                metaTable.pkColumnName = aTable.pkColumn();
                 metaTable.pkFieldName = aTable.pkField();
                 if (StringUtils.isBlank(metaTable.tableAlias)) {
                     metaTable.tableAlias = aTable.alias();
@@ -308,6 +302,19 @@ public class MetaTable {
                 if (!Object.class.equals(aTable.mappingHandler())) {
                     metaTable.mappingHandler = ((MappingHandler) ClassUtils.newInstance(aTable.mappingHandler()));
                 }
+            }
+            BeanInfo selfBeanInfo = ClassUtils.getSelfBeanInfo(tableClass);
+            PropertyDescriptor[] propertyDescriptors = selfBeanInfo.getPropertyDescriptors();
+            for (PropertyDescriptor pd : propertyDescriptors) {
+                Method readMethod = pd.getReadMethod();
+                if (readMethod == null) {
+                    continue;
+                }
+                Column column = readMethod.getAnnotation(Column.class);
+                if (column == null) {
+                    continue;
+                }
+                metaTable.mappedFieldColumns.put(pd.getName(), column.value());
             }
             return this;
         }
@@ -333,14 +340,8 @@ public class MetaTable {
                     continue;
                 }
                 String fieldName = pd.getName();
-                String fieldAnnotationName = null;
-                Column aColumn = readMethod.getAnnotation(Column.class);
-                if (aColumn != null) {
-                    fieldAnnotationName = aColumn.name();
-                }
                 if (metaTable.columnAutoFields != null) {
-                    AutoField autoField = new AutoField.Builder().name(fieldName).annotationName(fieldAnnotationName)
-                        .build();
+                    AutoField autoField = new AutoField.Builder().name(fieldName).build();
                     metaTable.columnAutoFields.add(autoField);
                 }
                 //已经有了，以Criteria中为准
@@ -353,8 +354,8 @@ public class MetaTable {
                 if (value == null && isIgnoreNull) {
                     continue;
                 }
-                AutoField autoField = new AutoField.Builder().name(fieldName).annotationName(fieldAnnotationName)
-                    .logicalOperator("and").fieldOperator("=").type(AutoFieldType.NORMAL).value(value).build();
+                AutoField autoField = new AutoField.Builder().name(fieldName).logicalOperator("and").fieldOperator("=")
+                    .type(AutoFieldType.NORMAL).value(value).build();
                 metaTable.getAutoFields().put(fieldName, autoField);
             }
             return this;
@@ -377,7 +378,6 @@ public class MetaTable {
 
         public MetaTable build() {
             assert metaTable.tableClass != null;
-            //            assert metaTable.mappingHandler != null;
             return this.metaTable;
         }
     }
