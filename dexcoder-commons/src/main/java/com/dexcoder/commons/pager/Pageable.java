@@ -7,6 +7,8 @@ import java.util.Map;
 import com.dexcoder.commons.bean.BeanConverter;
 import com.dexcoder.commons.exceptions.CommonsAssistantException;
 import com.dexcoder.commons.utils.ClassUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
  * 分页等常用信息存储
@@ -144,5 +146,10 @@ public class Pageable implements Serializable {
 
     public void setKeywords(String keywords) {
         this.keywords = keywords;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
 }

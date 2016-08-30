@@ -10,6 +10,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.util.CollectionUtils;
 
 import com.dexcoder.commons.bean.BeanConverter;
 import com.dexcoder.commons.bean.LongIntegerConverter;
@@ -66,6 +67,9 @@ public abstract class AbstractJdbcDaoImpl {
      * @return
      */
     protected <T> T mapToBean(Map<String, Object> map, Class<T> beanClass) {
+        if (map == null || map.isEmpty()) {
+            return null;
+        }
         BeanConverter.registerConverter(new LongIntegerConverter(Long.class, Integer.class));
         return BeanConverter.underlineKeyMapToBean(map, beanClass);
     }
@@ -79,6 +83,9 @@ public abstract class AbstractJdbcDaoImpl {
      * @return list
      */
     protected <T> List<T> mapToBean(List<Map<String, Object>> mapList, Class<T> beanClass) {
+        if (CollectionUtils.isEmpty(mapList)) {
+            return null;
+        }
         BeanConverter.registerConverter(new LongIntegerConverter(Long.class, Integer.class));
         List<T> beans = BeanConverter.underlineKeyMapToBean(mapList, beanClass);
         Pager pager = PageControl.getPager();

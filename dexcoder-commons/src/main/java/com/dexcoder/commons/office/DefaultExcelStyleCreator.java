@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddressList;
 
@@ -150,6 +150,7 @@ public class DefaultExcelStyleCreator implements ExcelStyleCreator {
         // 设置日期
         DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
         String dateValue = dateFormat.format((Date) value);
+        dateValue = StringUtils.replace(dateValue, " 00:00:00", "");
         cell.setCellValue(dateValue);
     }
 

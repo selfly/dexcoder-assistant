@@ -1,23 +1,34 @@
 package com.dexcoder.commons.office;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * sheet中的一行数据
- *
+ * <p>
  * Created by liyd on 7/28/14.
  */
 public class ExcelRow {
 
-    /** 行中的列 */
+    /**
+     * 行中的列
+     */
     private List<ExcelCell> cells;
+
+    public ExcelRow() {
+        cells = new ArrayList<ExcelCell>();
+    }
 
     public List<ExcelCell> getCells() {
         return cells;
+    }
+
+    public void setCells(Object... values) {
+        for (Object value : values) {
+            this.addCell(value);
+        }
     }
 
     public void setCells(List<ExcelCell> cells) {
@@ -30,10 +41,6 @@ public class ExcelRow {
 
     public boolean hasCells() {
         return !cells.isEmpty();
-    }
-
-    public ExcelRow() {
-        cells = new ArrayList<ExcelCell>();
     }
 
     public boolean isEmptyRow() {

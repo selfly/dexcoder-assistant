@@ -267,8 +267,9 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
 
     public Map<String, Object> querySingleResultForSql(String refSql, String expectParamKey, Object[] params) {
         BoundSql boundSql = this.sqlFactory.getBoundSql(refSql, expectParamKey, params);
-        Map<String, Object> map = jdbcTemplate.queryForMap(boundSql.getSql(), boundSql.getParameters().toArray());
-        return map;
+        List<Map<String, Object>> maps = jdbcTemplate.queryForList(boundSql.getSql(), boundSql.getParameters()
+            .toArray());
+        return CollectionUtils.isEmpty(maps) ? null : maps.iterator().next();
     }
 
     public <T> T querySingleResultForSql(String refSql, String expectParamKey, Object[] params, Class<T> elementType) {

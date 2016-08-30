@@ -1,6 +1,7 @@
 package com.dexcoder.commons.office;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -8,23 +9,35 @@ import org.apache.commons.collections.CollectionUtils;
 
 /**
  * excel sheet信息及数据
- *
+ * <p>
  * Created by liyd on 7/28/14.
  */
 public class ExcelSheet {
 
-    /** sheet标题 */
+    /**
+     * sheet标题
+     */
     private String         sheetName;
 
-    /** 行标题，默认为第一行 */
+    /**
+     * 行标题，默认为第一行
+     */
     private List<String>   rowTitles;
 
-    /** sheet中的行 */
+    /**
+     * sheet中的行
+     */
     private List<ExcelRow> rows;
+
+    public ExcelSheet(String sheetName) {
+        this.sheetName = sheetName;
+        this.rowTitles = new ArrayList<String>();
+        this.rows = new ArrayList<ExcelRow>();
+    }
 
     /**
      * 获取行标题
-     * 
+     *
      * @return
      */
     public List<String> getRowTitles() {
@@ -34,7 +47,6 @@ public class ExcelSheet {
         }
         if (!CollectionUtils.isEmpty(rows) && !rows.iterator().next().isEmptyRow()) {
             List<ExcelCell> cells = rows.get(0).getCells();
-            rowTitles = new ArrayList<String>(cells.size());
             for (ExcelCell excelCell : cells) {
                 rowTitles.add(excelCell.getStringValue());
             }
@@ -43,9 +55,29 @@ public class ExcelSheet {
         return rowTitles;
     }
 
-    public void setRowTitles(List<String> rowTitles) {
+    public void createRowTitles(String... titles) {
+        this.rowTitles = Arrays.asList(titles);
+    }
+
+    public void createRowTitles(List<String> rowTitles) {
 
         this.rowTitles = rowTitles;
+    }
+
+    public void addRow(Object... values) {
+        ExcelRow excelRow = new ExcelRow();
+        excelRow.setCells(values);
+        this.rows.add(excelRow);
+    }
+
+    public void addRow(List<Object> values) {
+        ExcelRow excelRow = new ExcelRow();
+        excelRow.setCells(values);
+        this.rows.add(excelRow);
+    }
+
+    public void setRows(List<ExcelRow> rows) {
+        this.rows = rows;
     }
 
     public int getTotalRowsNum() {
@@ -54,6 +86,10 @@ public class ExcelSheet {
 
     public ExcelRow getRow(int i) {
         return rows == null ? null : rows.get(i);
+    }
+
+    public boolean hasContent() {
+        return !CollectionUtils.isEmpty(rowTitles) || hasRows();
     }
 
     public boolean hasRows() {
@@ -66,6 +102,7 @@ public class ExcelSheet {
             boolean emptyRow = iterator.next().isEmptyRow();
             if (!emptyRow) {
                 result = true;
+                break;
             }
         }
         return result;
@@ -81,10 +118,6 @@ public class ExcelSheet {
 
     public List<ExcelRow> getRows() {
         return rows;
-    }
-
-    public void setRows(List<ExcelRow> rows) {
-        this.rows = rows;
     }
 
     @Override
