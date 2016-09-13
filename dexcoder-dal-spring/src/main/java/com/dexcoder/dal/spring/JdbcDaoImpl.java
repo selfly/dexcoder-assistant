@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -186,23 +187,17 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
     public <T> T querySingleResult(T entity) {
         BoundSql boundSql = Criteria.select(entity.getClass()).mappingHandler(getMappingHandler()).build(entity, true);
         //采用list方式查询，当记录不存在时返回null而不会抛出异常
-        List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParameters().toArray(),
+        List<T> list = (List<T>) jdbcTemplate.query(boundSql.getSql(), boundSql.getParameters().toArray(),
             this.getRowMapper(entity.getClass()));
-        if (CollectionUtils.isEmpty(list)) {
-            return null;
-        }
-        return (T) list.iterator().next();
+        return DataAccessUtils.singleResult(list);
     }
 
     public <T> T querySingleResult(Criteria criteria) {
         BoundSql boundSql = criteria.mappingHandler(getMappingHandler()).build(true);
         //采用list方式查询，当记录不存在时返回null而不会抛出异常
-        List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParameters().toArray(),
+        List<T> list = (List<T>) jdbcTemplate.query(boundSql.getSql(), boundSql.getParameters().toArray(),
             this.getRowMapper(criteria.getEntityClass()));
-        if (CollectionUtils.isEmpty(list)) {
-            return null;
-        }
-        return (T) list.iterator().next();
+        return DataAccessUtils.singleResult(list);
     }
 
     public <T> T queryObject(Criteria criteria) {
@@ -269,7 +264,7 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
         BoundSql boundSql = this.sqlFactory.getBoundSql(refSql, expectParamKey, params);
         List<Map<String, Object>> maps = jdbcTemplate.queryForList(boundSql.getSql(), boundSql.getParameters()
             .toArray());
-        return CollectionUtils.isEmpty(maps) ? null : maps.iterator().next();
+        return DataAccessUtils.singleResult(maps);
     }
 
     public <T> T querySingleResultForSql(String refSql, String expectParamKey, Object[] params, Class<T> elementType) {
