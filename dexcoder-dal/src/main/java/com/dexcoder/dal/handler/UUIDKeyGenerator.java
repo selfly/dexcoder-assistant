@@ -7,7 +7,7 @@ import com.dexcoder.commons.utils.UUIDUtils;
 /**
  * Created by liyd on 16/8/25.
  */
-public class UuidKeyGenerator implements KeyGenerator {
+public class UUIDKeyGenerator implements KeyGenerator {
 
     public String handlePkFieldName(String pkFieldName, String dialect) {
         return pkFieldName;

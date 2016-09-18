@@ -94,7 +94,7 @@
         <property name="sqlFactory" ref="sqlFactory"/>
         <property name="keyGenerator" ref="uuidKeyGenerator"/>
     </bean>
-    <bean id="uuidKeyGenerator" class="com.dexcoder.dal.handler.UuidKeyGenerator"></bean>
+    <bean id="uuidKeyGenerator" class="com.dexcoder.dal.handler.UUIDKeyGenerator"></bean>
     <bean id="sqlFactory" class="com.dexcoder.dal.SimpleSqlFactory">
         <!--<property name="sqlLocation" value="user-sql.xml"/>-->
     </bean>
