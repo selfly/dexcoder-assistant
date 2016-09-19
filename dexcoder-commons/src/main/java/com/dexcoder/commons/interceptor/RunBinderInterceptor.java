@@ -2,11 +2,14 @@ package com.dexcoder.commons.interceptor;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +57,8 @@ public class RunBinderInterceptor {
         String targetClass = pjp.getTarget().getClass().getName();
 
         //被拦截方法
-        String targetMethod = pjp.getSignature().getName();
+        Signature signature = pjp.getSignature();
+        String targetMethod = signature.getName();
 
         //当前时间毫秒数
         long beginTime = System.currentTimeMillis();
@@ -75,6 +79,7 @@ public class RunBinderInterceptor {
             }
             RunBinderTransactionAspectSupport.setRollbackOnly();
             RunBinder.addError(dexcoderException);
+            result = this.getDefaultValue(signature);
             LOG.warn(String.format("已知异常,方法:[class=%s,method=%s],信息:[resultCode=%s,resultMsg=%s],参数:[%s]", targetClass,
                 targetMethod, dexcoderException.getResultCode(), dexcoderException.getResultMsg(), argsToString(pjp)),
                 dexcoderException);
@@ -85,6 +90,7 @@ public class RunBinderInterceptor {
             }
             RunBinderTransactionAspectSupport.setRollbackOnly();
             RunBinder.addError("UN_KNOWN_EXCEPTION", "未知异常");
+            result = this.getDefaultValue(signature);
             LOG.error(
                 String.format("未知异常,方法:[class=%s,method=%s],参数:[%s]", targetClass, targetMethod, argsToString(pjp)),
                 throwable);
@@ -113,6 +119,43 @@ public class RunBinderInterceptor {
     }
 
     /**
+     * 获取基本类型的默认值
+     * 如果方法返回的是基本的值类型,直接返回null会出异常
+     *
+     * @param signature
+     * @return
+     */
+    private Object getDefaultValue(Signature signature) {
+        if (!(signature instanceof MethodSignature)) {
+            return null;
+        }
+
+        MethodSignature methodSignature = (MethodSignature) signature;
+        Class returnType = methodSignature.getReturnType();
+        if (!returnType.isPrimitive()) {
+            return null;
+        }
+        if (returnType == Boolean.TYPE) {
+            return Boolean.FALSE;
+        } else if (returnType == Character.TYPE) {
+            return '\u0000';
+        } else if (returnType == Byte.TYPE) {
+            return (byte) 0;
+        } else if (returnType == Short.TYPE) {
+            return (short) 0;
+        } else if (returnType == Integer.TYPE) {
+            return 0;
+        } else if (returnType == Long.TYPE) {
+            return 0L;
+        } else if (returnType == Float.TYPE) {
+            return 0.0F;
+        } else if (returnType == Double.TYPE) {
+            return 0.0D;
+        }
+        return null;
+    }
+
+    /**
      * 获取参数字符串
      * 
      * @param pjp
@@ -120,17 +163,18 @@ public class RunBinderInterceptor {
      */
     private String argsToString(ProceedingJoinPoint pjp) {
         Object[] args = pjp.getArgs();
-        if (ArrayUtils.isEmpty(args)) {
-            return "";
-        }
-        StringBuilder sb = new StringBuilder();
-        for (Object obj : args) {
-            if (obj == null) {
-                sb.append("null;");
-            } else {
-                sb.append(obj.getClass().getName()).append("=").append(obj).append(";");
-            }
-        }
-        return sb.toString();
+        return ToStringBuilder.reflectionToString(args, ToStringStyle.MULTI_LINE_STYLE);
+        //        if (ArrayUtils.isEmpty(args)) {
+        //            return "";
+        //        }
+        //        StringBuilder sb = new StringBuilder();
+        //        for (Object obj : args) {
+        //            if (obj == null) {
+        //                sb.append("null;");
+        //            } else {
+        //                sb.append(obj.getClass().getName()).append("=").append(obj).append(";");
+        //            }
+        //        }
+        //        return sb.toString();
     }
 }
