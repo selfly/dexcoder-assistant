@@ -16,6 +16,7 @@ public class GenericTokenParser {
     }
 
     public String parse(String text) {
+        text = text.trim();
         StringBuilder builder = new StringBuilder();
         if (text != null && text.length() > 0) {
             char[] src = text.toCharArray();

@@ -1,5 +1,7 @@
 package com.dexcoder.dal.batis;
 
+import com.dexcoder.dal.handler.DefaultMappingHandler;
+import com.dexcoder.dal.handler.MappingHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -19,6 +21,8 @@ public class BatisSqlFactoryBean implements FactoryBean<BatisSqlFactory>, Initia
     private String          sqlLocation;
 
     private Configuration   configuration;
+
+    private MappingHandler mappingHandler;
 
     private BatisSqlFactory sqlFactory;
 
@@ -45,12 +49,25 @@ public class BatisSqlFactoryBean implements FactoryBean<BatisSqlFactory>, Initia
 
         for (Resource resource : resources) {
             try {
-                XMLMapperBuilder mapperParser = new XMLMapperBuilder(resource, this.configuration);
+                XMLMapperBuilder mapperParser = new XMLMapperBuilder(resource, this.configuration,getMappingHandler());
                 mapperParser.parse();
             } catch (Exception e) {
                 throw new JdbcAssistantException("读取resource文件失败:" + resource.getFilename(), e);
             }
         }
+    }
+
+    /**
+     * 获取名称处理器
+     *
+     * @return
+     */
+    protected MappingHandler getMappingHandler() {
+
+        if (this.mappingHandler == null) {
+            this.mappingHandler = new DefaultMappingHandler();
+        }
+        return this.mappingHandler;
     }
 
     public BatisSqlFactory getObject() throws Exception {
@@ -64,6 +81,10 @@ public class BatisSqlFactoryBean implements FactoryBean<BatisSqlFactory>, Initia
 
     public boolean isSingleton() {
         return true;
+    }
+
+    public void setMappingHandler(MappingHandler mappingHandler) {
+        this.mappingHandler = mappingHandler;
     }
 
     public void setSqlLocation(String sqlLocation) {

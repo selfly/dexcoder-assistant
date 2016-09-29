@@ -1,64 +1,71 @@
-//package com.dexcoder.dal.batis.parser;
-//
-//import java.beans.BeanInfo;
-//import java.beans.PropertyDescriptor;
-//import java.lang.reflect.Method;
-//import java.util.Map;
-//
-//import org.apache.commons.lang3.StringUtils;
-//
-//import com.dexcoder.commons.utils.ClassUtils;
-//import com.dexcoder.dal.annotation.Column;
-//import com.dexcoder.dal.annotation.Transient;
-//import com.dexcoder.dal.build.AutoField;
-//import com.dexcoder.dal.build.MetaTable;
-//import com.dexcoder.dal.handler.MappingHandler;
-//import com.dexcoder.dal.handler.TokenHandler;
-//
-///**
-// * Created by liyd on 16/3/31.
-// */
-//public class ClassFieldHandler implements TokenHandler {
-//
-//    private MappingHandler mappingHandler;
-//
-//    public ClassFieldHandler(MappingHandler mappingHandler) {
-//        this.mappingHandler = mappingHandler;
-//    }
-//
-//    public String handleToken(String content) {
-//        Class<?> clazz = ClassUtils.loadClass(StringUtils.trim(content));
-//        BeanInfo selfBeanInfo = ClassUtils.getSelfBeanInfo(clazz);
-//        PropertyDescriptor[] propertyDescriptors = selfBeanInfo.getPropertyDescriptors();
-//
-//        MetaTable metaTable = new MetaTable.Builder().initAutoFields().tableClass(clazz)
-//            .mappingHandler(this.mappingHandler).build();
-//        StringBuilder sb = new StringBuilder();
-//        for (PropertyDescriptor pd : propertyDescriptors) {
-//            Method readMethod = pd.getReadMethod();
-//            if (readMethod == null) {
-//                continue;
-//            }
-//            Transient aTransient = readMethod.getAnnotation(Transient.class);
-//            if (aTransient != null) {
-//                continue;
-//            }
-//            String fieldName = pd.getName();
-//            String fieldAnnotationName = null;
-//            Column aColumn = readMethod.getAnnotation(Column.class);
-//            if (aColumn != null) {
-//                fieldAnnotationName = aColumn.value();
-//            }
-//            AutoField autoField = new AutoField.Builder().name(fieldName).annotationName(fieldAnnotationName).build();
-//            metaTable.getAutoFields().put(fieldName, autoField);
-//        }
-//        for (Map.Entry<String, AutoField> entry : metaTable.getAutoFields().entrySet()) {
-//            String columnName = metaTable.getColumnAndTableAliasName(entry.getValue());
-//            sb.append(columnName).append(",");
-//        }
-//        if (sb.length() > 0) {
-//            sb.deleteCharAt(sb.length() - 1);
-//        }
-//        return sb.toString();
-//    }
-//}
+package com.dexcoder.dal.batis.parser;
+
+import com.dexcoder.commons.utils.ClassUtils;
+import com.dexcoder.dal.build.MetaTable;
+import com.dexcoder.dal.handler.MappingHandler;
+import com.dexcoder.dal.handler.TokenHandler;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * Created by liyd on 16/3/31.
+ */
+public class ClassFieldHandler implements TokenHandler {
+
+    private MappingHandler mappingHandler;
+
+    public ClassFieldHandler(MappingHandler mappingHandler) {
+        this.mappingHandler = mappingHandler;
+    }
+
+    public String handleToken(String content) {
+
+        int start = StringUtils.indexOf(content, ")") + 1;
+        int end = StringUtils.indexOf(content, "[");
+        String clazzName = StringUtils.substring(content, start != -1 ? start : 0, end != -1 ? end : content.length());
+        String tableAlias = this.getTokenStr(content, "(", ")");
+        List<String> includeFields = this.getTokenStrSplitList(content, "[+", "+]", ",");
+        List<String> excludeFields = this.getTokenStrSplitList(content, "[-", "-]", ",");
+        Class<?> clazz = ClassUtils.loadClass(StringUtils.trim(clazzName));
+        MetaTable metaTable = new MetaTable().initAutoFields().tableAlias(tableAlias).tableClass(clazz)
+                .mappingHandler(mappingHandler);
+        Set<String> classFields = new HashSet<String>(metaTable.getClassFields());
+        StringBuilder sb = new StringBuilder();
+        for (String field : classFields) {
+
+            if (excludeFields.contains(field)) {
+                continue;
+            }
+            String column = metaTable.getColumnAndTableAliasName(field);
+            if (!includeFields.isEmpty()) {
+                if (includeFields.contains(field)) {
+                    sb.append(column).append(",");
+                }
+                continue;
+            }
+            sb.append(column).append(",");
+        }
+        if (sb.length() > 0) {
+            sb.deleteCharAt(sb.length() - 1);
+        }
+        return sb.toString();
+    }
+
+    private List<String> getTokenStrSplitList(String content, String openToken, String closeToken, String split) {
+        String subStr = this.getTokenStr(content, openToken, closeToken);
+        return Arrays.asList(StringUtils.split(subStr.replaceAll(" ", ""), split));
+    }
+
+    private String getTokenStr(String content, String openToken, String closeToken) {
+        int start = StringUtils.indexOf(content, openToken);
+        int end = StringUtils.indexOf(content, closeToken);
+        if (start == -1 || end == -1) {
+            return "";
+        }
+        return StringUtils.substring(content, start + openToken.length(), end);
+    }
+}

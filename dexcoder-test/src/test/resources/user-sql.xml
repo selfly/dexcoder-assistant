@@ -5,7 +5,7 @@
 <mapper namespace="User">
 
     <sql id="columns">
-        <!--${com.dexcoder.test.model.User}-->
+        ${com.dexcoder.test.model.User},
         login_name,password,user_age,user_type,email,gmt_create
     </sql>
 

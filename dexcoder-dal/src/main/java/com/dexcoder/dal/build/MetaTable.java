@@ -15,7 +15,7 @@ import com.dexcoder.dal.handler.MappingHandler;
 
 /**
  * 表信息
- * 
+ *
  * Created by liyd on 2016-1-4.
  */
 public class MetaTable {
@@ -80,7 +80,12 @@ public class MetaTable {
      */
     private boolean                isOrderBy        = true;
 
-    /** field -> column 映射 */
+    /**
+     * 类的属性
+     */
+    private Set<String>              classFields;
+
+    /** field -> column 映射 名称不一样时 */
     private Map<String, String>    mappedFieldColumns;
 
     public MetaTable() {
@@ -96,6 +101,10 @@ public class MetaTable {
 
     public List<AutoField> getFuncAutoFields() {
         return funcAutoFields;
+    }
+
+    public Set<String> getClassFields() {
+        return classFields;
     }
 
     public String getPkFieldName() {
@@ -272,6 +281,7 @@ public class MetaTable {
     }
 
     public MetaTable tableClass(Class<?> tableClass) {
+        this.classFields = new HashSet<String>();
         this.mappedFieldColumns = new HashMap<String, String>();
         this.tableClass = tableClass;
         Table aTable = tableClass.getAnnotation(Table.class);
@@ -292,6 +302,7 @@ public class MetaTable {
             if (readMethod == null) {
                 continue;
             }
+            classFields.add(pd.getName());
             Column column = readMethod.getAnnotation(Column.class);
             if (column == null) {
                 continue;

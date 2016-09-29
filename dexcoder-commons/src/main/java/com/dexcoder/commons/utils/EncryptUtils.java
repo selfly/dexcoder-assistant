@@ -32,8 +32,8 @@ public class EncryptUtils {
             // BigInteger函数则将8位的字符串转换成16位hex值，用字符串来表示；得到字符串形式的hash值
             String md5 = new BigInteger(1, md.digest()).toString(16);
             //当数字以0开头时会去掉0，补齐
-            for (int i = 32; i > md5.length(); i--) {
-                md5 = "0" + md5;
+            if (md5.length() < 32) {
+                md5 = String.format("%32s", md5).replace(' ', '0');
             }
             return md5;
         } catch (Exception e) {
