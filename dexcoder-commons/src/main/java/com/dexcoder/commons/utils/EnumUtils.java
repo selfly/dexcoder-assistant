@@ -83,4 +83,9 @@ public final class EnumUtils {
         }
         return null;
     }
+
+    public static String getEnumVal(String clazzName, String code) {
+        Object anEnum = getEnum(clazzName, code);
+        return anEnum == null ? code : ((IEnum) anEnum).getDesc();
+    }
 }

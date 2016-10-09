@@ -25,6 +25,30 @@ public class AssertUtils {
         }
     }
 
+    public static void assertFalse(Boolean b, String message) {
+        if (b != null && b) {
+            throw new CommonsAssistantException(message);
+        }
+    }
+
+    public static void assertFalse(Boolean b, IEnum iEnum) {
+        if (b != null && b) {
+            throw new CommonsAssistantException(iEnum);
+        }
+    }
+
+    public static void assertTrue(Boolean b, String message) {
+        if (b == null || !b) {
+            throw new CommonsAssistantException(message);
+        }
+    }
+
+    public static void assertTrue(Boolean b, IEnum iEnum) {
+        if (b == null || !b) {
+            throw new CommonsAssistantException(iEnum);
+        }
+    }
+
     public static void assertEquals(int i1, int i2, IEnum message) {
         if (i1 != i2) {
             throw new CommonsAssistantException(message);
