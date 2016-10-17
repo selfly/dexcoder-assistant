@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.jdbc.core.ArgumentPreparedStatementSetter;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -54,14 +54,9 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
             jdbcTemplate.update(new PreparedStatementCreator() {
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
                     PreparedStatement ps = con.prepareStatement(boundSql.getSql(), new String[] { pkColumn });
-                    int index = 0;
-                    for (Object param : boundSql.getParameters()) {
-                        if (param instanceof Date) {
-                            ps.setDate(++index, new java.sql.Date(((Date) param).getTime()));
-                        } else {
-                            ps.setObject(++index, param);
-                        }
-                    }
+                    ArgumentPreparedStatementSetter pss = new ArgumentPreparedStatementSetter(boundSql.getParameters()
+                        .toArray());
+                    pss.setValues(ps);
                     return ps;
                 }
             }, keyHolder);
