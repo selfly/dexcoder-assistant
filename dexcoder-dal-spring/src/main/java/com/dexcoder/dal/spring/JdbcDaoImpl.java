@@ -41,7 +41,7 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
         KeyGenerator keyGenerator = this.getKeyGenerator();
         if (keyGenerator != null) {
             pkFieldName = keyGenerator.handlePkFieldName(pkFieldName, getDialect());
-            Serializable pkValue = keyGenerator.generateKeyValue(criteria.getClass(), getDialect());
+            Serializable pkValue = keyGenerator.generateKeyValue(criteria.getEntityClass(), getDialect());
             criteria.into(pkFieldName, pkValue);
             BoundSql boundSql = criteria.build(entity, true);
             jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
