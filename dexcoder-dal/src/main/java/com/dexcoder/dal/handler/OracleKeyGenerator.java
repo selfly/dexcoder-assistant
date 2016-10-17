@@ -9,6 +9,10 @@ import com.dexcoder.commons.utils.NameUtils;
  */
 public class OracleKeyGenerator implements KeyGenerator {
 
+    public boolean isSqlReturnVal() {
+        return true;
+    }
+
     public String handlePkFieldName(String pkFieldName, String dialect) {
         return String.format("[%s]", pkFieldName);
     }

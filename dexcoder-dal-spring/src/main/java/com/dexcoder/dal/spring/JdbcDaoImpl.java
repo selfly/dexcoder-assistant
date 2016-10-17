@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -38,30 +39,36 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
     public <T> T insert(Criteria criteria, Serializable entity) {
         criteria.mappingHandler(getMappingHandler());
         String pkFieldName = criteria.getPkField();
+        final String pkColumn = criteria.getColumnName(pkFieldName);
         KeyGenerator keyGenerator = this.getKeyGenerator();
+        Serializable pkValue = null;
         if (keyGenerator != null) {
             pkFieldName = keyGenerator.handlePkFieldName(pkFieldName, getDialect());
-            Serializable pkValue = keyGenerator.generateKeyValue(criteria.getEntityClass(), getDialect());
+            pkValue = keyGenerator.generateKeyValue(criteria.getEntityClass(), getDialect());
             criteria.into(pkFieldName, pkValue);
-            BoundSql boundSql = criteria.build(entity, true);
-            jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
-            return (T) pkValue;
-        } else {
-            final String pkColumn = criteria.getColumnName(pkFieldName);
-            final BoundSql boundSql = criteria.build(entity, true);
+        }
+
+        final BoundSql boundSql = criteria.build(entity, true);
+        if (keyGenerator == null || keyGenerator.isSqlReturnVal()) {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(new PreparedStatementCreator() {
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
                     PreparedStatement ps = con.prepareStatement(boundSql.getSql(), new String[] { pkColumn });
                     int index = 0;
                     for (Object param : boundSql.getParameters()) {
-                        index++;
-                        ps.setObject(index, param);
+                        if (param instanceof Date) {
+                            ps.setDate(++index, new java.sql.Date(((Date) param).getTime()));
+                        } else {
+                            ps.setObject(++index, param);
+                        }
                     }
                     return ps;
                 }
             }, keyHolder);
             return (T) (Long) keyHolder.getKey().longValue();
+        } else {
+            jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
+            return (T) pkValue;
         }
     }
 

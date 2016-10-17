@@ -8,6 +8,13 @@ import java.io.Serializable;
 public interface KeyGenerator {
 
     /**
+     * sql 是否返回值
+     * 
+     * @return
+     */
+    boolean isSqlReturnVal();
+
+    /**
      * 处理主键名(跟原生执行符号一致 {pkFieldName}field和value都原生执行 [pkFieldName]field会进行转换,value原生执行)
      *
      * @param pkFieldName the pk field name
