@@ -53,9 +53,9 @@ public class InsertBuilder extends AbstractSqlBuilder {
                 String columnName = metaTable.getColumnAndTableAliasName(autoField);
                 sql.append(columnName).append(",");
                 args.append("?");
+                params.add(autoField.getValue());
             }
             args.append(",");
-            params.add(autoField.getValue());
         }
         sql.deleteCharAt(sql.length() - 1);
         args.deleteCharAt(args.length() - 1);

@@ -19,12 +19,7 @@ public class DefaultMappingHandler implements MappingHandler {
     /**
      * 主键属性后缀
      */
-    private static final String PRI_FIELD_SUFFIX  = "Id";
-
-    /**
-     * 主键列后缀
-     */
-    private static final String PRI_COLUMN_SUFFIX = "_ID";
+    private static final String PRI_FIELD_SUFFIX = "Id";
 
     public String getTableName(Class<?> entityClass, Map<String, AutoField> fieldMap) {
         //Java属性的骆驼命名法转换回数据库下划线“_”分隔的格式
