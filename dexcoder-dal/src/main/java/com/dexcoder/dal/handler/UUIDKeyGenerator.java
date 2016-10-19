@@ -9,8 +9,7 @@ import com.dexcoder.commons.utils.UUIDUtils;
  */
 public class UUIDKeyGenerator implements KeyGenerator {
 
-
-    public boolean isSqlReturnVal() {
+    public boolean isPkValueBySql() {
         return false;
     }
 

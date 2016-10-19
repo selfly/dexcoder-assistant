@@ -49,7 +49,7 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
         }
 
         final BoundSql boundSql = criteria.build(entity, true);
-        if (keyGenerator == null || keyGenerator.isSqlReturnVal()) {
+        if (keyGenerator == null || keyGenerator.isPkValueBySql()) {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(new PreparedStatementCreator() {
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {

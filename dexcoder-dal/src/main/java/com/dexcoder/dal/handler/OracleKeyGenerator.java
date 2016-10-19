@@ -9,7 +9,7 @@ import com.dexcoder.commons.utils.NameUtils;
  */
 public class OracleKeyGenerator implements KeyGenerator {
 
-    public boolean isSqlReturnVal() {
+    public boolean isPkValueBySql() {
         return true;
     }
 

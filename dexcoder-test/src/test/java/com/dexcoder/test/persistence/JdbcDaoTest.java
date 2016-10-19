@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.dexcoder.commons.utils.UUIDUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -465,23 +466,37 @@ public class JdbcDaoTest {
         Assert.assertTrue(user.getUserId().equals(-2L));
     }
 
+    private void saveByName(String loginName) {
+        //先删除存在的测试数据
+        jdbcDao.delete(User.class, -2L);
+        User user = jdbcDao.get(User.class, -2L);
+        Assert.assertNull(user);
+
+        user = new User();
+        user.setUserId(-2L);
+        user.setLoginName(loginName);
+        user.setPassword("123456");
+        user.setEmail(loginName + "@live.com");
+        user.setUserAge(18);
+        user.setUserType("1");
+        user.setGmtCreate(new Date());
+        jdbcDao.save(user);
+
+        user = jdbcDao.get(User.class, -2L);
+        Assert.assertNotNull(user);
+    }
+
     @Test
     public void testBracket() {
 
-        this.save();
+        String loginName = UUIDUtils.getUUID8();
+        this.saveByName(loginName);
         Criteria criteria = Criteria.select(User.class).where("userType", new Object[] { "1" }).begin()
-            .and("loginName", new Object[] { "javaer@live.com" }).or("email", new Object[] { "javaer@live.com" }).end()
+            .and("loginName", new Object[] { loginName }).or("email", new Object[] { loginName + "@live.com" }).end()
             .and("password", new Object[] { "123456" });
         User user = jdbcDao.querySingleResult(criteria);
         Assert.assertNotNull(user);
-        Assert.assertTrue("javaer@live.com".equals(user.getLoginName()) || "javaer@live.com".equals(user.getEmail()));
-
-        criteria = Criteria.select(User.class).where("userType", new Object[] { "1" }).begin()
-            .and("loginName", new Object[] { "selfly-2" }).or("email", new Object[] { "selfly-2" }).end()
-            .and("password", new Object[] { "123456" });
-        user = jdbcDao.querySingleResult(criteria);
-        Assert.assertNotNull(user);
-        Assert.assertTrue("selfly-2".equals(user.getLoginName()) || "selfly-2".equals(user.getEmail()));
+        Assert.assertTrue(loginName.equals(user.getLoginName()) || (loginName + "@live.com").equals(user.getEmail()));
     }
 
     @Test
