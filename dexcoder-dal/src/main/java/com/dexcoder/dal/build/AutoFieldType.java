@@ -30,5 +30,6 @@ public enum AutoFieldType {
     /** 函数 */
     FUNC,
 
+    /** 拼装sql时忽略 */
     TRANSIENT
 }
