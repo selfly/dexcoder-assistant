@@ -9,7 +9,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import com.dexcoder.dal.page.*;
+import com.dexcoder.commons.page.*;
 
 /**
  * spring 分页拦截器

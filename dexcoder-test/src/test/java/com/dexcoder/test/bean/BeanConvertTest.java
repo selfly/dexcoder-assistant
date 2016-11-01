@@ -3,7 +3,7 @@ package com.dexcoder.test.bean;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.dexcoder.commons.bean.BeanConverter;
+import com.dexcoder.commons.bean.BeanKit;
 import com.dexcoder.test.model.User;
 import com.dexcoder.test.model.UserVo;
 
@@ -23,7 +23,7 @@ public class BeanConvertTest {
         user.setUserId(1000L);
         user.setLoginName("liyd");
 
-        User userVo = BeanConverter.convert(new User(), user);
+        User userVo = BeanKit.convert(new User(), user);
 
         System.out.println(userVo.getLoginName());
 
@@ -40,7 +40,7 @@ public class BeanConvertTest {
 
         map.put("userQQ", "12345678");
 
-        User user = BeanConverter.mapToBean(map, User.class);
+        User user = BeanKit.mapToBean(map, User.class);
 
         Assert.assertTrue(user.getUserId().equals(10000L));
         Assert.assertEquals(user.getLoginName(), "loginName");
@@ -60,7 +60,7 @@ public class BeanConvertTest {
         map.put("user_Age", 8);
         map.put("gmt_Create", new Date());
 
-        User user = BeanConverter.underlineKeyMapToBean(map, User.class);
+        User user = BeanKit.underlineKeyMapToBean(map, User.class);
 
         Assert.assertTrue(user.getUserId().equals(10000L));
         Assert.assertEquals(user.getLoginName(), "loginName");
@@ -77,7 +77,7 @@ public class BeanConvertTest {
         map.put("user-Age", 8);
         map.put("gmt-Create", new Date());
 
-        User user = BeanConverter.mapToBean(map, User.class,'-');
+        User user = BeanKit.mapToBean(map, User.class,'-');
 
         Assert.assertTrue(user.getUserId().equals(10000L));
         Assert.assertEquals(user.getLoginName(), "loginName");

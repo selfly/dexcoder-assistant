@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.dexcoder.dal.page.Pager;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -13,11 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.dexcoder.commons.page.PageControl;
+import com.dexcoder.commons.page.PageList;
 import com.dexcoder.commons.utils.UUIDUtils;
 import com.dexcoder.dal.JdbcDao;
 import com.dexcoder.dal.build.Criteria;
-import com.dexcoder.dal.page.PageControl;
-import com.dexcoder.dal.page.PageList;
 import com.dexcoder.test.model.AnnotationUser;
 import com.dexcoder.test.model.User;
 
@@ -529,7 +528,7 @@ public class JdbcDaoTest {
         List<User> users = jdbcDao.queryListForSql("select * from USER", User.class);
         Assert.assertTrue(users.size() == 10);
         Assert.assertNotNull(users.iterator().next().getUserId());
-        System.out.println(((PageList)users).getPager().getItems());
+        System.out.println(((PageList) users).getPager().getItems());
     }
 
     @Test

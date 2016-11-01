@@ -19,7 +19,7 @@ import com.dexcoder.commons.utils.NameUtils;
  * Date: 13-5-8 下午4:29
  * version $Id: BeanConverter.java, v 0.1 Exp $
  */
-public class BeanConverter {
+public class BeanKit {
 
     /**
      * map转为bean，key名为下划线命名方式

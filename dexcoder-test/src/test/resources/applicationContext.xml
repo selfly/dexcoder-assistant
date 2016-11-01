@@ -99,6 +99,6 @@
     <bean id="pageableInterceptor" class="com.dexcoder.dal.spring.page.PageableInterceptor">
         <property name="pageSqlHandler" ref="smartPageSqlHandler"/>
     </bean>
-    <bean id="smartPageSqlHandler" class="com.dexcoder.dal.page.SmartPageSqlHandler"/>
+    <bean id="smartPageSqlHandler" class="com.dexcoder.commons.page.SmartPageSqlHandler"/>
 
 </beans>

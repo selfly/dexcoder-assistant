@@ -5,12 +5,12 @@ import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import com.dexcoder.commons.bean.BeanConverter;
+import com.dexcoder.commons.bean.BeanKit;
 import com.dexcoder.commons.bean.LongIntegerConverter;
+import com.dexcoder.commons.page.PageList;
 import com.dexcoder.dal.handler.DefaultMappingHandler;
 import com.dexcoder.dal.handler.KeyGenerator;
 import com.dexcoder.dal.handler.MappingHandler;
-import com.dexcoder.dal.page.PageList;
 
 /**
  * Created by liyd on 2015-12-15.
@@ -19,22 +19,16 @@ public abstract class AbstractJdbcDaoImpl {
 
     protected static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
-    /**
-     * 名称处理器，为空按默认执行
-     */
+    /** 名称处理器，为空按默认执行 */
     protected MappingHandler        mappingHandler;
 
     /** 主键生成器 为空默认数据库自增 */
     protected KeyGenerator          keyGenerator;
 
-    /**
-     * 自定义sql处理
-     */
+    /** 自定义sql处理 */
     protected SqlFactory            sqlFactory;
 
-    /**
-     * 数据库方言
-     */
+    /** 数据库方言 */
     protected String                dialect;
 
     /**
@@ -49,8 +43,8 @@ public abstract class AbstractJdbcDaoImpl {
         if (map == null || map.isEmpty()) {
             return null;
         }
-        BeanConverter.registerConverter(new LongIntegerConverter(Long.class, Integer.class));
-        return BeanConverter.underlineKeyMapToBean(map, beanClass);
+        BeanKit.registerConverter(new LongIntegerConverter(Long.class, Integer.class));
+        return BeanKit.underlineKeyMapToBean(map, beanClass);
     }
 
     /**
@@ -65,8 +59,8 @@ public abstract class AbstractJdbcDaoImpl {
         if (CollectionUtils.isEmpty(mapList)) {
             return null;
         }
-        BeanConverter.registerConverter(new LongIntegerConverter(Long.class, Integer.class));
-        List<T> beans = BeanConverter.underlineKeyMapToBean(mapList, beanClass);
+        BeanKit.registerConverter(new LongIntegerConverter(Long.class, Integer.class));
+        List<T> beans = BeanKit.underlineKeyMapToBean(mapList, beanClass);
         //如果是分页的
         if (mapList instanceof PageList) {
             return new PageList<T>(beans, ((PageList) mapList).getPager());
@@ -87,10 +81,6 @@ public abstract class AbstractJdbcDaoImpl {
         return this.mappingHandler;
     }
 
-    public KeyGenerator getKeyGenerator() {
-        return keyGenerator;
-    }
-
     /**
      * 获取数据库方言,由具体子类实现
      * 
@@ -98,16 +88,20 @@ public abstract class AbstractJdbcDaoImpl {
      */
     public abstract String getDialect();
 
+    public void setDialect(String dialect) {
+        this.dialect = dialect;
+    }
+
     public void setMappingHandler(MappingHandler mappingHandler) {
         this.mappingHandler = mappingHandler;
     }
 
-    public void setKeyGenerator(KeyGenerator keyGenerator) {
-        this.keyGenerator = keyGenerator;
+    public KeyGenerator getKeyGenerator() {
+        return keyGenerator;
     }
 
-    public void setDialect(String dialect) {
-        this.dialect = dialect;
+    public void setKeyGenerator(KeyGenerator keyGenerator) {
+        this.keyGenerator = keyGenerator;
     }
 
     public void setSqlFactory(SqlFactory sqlFactory) {

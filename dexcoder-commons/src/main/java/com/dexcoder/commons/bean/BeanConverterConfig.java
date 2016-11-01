@@ -27,7 +27,7 @@ public class BeanConverterConfig {
                                                                                new HashMap<String, TypeConverter>());
 
     /**
-     * 获取实例，提供的功能应用于 {@link BeanConverter}.
+     * 获取实例，提供的功能应用于 {@link BeanKit}.
      * 这是一个伪单例 - 每一个线程的ContextClassLoader提供一个单例的实例
      * 这种机制提供了在同一个web容器中部署的应用程序之间的隔离
      *
@@ -39,7 +39,7 @@ public class BeanConverterConfig {
     }
 
     /**
-     * 设置实例，提供的功能应用于 {@link BeanConverter}.
+     * 设置实例，提供的功能应用于 {@link BeanKit}.
      * 这是一个伪单例 - 每一个线程的ContextClassLoader提供一个单例的实例
      * 这种机制提供了在同一个web容器中部署的应用程序之间的隔离
      *

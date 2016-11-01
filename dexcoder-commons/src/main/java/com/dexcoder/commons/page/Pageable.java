@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.dexcoder.commons.bean.BeanConverter;
+import com.dexcoder.commons.bean.BeanKit;
 import com.dexcoder.commons.exceptions.CommonsAssistantException;
 import com.dexcoder.commons.utils.ClassUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -108,7 +108,7 @@ public class Pageable implements Serializable {
     public <T> T getTargetObject(Class<T> clazz) {
         try {
             T t = clazz.newInstance();
-            return BeanConverter.convert(t, this);
+            return BeanKit.convert(t, this);
         } catch (Exception e) {
             throw new CommonsAssistantException("转换对象失败", e);
         }
