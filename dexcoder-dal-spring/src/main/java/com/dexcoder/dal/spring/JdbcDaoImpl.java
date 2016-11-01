@@ -7,17 +7,21 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.support.DataAccessUtils;
-import org.springframework.jdbc.core.ArgumentPreparedStatementSetter;
-import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.util.CollectionUtils;
 
+import com.dexcoder.commons.utils.ClassUtils;
+import com.dexcoder.dal.AbstractJdbcDaoImpl;
 import com.dexcoder.dal.BoundSql;
 import com.dexcoder.dal.JdbcDao;
 import com.dexcoder.dal.build.Criteria;
 import com.dexcoder.dal.handler.KeyGenerator;
+import com.dexcoder.dal.spring.mapper.JdbcRowMapper;
 
 /**
  * jdbc操作dao
@@ -26,6 +30,12 @@ import com.dexcoder.dal.handler.KeyGenerator;
  */
 @SuppressWarnings("unchecked")
 public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
+
+    /** spring jdbcTemplate 对象 */
+    protected JdbcOperations jdbcTemplate;
+
+    /** rowMapper，为空按默认执行 */
+    protected String         rowMapperClass;
 
     public <T> T insert(Serializable entity) {
         Criteria criteria = Criteria.insert(entity.getClass());
@@ -315,6 +325,44 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
     public int updateForSql(String refSql, String expectParamKey, Object[] params) {
         BoundSql boundSql = this.sqlFactory.getBoundSql(refSql, expectParamKey, params);
         return jdbcTemplate.update(boundSql.getSql(), boundSql.getParameters().toArray());
+    }
+
+    public String getDialect() {
+        if (StringUtils.isBlank(dialect)) {
+            dialect = jdbcTemplate.execute(new ConnectionCallback<String>() {
+                public String doInConnection(Connection con) throws SQLException, DataAccessException {
+                    return con.getMetaData().getDatabaseProductName().toUpperCase();
+                }
+            });
+        }
+        return dialect;
+    }
+
+    /**
+     * 获取rowMapper对象
+     *
+     * @param clazz
+     * @return
+     */
+    protected <T> RowMapper<T> getRowMapper(Class<T> clazz) {
+
+        if (StringUtils.isBlank(rowMapperClass)) {
+            return JdbcRowMapper.newInstance(clazz);
+        } else {
+            return (RowMapper<T>) ClassUtils.newInstance(rowMapperClass);
+        }
+    }
+
+    public JdbcOperations getJdbcTemplate() {
+        return jdbcTemplate;
+    }
+
+    public void setJdbcTemplate(JdbcOperations jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public void setRowMapperClass(String rowMapperClass) {
+        this.rowMapperClass = rowMapperClass;
     }
 
 }

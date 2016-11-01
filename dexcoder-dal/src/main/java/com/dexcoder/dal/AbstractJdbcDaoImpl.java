@@ -1,27 +1,16 @@
-package com.dexcoder.dal.spring;
+package com.dexcoder.dal;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.ConnectionCallback;
-import org.springframework.jdbc.core.JdbcOperations;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.util.CollectionUtils;
+import org.apache.commons.collections.CollectionUtils;
 
 import com.dexcoder.commons.bean.BeanConverter;
 import com.dexcoder.commons.bean.LongIntegerConverter;
-import com.dexcoder.commons.pager.Pager;
-import com.dexcoder.commons.utils.ClassUtils;
-import com.dexcoder.dal.SqlFactory;
 import com.dexcoder.dal.handler.DefaultMappingHandler;
 import com.dexcoder.dal.handler.KeyGenerator;
 import com.dexcoder.dal.handler.MappingHandler;
-import com.dexcoder.dal.spring.mapper.JdbcRowMapper;
-import com.dexcoder.dal.spring.page.PageControl;
+import com.dexcoder.dal.page.PageList;
 
 /**
  * Created by liyd on 2015-12-15.
@@ -31,22 +20,12 @@ public abstract class AbstractJdbcDaoImpl {
     protected static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
     /**
-     * spring jdbcTemplate 对象
-     */
-    protected JdbcOperations        jdbcTemplate;
-
-    /**
      * 名称处理器，为空按默认执行
      */
     protected MappingHandler        mappingHandler;
 
     /** 主键生成器 为空默认数据库自增 */
     protected KeyGenerator          keyGenerator;
-
-    /**
-     * rowMapper，为空按默认执行
-     */
-    protected String                rowMapperClass;
 
     /**
      * 自定义sql处理
@@ -88,28 +67,11 @@ public abstract class AbstractJdbcDaoImpl {
         }
         BeanConverter.registerConverter(new LongIntegerConverter(Long.class, Integer.class));
         List<T> beans = BeanConverter.underlineKeyMapToBean(mapList, beanClass);
-        Pager pager = PageControl.getPager();
-        if (pager != null) {
-            pager.setList(beans);
-            PageControl.setPager(pager);
+        //如果是分页的
+        if (mapList instanceof PageList) {
+            return new PageList<T>(beans, ((PageList) mapList).getPager());
         }
         return beans;
-    }
-
-    /**
-     * 获取rowMapper对象
-     *
-     * @param clazz
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    protected <T> RowMapper<T> getRowMapper(Class<T> clazz) {
-
-        if (StringUtils.isBlank(rowMapperClass)) {
-            return JdbcRowMapper.newInstance(clazz);
-        } else {
-            return (RowMapper<T>) ClassUtils.newInstance(rowMapperClass);
-        }
     }
 
     /**
@@ -129,20 +91,12 @@ public abstract class AbstractJdbcDaoImpl {
         return keyGenerator;
     }
 
-    protected String getDialect() {
-        if (StringUtils.isBlank(dialect)) {
-            dialect = jdbcTemplate.execute(new ConnectionCallback<String>() {
-                public String doInConnection(Connection con) throws SQLException, DataAccessException {
-                    return con.getMetaData().getDatabaseProductName().toUpperCase();
-                }
-            });
-        }
-        return dialect;
-    }
-
-    public void setJdbcTemplate(JdbcOperations jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    /**
+     * 获取数据库方言,由具体子类实现
+     * 
+     * @return
+     */
+    public abstract String getDialect();
 
     public void setMappingHandler(MappingHandler mappingHandler) {
         this.mappingHandler = mappingHandler;
@@ -150,10 +104,6 @@ public abstract class AbstractJdbcDaoImpl {
 
     public void setKeyGenerator(KeyGenerator keyGenerator) {
         this.keyGenerator = keyGenerator;
-    }
-
-    public void setRowMapperClass(String rowMapperClass) {
-        this.rowMapperClass = rowMapperClass;
     }
 
     public void setDialect(String dialect) {

@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.dexcoder.commons.utils.UUIDUtils;
+import com.dexcoder.dal.page.Pager;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -13,10 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.dexcoder.commons.pager.Pager;
+import com.dexcoder.commons.utils.UUIDUtils;
 import com.dexcoder.dal.JdbcDao;
 import com.dexcoder.dal.build.Criteria;
-import com.dexcoder.dal.spring.page.PageControl;
+import com.dexcoder.dal.page.PageControl;
+import com.dexcoder.dal.page.PageList;
 import com.dexcoder.test.model.AnnotationUser;
 import com.dexcoder.test.model.User;
 
@@ -253,23 +254,13 @@ public class JdbcDaoTest {
         this.save2();
         PageControl.performPage(1, 2);
         Criteria criteria = Criteria.select(User.class).include("loginName", "userId").asc("userId");
-        jdbcDao.queryList(criteria);
-        Pager pager = PageControl.getPager();
-        List<User> users = pager.getList(User.class);
+        PageList<User> users = (PageList) jdbcDao.queryList(criteria);
+        //        Pager pager = PageControl.getPager();
+        //        List<User> users = pager.getList(User.class);
         Assert.assertNotNull(users);
 
         int count = jdbcDao.queryCount(User.class);
-        Assert.assertEquals(pager.getItemsTotal(), count);
-
-        for (User us : users) {
-            Assert.assertNotNull(us.getLoginName());
-            Assert.assertNotNull(us.getUserId());
-            Assert.assertNull(us.getEmail());
-            Assert.assertNull(us.getPassword());
-            Assert.assertNull(us.getUserAge());
-            Assert.assertNull(us.getUserType());
-            Assert.assertNull(us.getGmtCreate());
-        }
+        Assert.assertEquals(users.getPager().getItems(), count);
 
         Assert.assertTrue(users.get(0).getUserId() < users.get(1).getUserId());
     }
@@ -525,11 +516,10 @@ public class JdbcDaoTest {
     public void testSelectSql3() {
 
         PageControl.performPage(1, 10);
-        jdbcDao
+        List<Map<String, Object>> maps = jdbcDao
             .queryListForSql("select t.* ,t2.login_name lgName from USER t left join USER t2 on t.user_id=t2.user_id");
-        Pager pager = PageControl.getPager();
-        List<Map<String, Object>> list = (List<Map<String, Object>>) pager.getList();
-        Assert.assertTrue(list.size() == 10);
+        Assert.assertTrue(maps.size() == 10);
+        System.out.println(((PageList) maps).getPager().getItems());
     }
 
     @Test
@@ -537,10 +527,9 @@ public class JdbcDaoTest {
 
         PageControl.performPage(1, 10);
         List<User> users = jdbcDao.queryListForSql("select * from USER", User.class);
-        Pager pager = PageControl.getPager();
-        List<User> list = pager.getList(User.class);
-        Assert.assertTrue(list.size() == 10);
-        Assert.assertNotNull(list.iterator().next().getUserId());
+        Assert.assertTrue(users.size() == 10);
+        Assert.assertNotNull(users.iterator().next().getUserId());
+        System.out.println(((PageList)users).getPager().getItems());
     }
 
     @Test

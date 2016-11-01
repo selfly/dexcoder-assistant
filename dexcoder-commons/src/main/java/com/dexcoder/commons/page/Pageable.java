@@ -1,4 +1,4 @@
-package com.dexcoder.commons.pager;
+package com.dexcoder.commons.page;
 
 import java.io.Serializable;
 import java.util.HashMap;

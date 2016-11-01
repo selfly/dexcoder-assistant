@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.dexcoder.commons.enums.IEnum;
 import com.dexcoder.commons.exceptions.CommonsAssistantException;
-import com.dexcoder.commons.pager.Pageable;
+import com.dexcoder.commons.page.Pageable;
 import com.dexcoder.commons.utils.ClassUtils;
 import com.dexcoder.commons.utils.NameUtils;
 

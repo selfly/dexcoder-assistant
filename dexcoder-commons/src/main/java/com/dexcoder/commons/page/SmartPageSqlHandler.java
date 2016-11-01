@@ -1,18 +1,16 @@
-package com.dexcoder.dal.spring.page;
+package com.dexcoder.commons.page;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.sun.org.apache.bcel.internal.generic.Select;
 import net.sf.jsqlparser.expression.Alias;
-import net.sf.jsqlparser.expression.Function;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
-
-import com.dexcoder.commons.pager.Pager;
 
 /**
  * Created by liyd on 16/6/8.
@@ -21,7 +19,7 @@ public class SmartPageSqlHandler extends SimplePageSqlHandler {
 
     private static final List<SelectItem> COUNT_ITEM;
 
-    private static final Alias            TABLE_ALIAS;
+    private static final Alias TABLE_ALIAS;
 
     static {
         COUNT_ITEM = new ArrayList<SelectItem>();

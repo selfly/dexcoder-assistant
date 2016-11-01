@@ -1,6 +1,4 @@
-package com.dexcoder.dal.spring.page;
-
-import com.dexcoder.commons.pager.Pager;
+package com.dexcoder.commons.page;
 
 /**
  * Created by liyd on 16/6/8.

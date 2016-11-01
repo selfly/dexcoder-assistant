@@ -2,7 +2,7 @@ package com.dexcoder.test.model;
 
 import java.util.Date;
 
-import com.dexcoder.commons.pager.Pageable;
+import com.dexcoder.commons.page.Pageable;
 import com.dexcoder.dal.annotation.Column;
 import com.dexcoder.dal.annotation.Table;
 import com.dexcoder.dal.annotation.Transient;
@@ -29,7 +29,6 @@ public class AnnotationUser extends Pageable {
 
     /** 修改时间 数据库无 */
     private Date              gmtModify;
-
 
     @Column("user_id")
     public Long getUsernameId() {

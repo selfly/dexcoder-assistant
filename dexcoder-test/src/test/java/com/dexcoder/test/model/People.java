@@ -1,8 +1,8 @@
 package com.dexcoder.test.model;
 
-import com.dexcoder.commons.pager.Pageable;
-
 import java.util.Date;
+
+import com.dexcoder.commons.page.Pageable;
 
 /**
  * Created by liyd on 16/8/25.

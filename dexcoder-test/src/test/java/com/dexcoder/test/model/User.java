@@ -2,9 +2,9 @@ package com.dexcoder.test.model;
 
 import java.util.Date;
 
+import com.dexcoder.commons.page.Pageable;
 import com.dexcoder.dal.annotation.Column;
 import com.dexcoder.dal.annotation.Transient;
-import com.dexcoder.commons.pager.Pageable;
 
 /**
  * 用户

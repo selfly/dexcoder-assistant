@@ -2,7 +2,7 @@ package com.dexcoder.test.model;
 
 import java.util.Date;
 
-import com.dexcoder.commons.pager.Pageable;
+import com.dexcoder.commons.page.Pageable;
 
 /**
  * Created by liyd on 16/10/17.
