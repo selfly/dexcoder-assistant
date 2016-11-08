@@ -19,8 +19,8 @@ import com.dexcoder.commons.page.*;
 @Aspect
 public class PageableInterceptor {
 
-    /** 数据库 */
-    public static String   DATABASE;
+    /** 数据库方言 */
+    private String         dialect;
 
     /** 分页sql处理器 */
     private PageSqlHandler pageSqlHandler;
@@ -42,17 +42,17 @@ public class PageableInterceptor {
         }
 
         JdbcTemplate target = (JdbcTemplate) pjp.getTarget();
-        if (DATABASE == null) {
+        if (dialect == null) {
             DatabaseMetaData metaData = target.getDataSource().getConnection().getMetaData();
-            DATABASE = metaData.getDatabaseProductName().toUpperCase();
+            dialect = metaData.getDatabaseProductName().toUpperCase();
         }
 
         Object[] args = pjp.getArgs();
         String querySql = (String) args[0];
-        args[0] = this.getPageSqlHandler().getPageSql(querySql, pager, DATABASE);
+        args[0] = this.getPageSqlHandler().getPageSql(querySql, pager, dialect);
 
         if (pager.isGetCount()) {
-            String countSql = this.getPageSqlHandler().getCountSql(querySql, pager, DATABASE);
+            String countSql = this.getPageSqlHandler().getCountSql(querySql, pager, dialect);
             Object[] countArgs = null;
             for (Object obj : args) {
                 if (obj instanceof Object[]) {
@@ -65,10 +65,6 @@ public class PageableInterceptor {
         Object result = pjp.proceed(args);
 
         return new PageList((List) result, pager);
-        //        PageList<?> pageList = new PageList<?>();
-        //        pager.setList((List<?>) result);
-        //
-        //        return result;
     }
 
     public PageSqlHandler getPageSqlHandler() {
@@ -80,5 +76,9 @@ public class PageableInterceptor {
 
     public void setPageSqlHandler(PageSqlHandler pageSqlHandler) {
         this.pageSqlHandler = pageSqlHandler;
+    }
+
+    public void setDialect(String dialect) {
+        this.dialect = dialect;
     }
 }
