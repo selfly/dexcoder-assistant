@@ -80,10 +80,16 @@ public class RunBinderInterceptor {
             RunBinderTransactionAspectSupport.setRollbackOnly();
             RunBinder.addError(dexcoderException);
             result = this.getDefaultValue(signature);
-            LOG.warn(String.format("已知异常,方法:[class=%s,method=%s],信息:[resultCode=%s,resultMsg=%s],参数:[%s]", targetClass,
-                targetMethod, dexcoderException.getResultCode(), dexcoderException.getResultMsg(), argsToString(pjp)),
-                dexcoderException);
-            //ignore
+            //已知异常,debug才输出异常堆栈信息
+            if (LOG.isDebugEnabled()) {
+                LOG.warn(String.format("已知异常,方法:[class=%s,method=%s],信息:[resultCode=%s,resultMsg=%s],参数:[%s]",
+                    targetClass, targetMethod, dexcoderException.getResultCode(), dexcoderException.getResultMsg(),
+                    argsToString(pjp)), dexcoderException);
+            } else {
+                LOG.info(String.format("已知异常,方法:[class=%s,method=%s],信息:[resultCode=%s,resultMsg=%s],参数:[%s]",
+                    targetClass, targetMethod, dexcoderException.getResultCode(), dexcoderException.getResultMsg(),
+                    argsToString(pjp)));
+            }
         } catch (Throwable throwable) {
             if (ai.get() > 1) {
                 throw new RuntimeException(throwable);
@@ -94,7 +100,6 @@ public class RunBinderInterceptor {
             LOG.error(
                 String.format("未知异常,方法:[class=%s,method=%s],参数:[%s]", targetClass, targetMethod, argsToString(pjp)),
                 throwable);
-            //ignore
         } finally {
             if (ai.decrementAndGet() == 0) {
                 methodHierarchy.remove();
