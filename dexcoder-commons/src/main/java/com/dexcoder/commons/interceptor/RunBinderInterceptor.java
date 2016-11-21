@@ -82,11 +82,11 @@ public class RunBinderInterceptor {
             result = this.getDefaultValue(signature);
             //已知异常,debug才输出异常堆栈信息
             if (LOG.isDebugEnabled()) {
-                LOG.warn(String.format("已知异常,方法:[class=%s,method=%s],信息:[resultCode=%s,resultMsg=%s],参数:[%s]",
+                LOG.debug(String.format("已知异常,方法:[class=%s,method=%s],信息:[resultCode=%s,resultMsg=%s],参数:[%s]",
                     targetClass, targetMethod, dexcoderException.getResultCode(), dexcoderException.getResultMsg(),
                     argsToString(pjp)), dexcoderException);
             } else {
-                LOG.info(String.format("已知异常,方法:[class=%s,method=%s],信息:[resultCode=%s,resultMsg=%s],参数:[%s]",
+                LOG.warn(String.format("已知异常,方法:[class=%s,method=%s],信息:[resultCode=%s,resultMsg=%s],参数:[%s]",
                     targetClass, targetMethod, dexcoderException.getResultCode(), dexcoderException.getResultMsg(),
                     argsToString(pjp)));
             }
