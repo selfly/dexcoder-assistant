@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.apache.commons.collections.CollectionUtils;
 
 /**
@@ -20,14 +21,17 @@ public class ExcelSheet {
     private String         sheetName;
 
     /**
+     * sheet中的所有行
+     */
+    private List<ExcelRow> rows;
+
+    /**
      * 行标题，默认为第一行
      */
     private List<String>   rowTitles;
 
-    /**
-     * sheet中的行
-     */
-    private List<ExcelRow> rows;
+    /** 数据行，按习惯把第一行作为标题 */
+    private List<ExcelRow> dataRows;
 
     public ExcelSheet(String sheetName) {
         this.sheetName = sheetName;
@@ -36,23 +40,40 @@ public class ExcelSheet {
     }
 
     /**
-     * 获取行标题
+     * 获取标题行
      *
      * @return
      */
     public List<String> getRowTitles() {
 
-        if (!CollectionUtils.isEmpty(rowTitles)) {
+        if (CollectionUtils.isNotEmpty(rowTitles)) {
             return rowTitles;
         }
-        if (!CollectionUtils.isEmpty(rows) && !rows.iterator().next().isEmptyRow()) {
+        if (CollectionUtils.isNotEmpty(rows) && !rows.iterator().next().isEmptyRow()) {
             List<ExcelCell> cells = rows.get(0).getCells();
             for (ExcelCell excelCell : cells) {
                 rowTitles.add(excelCell.getStringValue());
             }
-            rows.remove(0);
         }
         return rowTitles;
+    }
+
+    /**
+     * 获取数据行
+     *
+     * @return
+     */
+    public List<ExcelRow> getDataRows(){
+
+        if (CollectionUtils.isNotEmpty(dataRows)){
+            return dataRows;
+        }
+
+        if (CollectionUtils.isNotEmpty(rows)){
+            dataRows = rows.subList(1,rows.size());
+        }
+
+        return dataRows;
     }
 
     public void createRowTitles(String... titles) {
