@@ -6,6 +6,8 @@ package com.dexcoder.commons.page;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 包含分页信息的List
@@ -16,9 +18,12 @@ import java.util.Collection;
 public class PageList<T> extends ArrayList<T> {
 
     /** serialVersionUID */
-    private static final long serialVersionUID = 1418639564542250276L;
+    private static final long   serialVersionUID = 1418639564542250276L;
 
-    private Pager             pager;
+    private Pager               pager;
+
+    /** 附加的数据 */
+    private Map<String, Object> extraData;
 
     /**
      * 创建一个<code>PageList</code>。
@@ -44,6 +49,17 @@ public class PageList<T> extends ArrayList<T> {
     public PageList(Collection<T> c, Pager pager) {
         super(c);
         this.pager = (pager == null) ? new Pager() : pager;
+    }
+
+    public Object getExtraData(String key) {
+        return extraData != null ? extraData.get(key) : null;
+    }
+
+    public void addExtraData(String key, Object obj) {
+        if (this.extraData == null) {
+            this.extraData = new HashMap<String, Object>();
+        }
+        this.extraData.put(key, obj);
     }
 
     public Pager getPager() {
