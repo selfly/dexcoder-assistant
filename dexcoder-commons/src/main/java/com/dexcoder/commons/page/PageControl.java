@@ -1,15 +1,10 @@
 package com.dexcoder.commons.page;
 
-import org.aspectj.lang.annotation.Aspect;
-
-import com.dexcoder.commons.page.Pageable;
-
 /**
  * 分页拦截器
  *
  * Created by liyd on 6/26/14.
  */
-@Aspect
 public class PageControl {
 
     /** 分页线程变量 */
@@ -48,13 +43,13 @@ public class PageControl {
      *
      * @param curPage
      * @param itemsPerPage
-     * @param isGetCount
+     * @param isGetTotal
      */
-    public static void performPage(int curPage, int itemsPerPage, boolean isGetCount) {
+    public static void performPage(int curPage, int itemsPerPage, boolean isGetTotal) {
         Pager pager = new Pager();
         pager.setPage(curPage);
         pager.setItemsPerPage(itemsPerPage);
-        pager.setGetCount(isGetCount);
+        pager.setGetTotal(isGetTotal);
         LOCAL_PAGER.set(pager);
     }
 

@@ -51,7 +51,7 @@ public class PageableInterceptor {
         String querySql = (String) args[0];
         args[0] = this.getPageSqlHandler().getPageSql(querySql, pager, dialect);
 
-        if (pager.isGetCount()) {
+        if (pager.isGetTotal()) {
             String countSql = this.getPageSqlHandler().getCountSql(querySql, pager, dialect);
             Object[] countArgs = null;
             for (Object obj : args) {

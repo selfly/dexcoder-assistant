@@ -28,7 +28,7 @@ public class Pager implements Serializable, Cloneable {
     private int               itemsPerPage;
 
     /** 是否进行count查询 */
-    private boolean           isGetCount;
+    private boolean           isGetTotal;
 
     /**
      * 创建一个分页器，初始项数为无限大<code>UNKNOWN_ITEMS</code>
@@ -76,12 +76,12 @@ public class Pager implements Serializable, Cloneable {
         return page;
     }
 
-    public boolean isGetCount() {
-        return isGetCount;
+    public boolean isGetTotal() {
+        return isGetTotal;
     }
 
-    public void setGetCount(boolean getCount) {
-        isGetCount = getCount;
+    public void setGetTotal(boolean getTotal) {
+        isGetTotal = getTotal;
     }
 
     /**
