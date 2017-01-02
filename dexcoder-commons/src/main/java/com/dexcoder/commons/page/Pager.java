@@ -155,6 +155,20 @@ public class Pager implements Serializable, Cloneable {
     }
 
     /**
+     * 设置第几条记录，使之返回该条记录所在的页数据项
+     * <br>
+     * 如每页显示10条，设置25，将返回第25条记录所在页的数据项(21-30)
+     *
+     * @param offset 要显示的项位置
+     *
+     * @return 指定项所在的页
+     */
+    public int setOffset(int offset) {
+        return setPage((offset / itemsPerPage) + 1);
+    }
+
+
+    /**
      * 取得当前页的长度，即当前页的实际项数。相当于 <code>endIndex() - beginIndex() + 1</code>
      *
      * @return 当前页的长度
