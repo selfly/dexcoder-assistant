@@ -22,12 +22,12 @@ public final class PropertyUtils {
     /**
      * 属性文件后缀
      */
-    private static final String        PRO_SUFFIX = ".properties";
+    private static final String                           PRO_SUFFIX   = ".properties";
 
     /**
      * 配置文件保存map
      */
-    private static Map<String, String> propMap    = new HashMap<String, String>();
+    private final static Map<String, Map<String, String>> RESOURCE_MAP = new HashMap<String, Map<String, String>>();
 
     /**
      * 加载资源文件
@@ -46,32 +46,41 @@ public final class PropertyUtils {
                 return new FileInputStream(configFile);
             }
         } catch (FileNotFoundException e) {
-            throw new CommonsAssistantException("加载xml文件失败:" + resourceName, e);
+            throw new CommonsAssistantException("加载文件失败:" + resourceName, e);
         }
     }
 
     /**
-     * 加载properties文件
-     *
-     * @param resourceName the resource name
+     * 获取properties文件所有属性
+     * 
+     * @param resourceName
+     * @return
      */
-    public static void loadProperties(String resourceName) {
+    public static Map<String, String> getProperties(String resourceName) {
+
+        String propertyFileName = getPropertyFileName(resourceName);
 
         try {
-            if (!StringUtils.endsWith(resourceName, PRO_SUFFIX)) {
-                resourceName += PRO_SUFFIX;
+
+            Map<String, String> propMap = RESOURCE_MAP.get(propertyFileName);
+            if (propMap == null) {
+
+                propMap = new HashMap<String, String>();
+                Properties prop = new Properties();
+                prop.load(loadResource(propertyFileName));
+                Iterator<Map.Entry<Object, Object>> iterator = prop.entrySet().iterator();
+
+                while (iterator.hasNext()) {
+                    Map.Entry<Object, Object> entry = iterator.next();
+                    propMap.put(String.valueOf(entry.getKey()), String.valueOf(entry.getValue()));
+                }
+                //加入配置文件属性
+                RESOURCE_MAP.put(propertyFileName, propMap);
             }
-            Properties prop = new Properties();
-            prop.load(loadResource(resourceName));
-            Iterator<Map.Entry<Object, Object>> iterator = prop.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<Object, Object> entry = iterator.next();
-                propMap.put(resourceName + String.valueOf(entry.getKey()), String.valueOf(entry.getValue()));
-            }
-            //为配置文件加入一个属性，用以判断该配置文件已加载过
-            propMap.put(resourceName, "true");
+
+            return propMap;
         } catch (IOException e) {
-            throw new CommonsAssistantException("加载配置文件失败:" + resourceName, e);
+            throw new CommonsAssistantException("加载配置文件失败:" + propertyFileName, e);
         }
     }
 
@@ -95,15 +104,25 @@ public final class PropertyUtils {
      * @return property
      */
     public static String getProperty(String resourceName, String key, String defaultValue) {
-        if (!StringUtils.endsWith(resourceName, PRO_SUFFIX)) {
-            resourceName += PRO_SUFFIX;
-        }
-        String finalKey = resourceName + key;
-        if (propMap.get(resourceName) == null) {
-            loadProperties(resourceName);
-        }
-        String value = propMap.get(finalKey);
+        String propertyFileName = getPropertyFileName(resourceName);
+        Map<String, String> map = getProperties(propertyFileName);
+        String value = map.get(key);
         return StringUtils.isBlank(value) ? defaultValue : value;
+    }
+
+    /**
+     * 获取properties文件后缀的名称
+     * 
+     * @param resourceName
+     * @return
+     */
+    private static String getPropertyFileName(String resourceName) {
+
+        String propertyFileName = resourceName;
+        if (!StringUtils.endsWith(resourceName, PRO_SUFFIX)) {
+            propertyFileName += PRO_SUFFIX;
+        }
+        return propertyFileName;
     }
 
     /**

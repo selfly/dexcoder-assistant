@@ -4,6 +4,8 @@
         "http://www.dexcoder.com/dtd/batis-mapper.dtd">
 <mapper namespace="User">
 
+    <!-- ${(t.)com.dexcoder.test.model.User[+ loginName,password +]} -->
+    <!-- ${(t.)com.dexcoder.test.model.User[- loginName,password -]} -->
     <sql id="columns">
         ${com.dexcoder.test.model.User},
         login_name,password,user_age,user_type,email,gmt_create
