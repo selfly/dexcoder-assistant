@@ -188,7 +188,7 @@ public class Pager implements Serializable, Cloneable {
      */
     public int getBeginIndex() {
         if (page > 0) {
-            return (itemsPerPage * (page - 1)) + 1;
+            return (itemsPerPage * (page - 1));
         } else {
             return 0;
         }
