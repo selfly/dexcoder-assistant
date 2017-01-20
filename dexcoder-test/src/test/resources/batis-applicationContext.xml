@@ -64,6 +64,6 @@
     <bean id="sqlFactory" class="com.dexcoder.dal.batis.BatisSqlFactoryBean">
         <property name="sqlLocation" value="user-sql.xml"/>
     </bean>
-    <bean id="pageControl" class="com.dexcoder.dal.spring.page.PageControl"></bean>
+    <bean id="pageControl" class="com.dexcoder.dal.spring.page.PageableInterceptor"></bean>
 
 </beans>
