@@ -80,7 +80,8 @@ public class Pageable implements Serializable {
      * @param <T>
      * @return
      */
-    public <T> T get(String key, Class<T> elementType) {
+    @SuppressWarnings("unchecked")
+	public <T> T get(String key, Class<T> elementType) {
         if (this.attachData == null) {
             return null;
         }

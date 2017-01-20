@@ -102,7 +102,8 @@ public class BeanConverter {
      * @param delimiter the delimiter
      * @return t
      */
-    public static <T> T mapToBean(Map<String, Object> map, Class<T> beanClass, Character delimiter) {
+    @SuppressWarnings("unchecked")
+	public static <T> T mapToBean(Map<String, Object> map, Class<T> beanClass, Character delimiter) {
 
         T bean = (T) ClassUtils.newInstance(beanClass);
         if (map == null) {

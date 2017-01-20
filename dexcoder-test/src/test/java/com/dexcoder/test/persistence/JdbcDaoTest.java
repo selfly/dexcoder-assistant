@@ -536,7 +536,7 @@ public class JdbcDaoTest {
     public void testSelectSql4() {
 
         PageControl.performPage(1, 10);
-        List<User> users = jdbcDao.queryListForSql("select * from USER", User.class);
+        jdbcDao.queryListForSql("select * from USER", User.class);
         Pager pager = PageControl.getPager();
         List<User> list = pager.getList(User.class);
         Assert.assertTrue(list.size() == 10);
@@ -717,6 +717,8 @@ public class JdbcDaoTest {
         Criteria criteria = Criteria.select(User.class).where("loginName", new Object[] { "selfly" });
         int i = jdbcDao.queryCount(criteria);
         List<User> users = jdbcDao.queryList(criteria);
+        System.out.println(i);
+        System.out.println(users.size());
     }
 
     private Long insertAnnotationUser() {
