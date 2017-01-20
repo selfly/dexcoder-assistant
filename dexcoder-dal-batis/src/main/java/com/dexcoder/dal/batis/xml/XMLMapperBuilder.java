@@ -13,7 +13,6 @@ import com.dexcoder.dal.batis.build.Configuration;
 import com.dexcoder.dal.batis.build.MapperBuilderAssistant;
 import com.dexcoder.dal.batis.parser.ClassFieldHandler;
 import com.dexcoder.dal.exceptions.JdbcAssistantException;
-import com.dexcoder.dal.handler.DefaultMappingHandler;
 import com.dexcoder.dal.handler.GenericTokenParser;
 import com.dexcoder.dal.handler.MappingHandler;
 

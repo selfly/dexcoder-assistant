@@ -23,7 +23,7 @@ public class CriteriaTest {
         user.setGmtBeginTime(new Date());
 
         System.out.println("---------------含entity-----------------------");
-        Criteria criteria = Criteria.insert(User.class).mappingHandler(new DefaultMappingHandler())
+        Criteria<User> criteria = Criteria.insert(User.class).mappingHandler(new DefaultMappingHandler())
             .into("userId", 10000L).into("loginName", "selfly").into("password", "123456");
         BoundSql boundSql = criteria.build(user, true);
         System.out.println(boundSql.getSql());
@@ -48,7 +48,7 @@ public class CriteriaTest {
         user.setUserType("1");
 
         System.out.println("---------------含entity-----------------------");
-        Criteria criteria = Criteria.update(User.class).set("loginName", "selfly").set("password", "123456")
+        Criteria<User> criteria = Criteria.update(User.class).set("loginName", "selfly").set("password", "123456")
             .where("userId", "not in", new Object[] { 10000L, 100001L, 10000L });
         BoundSql boundSql = criteria.mappingHandler(new DefaultMappingHandler()).build(user, true);
         System.out.println(boundSql.getSql());
@@ -90,7 +90,7 @@ public class CriteriaTest {
         user.setUserAge(18);
 
         System.out.println("---------------含entity-----------------------");
-        Criteria criteria = Criteria.delete(User.class).tableAlias("t")
+        Criteria<User> criteria = Criteria.delete(User.class).tableAlias("t")
             .where("userId", "not in", new Object[] { 10000L, 100001L, 10000L }).begin()
             .and("userType", new Object[] { 1111 }).or("password", new Object[] { "123456" }).end();
         BoundSql boundSql = criteria.mappingHandler(new DefaultMappingHandler()).build(user, true);
@@ -165,7 +165,7 @@ public class CriteriaTest {
         user.setEmail("selfly@dexcoder.com");
         user.setUserType("1");
 
-        Criteria criteria = Criteria.update(User.class).tableAlias("t").set("[userAge]", "[userAge] + 1")
+        Criteria<User> criteria = Criteria.update(User.class).tableAlias("t").set("[userAge]", "[userAge] + 1")
             .set("password", "123456").where("userId", "not in", new Object[] { 10000L, 100001L, 10000L });
         BoundSql boundSql = criteria.mappingHandler(new DefaultMappingHandler()).build(user, true);
         System.out.println(boundSql.getSql());
@@ -181,7 +181,7 @@ public class CriteriaTest {
         user.setEmail("selfly@dexcoder.com");
         user.setUserType("1");
 
-        Criteria criteria = Criteria.select(User.class).tableAlias("t").include("userId")
+        Criteria<User> criteria = Criteria.select(User.class).tableAlias("t").include("userId")
             .where("[userId]", new Object[] { "[userAge]" });
         BoundSql boundSql = criteria.mappingHandler(new DefaultMappingHandler()).build(user, true);
         System.out.println(boundSql.getSql());
@@ -197,7 +197,7 @@ public class CriteriaTest {
         user.setEmail("selfly@dexcoder.com");
         user.setUserType("1");
 
-        Criteria criteria = Criteria.delete(User.class).where("[userId]", new Object[] { "[userAge]" });
+        Criteria<User> criteria = Criteria.delete(User.class).where("[userId]", new Object[] { "[userAge]" });
         BoundSql boundSql = criteria.mappingHandler(new DefaultMappingHandler()).build(user, true);
         System.out.println(boundSql.getSql());
         for (Object obj : boundSql.getParameters()) {
@@ -212,7 +212,7 @@ public class CriteriaTest {
         user.setEmail("selfly@dexcoder.com");
         user.setUserType("1");
 
-        Criteria criteria = Criteria.select(User.class).tableAlias("t").addSelectFunc("count(*)")
+        Criteria<User> criteria = Criteria.select(User.class).tableAlias("t").addSelectFunc("count(*)")
             .where("[userId]", new Object[] { "[userAge]" });
         BoundSql boundSql = criteria.mappingHandler(new DefaultMappingHandler()).build(null, true);
         System.out.println(boundSql.getSql());

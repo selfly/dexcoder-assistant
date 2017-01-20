@@ -43,7 +43,7 @@ public class JdbcDaoTest {
             String userType = i % 3 == 0 ? "1" : "2";
             user.setUserType(userType);
             user.setGmtCreate(new Date());
-            Long id = jdbcDao.insert(user);
+            Long id = (Long)jdbcDao.insert(user);
             Assert.assertNotNull(id);
         }
 
@@ -58,15 +58,15 @@ public class JdbcDaoTest {
         user.setUserAge(18);
         user.setUserType("1");
         user.setGmtCreate(new Date());
-        Long id = jdbcDao.insert(user);
+        Long id = (Long)jdbcDao.insert(user);
         Assert.assertNotNull(id);
     }
 
     @Test
     public void insert2() {
-        Criteria criteria = Criteria.insert(User.class).set("loginName", "selfly_b").set("password", "12345678")
+        Criteria<User> criteria = Criteria.insert(User.class).set("loginName", "selfly_b").set("password", "12345678")
             .set("email", "selflly@foxmail.com").set("userAge", 22).set("userType", "2").set("gmtCreate", new Date());
-        Long id = jdbcDao.insert(criteria);
+        Long id = (Long)jdbcDao.insert(criteria);
         Assert.assertNotNull(id);
         System.out.println("insert:" + id);
     }
@@ -99,7 +99,7 @@ public class JdbcDaoTest {
         User user = jdbcDao.get(User.class, -3L);
         Assert.assertNull(user);
 
-        Criteria criteria = Criteria.insert(User.class).set("userId", -3L).set("loginName", "selfly-3")
+        Criteria<User> criteria = Criteria.insert(User.class).set("userId", -3L).set("loginName", "selfly-3")
             .set("password", "123456").set("email", "selfly@foxmail.com").set("userAge", 18).set("userType", "2")
             .set("gmtCreate", new Date());
         jdbcDao.save(criteria);
@@ -128,7 +128,7 @@ public class JdbcDaoTest {
         //插入测试数据
         this.save();
         this.save2();
-        Criteria criteria = Criteria.update(User.class).set("password", "update2")
+        Criteria<User> criteria = Criteria.update(User.class).set("password", "update2")
             .where("userId", new Object[] { -2L, -3L });
         int i = jdbcDao.update(criteria);
         Assert.assertEquals(i, 2);
@@ -146,7 +146,7 @@ public class JdbcDaoTest {
         User user = jdbcDao.get(User.class, -2L);
         Integer oldUserAge = user.getUserAge();
 
-        Criteria criteria = Criteria.update(User.class).set("[userAge]", "[userAge]+1")
+        Criteria<User> criteria = Criteria.update(User.class).set("[userAge]", "[userAge]+1")
             .where("userId", new Object[] { -2L });
         int i = jdbcDao.update(criteria);
         Assert.assertEquals(i, 1);
@@ -161,7 +161,7 @@ public class JdbcDaoTest {
         User user = jdbcDao.get(User.class, -2L);
         Integer oldUserAge = user.getUserAge();
 
-        Criteria criteria = Criteria.update(User.class).set("{USER_AGE}", "{USER_AGE + 1}")
+        Criteria<User> criteria = Criteria.update(User.class).set("{USER_AGE}", "{USER_AGE + 1}")
             .where("userId", new Object[] { -2L });
         int i = jdbcDao.update(criteria);
         Assert.assertEquals(i, 1);
@@ -252,8 +252,8 @@ public class JdbcDaoTest {
         this.save();
         this.save2();
         PageControl.performPage(1, 2);
-        Criteria criteria = Criteria.select(User.class).include("loginName", "userId").asc("userId");
-        PageList<User> users = (PageList) jdbcDao.queryList(criteria);
+        Criteria<User> criteria = Criteria.select(User.class).include("loginName", "userId").asc("userId");
+        PageList<User> users = (PageList<User>) jdbcDao.queryList(criteria);
         //        Pager pager = PageControl.getPager();
         //        List<User> users = pager.getList(User.class);
         Assert.assertNotNull(users);
@@ -268,7 +268,7 @@ public class JdbcDaoTest {
     public void queryList3() {
         this.save();
         this.save2();
-        Criteria criteria = Criteria.select(User.class).exclude("loginName").where("userType", new Object[] { "1" })
+        Criteria<User> criteria = Criteria.select(User.class).exclude("loginName").where("userType", new Object[] { "1" })
             .asc("userAge").desc("userId");
         List<User> users = jdbcDao.queryList(criteria);
         Assert.assertNotNull(users);
@@ -288,7 +288,7 @@ public class JdbcDaoTest {
     public void queryList4() {
         this.save();
         this.save2();
-        Criteria criteria = Criteria.select(User.class).where("loginName", "like", new Object[] { "%selfly%" });
+        Criteria<User> criteria = Criteria.select(User.class).where("loginName", "like", new Object[] { "%selfly%" });
         User user1 = new User();
         user1.setUserType("1");
         List<User> users = jdbcDao.queryList(user1, criteria.include("userId", "userType", "loginName"));
@@ -310,7 +310,7 @@ public class JdbcDaoTest {
 
     @Test
     public void queryCount2() {
-        Criteria criteria = Criteria.select(User.class).where("userType", new Object[] { "1" });
+        Criteria<User> criteria = Criteria.select(User.class).where("userType", new Object[] { "1" });
         int count = jdbcDao.queryCount(criteria);
         Assert.assertTrue(count > 0);
     }
@@ -328,7 +328,7 @@ public class JdbcDaoTest {
     @Test
     public void querySingleResult2() {
         this.save();
-        Criteria criteria = Criteria.select(User.class).where("userId", new Object[] { -2L });
+        Criteria<User> criteria = Criteria.select(User.class).where("userId", new Object[] { -2L });
         User u = jdbcDao.querySingleResult(criteria);
         Assert.assertNotNull(u);
         Assert.assertEquals(-2L, (long) u.getUserId());
@@ -336,7 +336,7 @@ public class JdbcDaoTest {
 
     @Test
     public void queryFunc() {
-        Criteria criteria = Criteria.select(User.class).where("{length([loginName])}", ">", new Object[] { 8 });
+        Criteria<User> criteria = Criteria.select(User.class).where("{length([loginName])}", ">", new Object[] { 8 });
         List<User> userList = jdbcDao.queryList(criteria);
         Assert.assertNotNull(userList);
         for (User u : userList) {
@@ -346,21 +346,21 @@ public class JdbcDaoTest {
 
     @Test
     public void queryAnnObject() {
-        Criteria criteria = Criteria.select(User.class).addSelectFunc("max([userId])");
-        Long userId = jdbcDao.queryObject(criteria);
+        Criteria<User> criteria = Criteria.select(User.class).addSelectFunc("max([userId])");
+        Long userId = (Long)jdbcDao.queryObject(criteria);
         Assert.assertTrue(userId > 0);
     }
 
     @Test
     public void queryObject() {
-        Criteria criteria = Criteria.select(AnnotationUser.class).addSelectFunc("max([usernameId])");
-        Long userId = jdbcDao.queryObject(criteria);
+        Criteria<AnnotationUser> criteria = Criteria.select(AnnotationUser.class).addSelectFunc("max([usernameId])");
+        Long userId = (Long)jdbcDao.queryObject(criteria);
         Assert.assertTrue(userId > 0);
     }
 
     @Test
     public void queryObject2() {
-        Criteria criteria = Criteria.select(User.class)
+        Criteria<User> criteria = Criteria.select(User.class)
             .addSelectFunc("length([loginName]) loginNameLength", false, true).where("loginName", "is not", null)
             .and("loginName", "!=", new Object[] { "" });
         List<Map<String, Object>> mapList = jdbcDao.queryRowMapList(criteria);
@@ -373,14 +373,14 @@ public class JdbcDaoTest {
 
     @Test
     public void queryObjectList() {
-        Criteria criteria = Criteria.select(User.class).include("loginName");
+        Criteria<User> criteria = Criteria.select(User.class).include("loginName");
         List<String> list = jdbcDao.queryObjectList(criteria, String.class);
         Assert.assertNotNull(list);
     }
 
     @Test
     public void queryObjectList2() {
-        Criteria criteria = Criteria.select(User.class).include("loginName").where("userType", new Object[] { "1" });
+        Criteria<User> criteria = Criteria.select(User.class).include("loginName").where("userType", new Object[] { "1" });
         User user = new User();
         user.setUserAge(22);
         List<String> list = jdbcDao.queryObjectList(criteria, user, String.class);
@@ -390,7 +390,7 @@ public class JdbcDaoTest {
     @Test
     public void queryRowMap() {
         this.save();
-        Criteria criteria = Criteria.select(User.class).where("userId", new Object[] { -2L });
+        Criteria<User> criteria = Criteria.select(User.class).where("userId", new Object[] { -2L });
         Map<String, Object> map = jdbcDao.queryRowMap(criteria);
         Assert.assertNotNull(map);
         Assert.assertTrue("selfly-2".equals(map.get("LOGIN_NAME")));
@@ -399,7 +399,7 @@ public class JdbcDaoTest {
     @Test
     public void queryRowMapList() {
         this.save();
-        Criteria criteria = Criteria.select(User.class).addSelectFunc("distinct [loginName]")
+        Criteria<User> criteria = Criteria.select(User.class).addSelectFunc("distinct [loginName]")
             .where("loginName", "is not", null).and("loginName", "!=", new Object[] { "" });
         List<Map<String, Object>> mapList = jdbcDao.queryRowMapList(criteria);
         Assert.assertNotNull(mapList);
@@ -481,7 +481,7 @@ public class JdbcDaoTest {
 
         String loginName = UUIDUtils.getUUID8();
         this.saveByName(loginName);
-        Criteria criteria = Criteria.select(User.class).where("userType", new Object[] { "1" }).begin()
+        Criteria<User> criteria = Criteria.select(User.class).where("userType", new Object[] { "1" }).begin()
             .and("loginName", new Object[] { loginName }).or("email", new Object[] { loginName + "@live.com" }).end()
             .and("password", new Object[] { "123456" });
         User user = jdbcDao.querySingleResult(criteria);
@@ -511,14 +511,13 @@ public class JdbcDaoTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testSelectSql3() {
 
         PageControl.performPage(1, 10);
         List<Map<String, Object>> maps = jdbcDao
             .queryListForSql("select t.* ,t2.login_name lgName from USER t left join USER t2 on t.user_id=t2.user_id");
         Assert.assertTrue(maps.size() == 10);
-        System.out.println(((PageList) maps).getPager().getItems());
+        System.out.println(((PageList<Map<String, Object>>) maps).getPager().getItems());
     }
 
     @Test
@@ -528,7 +527,7 @@ public class JdbcDaoTest {
         List<User> users = jdbcDao.queryListForSql("select * from USER", User.class);
         Assert.assertTrue(users.size() == 10);
         Assert.assertNotNull(users.iterator().next().getUserId());
-        System.out.println(((PageList) users).getPager().getItems());
+        System.out.println(((PageList<User>) users).getPager().getItems());
     }
 
     @Test
@@ -550,7 +549,7 @@ public class JdbcDaoTest {
         //数据库中desc是关键字 注解名称
         annotationUser.setDescription("test desc");
         annotationUser.setGmtCreate(new Date());
-        Long userId = jdbcDao.insert(annotationUser);
+        Long userId = (Long)jdbcDao.insert(annotationUser);
         Assert.assertNotNull(userId);
 
         //查询时表中没有gmtCreate字段，注解进行了忽略
@@ -562,9 +561,9 @@ public class JdbcDaoTest {
     public void testAnnotationInsert2() {
 
         //注解对应了 USER_A 表 注意criteria中desc的处理
-        Criteria criteria = Criteria.insert(AnnotationUser.class).into("loginName", "annUser")
+        Criteria<AnnotationUser> criteria = Criteria.insert(AnnotationUser.class).into("loginName", "annUser")
             .into("`desc`", "test desc").into("gmtCreate", new Date());
-        Long userId = jdbcDao.insert(criteria);
+        Long userId = (Long)jdbcDao.insert(criteria);
         Assert.assertNotNull(userId);
 
         //查询时表中没有gmtCreate字段，注解进行了忽略
@@ -613,7 +612,7 @@ public class JdbcDaoTest {
 
         Long userId = this.insertAnnotationUser();
 
-        Criteria criteria = Criteria.update(AnnotationUser.class).set("loginName", "criteriaUserUpdate")
+        Criteria<AnnotationUser> criteria = Criteria.update(AnnotationUser.class).set("loginName", "criteriaUserUpdate")
             .where("userId", new Object[] { userId });
 
         int i = jdbcDao.update(criteria);
@@ -639,7 +638,7 @@ public class JdbcDaoTest {
     @Test
     public void testAnnotationDelete2() {
         Long userId = this.insertAnnotationUser();
-        Criteria criteria = Criteria.delete(AnnotationUser.class).where("userId", new Object[] { userId });
+        Criteria<AnnotationUser> criteria = Criteria.delete(AnnotationUser.class).where("userId", new Object[] { userId });
 
         int i = jdbcDao.delete(criteria);
         Assert.assertTrue(i > 0);
@@ -679,7 +678,7 @@ public class JdbcDaoTest {
     public void testAnnotationSelect3() {
         this.insertAnnotationUser();
         this.insertAnnotationUser();
-        Criteria criteria = Criteria.select(AnnotationUser.class).exclude("usernameId");
+        Criteria<AnnotationUser> criteria = Criteria.select(AnnotationUser.class).exclude("usernameId");
         List<AnnotationUser> userList = jdbcDao.queryList(criteria);
         Assert.assertTrue(userList.size() > 1);
         for (AnnotationUser annotationUser : userList) {
@@ -702,9 +701,11 @@ public class JdbcDaoTest {
 
     @Test
     public void testMultiCriteria() {
-        Criteria criteria = Criteria.select(User.class).where("loginName", new Object[] { "selfly" });
+        Criteria<User> criteria = Criteria.select(User.class).where("loginName", new Object[] { "selfly" });
         int i = jdbcDao.queryCount(criteria);
         List<User> users = jdbcDao.queryList(criteria);
+        System.out.println(i);
+        System.out.println(users.size());
     }
 
     private Long insertAnnotationUser() {
@@ -714,6 +715,6 @@ public class JdbcDaoTest {
         annotationUser.setUsername("annotation_123");
         annotationUser.setDescription("test desc");
         annotationUser.setGmtCreate(new Date());
-        return jdbcDao.insert(annotationUser);
+        return (Long)jdbcDao.insert(annotationUser);
     }
 }

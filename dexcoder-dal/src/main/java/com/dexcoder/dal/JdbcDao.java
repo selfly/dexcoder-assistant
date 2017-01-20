@@ -19,7 +19,7 @@ public interface JdbcDao {
      * @param entity
      * @return
      */
-    <T> T insert(Serializable entity);
+    Object insert(Serializable entity);
 
     /**
      * 插入一条记录 自动处理主键
@@ -27,7 +27,7 @@ public interface JdbcDao {
      * @param criteria the criteria
      * @return T
      */
-    <T> T insert(Criteria criteria);
+    Object insert(Criteria<?> criteria);
 
     /**
      * 插入一条记录
@@ -36,7 +36,7 @@ public interface JdbcDao {
      * @param entity
      * @return
      */
-    <T> T insert(Criteria criteria, Serializable entity);
+    Object insert(Criteria<?> criteria, Serializable entity);
 
     /**
      * 保存一条记录，不处理主键
@@ -50,14 +50,14 @@ public interface JdbcDao {
      *
      * @param criteria the criteria
      */
-    void save(Criteria criteria);
+    void save(Criteria<?> criteria);
 
     /**
      * 根据Criteria更新
      *
      * @param criteria the criteria
      */
-    int update(Criteria criteria);
+    int update(Criteria<?> criteria);
 
     /**
      * 根据实体更新
@@ -80,7 +80,7 @@ public interface JdbcDao {
      *
      * @param criteria the criteria
      */
-    int delete(Criteria criteria);
+    int delete(Criteria<?> criteria);
 
     /**
      * 删除记录 此方法会以实体中不为空的字段为条件
@@ -104,7 +104,7 @@ public interface JdbcDao {
      * @param criteria the criteria
      * @return list
      */
-    <T> List<T> queryList(Criteria criteria);
+    <T> List<T> queryList(Criteria<T> criteria);
 
     /**
      * 按设置的条件查询
@@ -131,7 +131,7 @@ public interface JdbcDao {
      * @param criteria the criteria
      * @return the list
      */
-    <T> List<T> queryList(T entity, Criteria criteria);
+    <T> List<T> queryList(T entity, Criteria<T> criteria);
 
     /**
      * 查询记录数
@@ -155,7 +155,7 @@ public interface JdbcDao {
      * @param criteria the criteria
      * @return int int
      */
-    int queryCount(Criteria criteria);
+    int queryCount(Criteria<?> criteria);
 
     /**
      * 查询记录数
@@ -164,7 +164,7 @@ public interface JdbcDao {
      * @param criteria the criteria
      * @return int int
      */
-    int queryCount(Serializable entity, Criteria criteria);
+    int queryCount(Serializable entity, Criteria<?> criteria);
 
     /**
      * 根据主键得到记录
@@ -184,7 +184,7 @@ public interface JdbcDao {
      * @param <T>
      * @return
      */
-    <T> T get(Criteria criteria, Serializable id);
+    <T> T get(Criteria<T> criteria, Serializable id);
 
     /**
      * 查询单个记录
@@ -202,7 +202,7 @@ public interface JdbcDao {
      * @param criteria the criteria
      * @return t t
      */
-    <T> T querySingleResult(Criteria criteria);
+    <T> T querySingleResult(Criteria<T> criteria);
 
     /**
      * 查询单个对象,例如count(*) max(id)这类只有一个结果的sql
@@ -211,17 +211,16 @@ public interface JdbcDao {
      * @param <T>
      * @return
      */
-    <T> T queryObject(Criteria criteria);
+    Object queryObject(Criteria<?> criteria);
 
     /**
      * 查询单个对象的列表，例如id列表，name列表 criteria中必须且只能include一个属性
      * 
      * @param criteria
      * @param elementType
-     * @param <T>
      * @return
      */
-    <T> List<T> queryObjectList(Criteria criteria, Class<T> elementType);
+    <T> List<T> queryObjectList(Criteria<?> criteria,Class<T> elementType);
 
     /**
      * 查询单个对象的列表，例如id列表，name列表 criteria中必须且只能include一个属性 entity为实体查询条件
@@ -229,10 +228,10 @@ public interface JdbcDao {
      * @param <T>  the type parameter
      * @param criteria the criteria
      * @param entity the entity
-     * @param elementType the element type
+     * @param elementType
      * @return list
      */
-    <T> List<T> queryObjectList(Criteria criteria, Serializable entity, Class<T> elementType);
+    <T> List<T> queryObjectList(Criteria<?> criteria, Serializable entity,Class<T> elementType);
 
     /**
      * 查询列表 例如使用函数后和列不排斥的情况
@@ -240,7 +239,7 @@ public interface JdbcDao {
      * @param criteria
      * @return
      */
-    Map<String, Object> queryRowMap(Criteria criteria);
+    Map<String, Object> queryRowMap(Criteria<?> criteria);
 
     /**
      * 查询列表 例如使用函数后和列不排斥的情况
@@ -248,7 +247,7 @@ public interface JdbcDao {
      * @param criteria
      * @return
      */
-    List<Map<String, Object>> queryRowMapList(Criteria criteria);
+    List<Map<String, Object>> queryRowMapList(Criteria<?> criteria);
 
     /**
      * 根据sql查询单个结果

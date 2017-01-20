@@ -5,8 +5,6 @@ import java.util.List;
 import com.dexcoder.commons.exceptions.DexcoderException;
 import org.apache.commons.collections.CollectionUtils;
 
-import com.dexcoder.commons.exceptions.AssistantException;
-
 /**
  * 系统返回结果
  * 

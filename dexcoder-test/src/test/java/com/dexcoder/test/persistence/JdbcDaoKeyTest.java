@@ -42,7 +42,7 @@ public class JdbcDaoKeyTest {
         people.setPeopleName("liyd-get");
         people.setPeopleAge(12);
         people.setGmtCreate(new Date());
-        String id = jdbcDao.insert(people);
+        String id = (String)jdbcDao.insert(people);
 
         People people1 = jdbcDao.get(People.class, id);
         Assert.assertEquals(people.getPeopleName(), people1.getPeopleName());

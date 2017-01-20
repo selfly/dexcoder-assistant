@@ -1,7 +1,6 @@
 package com.dexcoder.dal.build;
 
 import com.dexcoder.dal.BoundSql;
-import com.dexcoder.dal.handler.MappingHandler;
 
 /**
  * Created by liyd on 2015-12-4.

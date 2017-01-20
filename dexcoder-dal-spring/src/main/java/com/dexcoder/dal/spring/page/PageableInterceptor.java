@@ -33,7 +33,8 @@ public class PageableInterceptor {
         //可以是private修饰符，但是会有never used的警告，所以这里用了public
     }
 
-    @Around("queryMethod()")
+    @SuppressWarnings("unchecked")
+	@Around("queryMethod()")
     public Object pagerAspect(ProceedingJoinPoint pjp) throws Throwable {
 
         Pager pager = PageControl.getPager();
@@ -64,7 +65,7 @@ public class PageableInterceptor {
         }
         Object result = pjp.proceed(args);
 
-        return new PageList((List) result, pager);
+        return new PageList<Object>((List<Object>) result, pager);
     }
 
     public PageSqlHandler getPageSqlHandler() {

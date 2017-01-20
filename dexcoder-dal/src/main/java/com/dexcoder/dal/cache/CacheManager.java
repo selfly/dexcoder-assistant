@@ -1,7 +1,5 @@
 package com.dexcoder.dal.cache;
 
-import java.util.List;
-
 /**
  * 缓存处理
  *
