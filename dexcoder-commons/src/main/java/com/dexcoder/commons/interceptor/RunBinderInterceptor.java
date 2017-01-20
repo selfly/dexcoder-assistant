@@ -131,7 +131,7 @@ public class RunBinderInterceptor {
         }
 
         MethodSignature methodSignature = (MethodSignature) signature;
-        Class returnType = methodSignature.getReturnType();
+        Class<?> returnType = methodSignature.getReturnType();
         if (!returnType.isPrimitive()) {
             return null;
         }

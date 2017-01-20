@@ -9,7 +9,9 @@ import com.dexcoder.commons.page.Pageable;
  */
 public class UserInfo extends Pageable {
 
-    private Long    userInfoId;
+	private static final long serialVersionUID = 1L;
+
+	private Long    userInfoId;
 
     private String  userName;
 

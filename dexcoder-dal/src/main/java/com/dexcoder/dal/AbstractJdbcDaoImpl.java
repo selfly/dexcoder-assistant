@@ -63,7 +63,7 @@ public abstract class AbstractJdbcDaoImpl {
         List<T> beans = BeanKit.underlineKeyMapToBean(mapList, beanClass);
         //如果是分页的
         if (mapList instanceof PageList) {
-            return new PageList<T>(beans, ((PageList) mapList).getPager());
+            return new PageList<T>(beans, ((PageList<?>) mapList).getPager());
         }
         return beans;
     }
