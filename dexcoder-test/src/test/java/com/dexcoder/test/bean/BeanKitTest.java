@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Created by liyd on 2015-6-4.
  */
-public class BeanConvertTest {
+public class BeanKitTest {
 
     @Test
     public void convert() {
