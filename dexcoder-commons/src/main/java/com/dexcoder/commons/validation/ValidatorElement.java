@@ -11,21 +11,21 @@ public class ValidatorElement {
     /**
      * 验证器
      */
-    private IValidator validator;
+    private Validator validator;
 
     /**
      * 待验证对象
      */
-    private Object     validateValue;
+    private Object    validateValue;
 
     /** 校验对象的名称 一般中文备注名 非属性名 */
-    private String     validateName;
+    private String    validateName;
 
     /** 指定的错误码 */
-    private String     errorCode;
+    private String    errorCode;
 
     /** 指定的错误信息 */
-    private String     errorMsg;
+    private String    errorMsg;
 
     /**
      * create
@@ -34,7 +34,7 @@ public class ValidatorElement {
      * @param validator 验证器
      * @param validateName 
      */
-    public ValidatorElement(Object validateValue, String validateName, IValidator validator) {
+    public ValidatorElement(Object validateValue, String validateName, Validator validator) {
         this.validateValue = validateValue;
         this.validateName = validateName;
         this.validator = validator;
@@ -56,11 +56,11 @@ public class ValidatorElement {
         return errorMsg;
     }
 
-    public IValidator getValidator() {
+    public Validator getValidator() {
         return validator;
     }
 
-    public void setValidator(IValidator validator) {
+    public void setValidator(Validator validator) {
         this.validator = validator;
     }
 

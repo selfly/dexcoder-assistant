@@ -5,13 +5,13 @@ import java.util.Collection;
 /**
  * Created by liyd on 17/1/23.
  */
-public class NotEmptyValidator implements IValidator {
+public class NotEmptyValidator implements Validator {
 
     public String validateCode() {
         return "not.empty";
     }
 
-    public String validateMsg(Object validateValue, String validateName) {
+    public String validateMsg(Object value,String validateName) {
         return validateName + "不能为空";
     }
 

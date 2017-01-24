@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class ValidatorFactory {
 
-    private static final Map<String, IValidator> VALIDATOR_MAP = new HashMap<String, IValidator>();
+    private static final Map<String, Validator> VALIDATOR_MAP = new HashMap<String, Validator>();
 
     public static final String                   NOT_BLANK     = "NOT_BLANK";
 
@@ -20,7 +20,7 @@ public class ValidatorFactory {
 
     }
 
-    public static IValidator getValidator(String special) {
+    public static Validator getValidator(String special) {
         return null;
     }
 
