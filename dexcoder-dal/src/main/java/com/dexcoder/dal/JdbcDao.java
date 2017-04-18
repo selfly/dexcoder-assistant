@@ -1,10 +1,10 @@
 package com.dexcoder.dal;
 
+import com.dexcoder.dal.build.Criteria;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-
-import com.dexcoder.dal.build.Criteria;
 
 /**
  * jdbc操作dao
@@ -113,7 +113,7 @@ public interface JdbcDao {
      * @param clazz the clazz
      * @return list
      */
-    <T> List<T> queryList(Class<?> clazz);
+    <T> List<T> queryList(Class<T> clazz);
 
     /**
      * 查询列表
@@ -211,7 +211,7 @@ public interface JdbcDao {
      * @param <T>
      * @return
      */
-    Object queryObject(Criteria<?> criteria);
+    <T> Object queryObject(Criteria<T> criteria);
 
     /**
      * 查询单个对象的列表，例如id列表，name列表 criteria中必须且只能include一个属性

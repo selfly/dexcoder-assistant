@@ -289,7 +289,7 @@ public class Criteria<T> {
      * 
      * @param func 函数代码
      * @param isFieldExclusion 是否与列互斥 默认true
-     * @param isOrderBy 是否需要排序 默认fasle
+     * @param isOrderBy 是否需要排序 默认false
      * @return
      */
     public Criteria<T> addSelectFunc(String func, boolean isFieldExclusion, boolean isOrderBy) {

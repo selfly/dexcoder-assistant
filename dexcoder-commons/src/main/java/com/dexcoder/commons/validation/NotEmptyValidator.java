@@ -11,12 +11,24 @@ public class NotEmptyValidator implements Validator {
         return "not.empty";
     }
 
-    public String validateMsg(Object value,String validateName) {
+    public String validateMsg(Object value, String validateName) {
         return validateName + "不能为空";
     }
 
     public boolean validate(Object obj) {
-        Collection<?> cts = (Collection<?>) obj;
-        return cts != null && !cts.isEmpty();
+        if (obj == null) {
+            return false;
+        }
+        if (obj instanceof Collection) {
+            Collection<?> cts = (Collection<?>) obj;
+            return cts != null && !cts.isEmpty();
+        } else if (obj.getClass().isArray()) {
+            return ((Object[]) obj).length > 0;
+        } else if (obj instanceof String) {
+            return ((String) obj).isEmpty();
+        } else {
+            throw new UnsupportedOperationException("不支持的参数类型");
+        }
+
     }
 }

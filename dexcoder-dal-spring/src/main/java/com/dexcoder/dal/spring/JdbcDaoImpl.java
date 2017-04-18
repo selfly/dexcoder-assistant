@@ -1,12 +1,12 @@
 package com.dexcoder.dal.spring;
 
-import java.io.Serializable;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-
+import com.dexcoder.commons.utils.ClassUtils;
+import com.dexcoder.dal.AbstractJdbcDaoImpl;
+import com.dexcoder.dal.BoundSql;
+import com.dexcoder.dal.JdbcDao;
+import com.dexcoder.dal.build.Criteria;
+import com.dexcoder.dal.handler.KeyGenerator;
+import com.dexcoder.dal.spring.mapper.JdbcRowMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.support.DataAccessUtils;
@@ -15,13 +15,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.util.CollectionUtils;
 
-import com.dexcoder.commons.utils.ClassUtils;
-import com.dexcoder.dal.AbstractJdbcDaoImpl;
-import com.dexcoder.dal.BoundSql;
-import com.dexcoder.dal.JdbcDao;
-import com.dexcoder.dal.build.Criteria;
-import com.dexcoder.dal.handler.KeyGenerator;
-import com.dexcoder.dal.spring.mapper.JdbcRowMapper;
+import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * jdbc操作dao
@@ -127,7 +126,7 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
         return (List<T>) list;
     }
 
-    public <T> List<T> queryList(Class<?> clazz) {
+    public <T> List<T> queryList(Class<T> clazz) {
         BoundSql boundSql = Criteria.select(clazz).mappingHandler(getMappingHandler()).build(true);
         List<?> list = jdbcTemplate.query(boundSql.getSql(), boundSql.getParameters().toArray(),
             this.getRowMapper(clazz));
@@ -212,7 +211,7 @@ public class JdbcDaoImpl extends AbstractJdbcDaoImpl implements JdbcDao {
         return DataAccessUtils.singleResult(list);
     }
 
-    public Object queryObject(Criteria<?> criteria) {
+    public <T> Object queryObject(Criteria<T> criteria) {
         final BoundSql boundSql = criteria.mappingHandler(getMappingHandler()).build(true);
         return jdbcTemplate.queryForObject(boundSql.getSql(), boundSql.getParameters().toArray(), Object.class);
     }

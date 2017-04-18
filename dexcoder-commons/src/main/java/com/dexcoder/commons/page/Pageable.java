@@ -1,14 +1,14 @@
 package com.dexcoder.commons.page;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.dexcoder.commons.bean.BeanKit;
 import com.dexcoder.commons.exceptions.CommonsAssistantException;
 import com.dexcoder.commons.utils.ClassUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
+import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * 分页等常用信息存储
@@ -40,7 +40,7 @@ public class Pageable implements Serializable {
     /**
      * 数据map
      */
-    private Map<String, Object> attachData;
+    private Map<String, Object> extendData;
 
     /**
      * 放入数据
@@ -49,17 +49,17 @@ public class Pageable implements Serializable {
      * @param obj
      */
     public void put(String key, Object obj) {
-        if (this.attachData == null) {
-            attachData = new HashMap<String, Object>();
+        if (this.extendData == null) {
+            extendData = new LinkedHashMap<String, Object>();
         }
-        attachData.put(key, obj);
+        extendData.put(key, obj);
     }
 
     public void remove(String key) {
-        if (this.attachData == null) {
+        if (this.extendData == null) {
             return;
         }
-        this.attachData.remove(key);
+        this.extendData.remove(key);
     }
 
     /**
@@ -81,22 +81,23 @@ public class Pageable implements Serializable {
      * @return
      */
     @SuppressWarnings("unchecked")
-	public <T> T get(String key, Class<T> elementType) {
-        if (this.attachData == null) {
+    public <T> T get(String key, Class<T> elementType) {
+        if (this.extendData == null) {
             return null;
         }
-        Object obj = this.attachData.get(key);
+        Object obj = this.extendData.get(key);
         if (obj == null) {
             return null;
         }
         if (!elementType.isAssignableFrom(obj.getClass())) {
-            throw new CommonsAssistantException("类型不匹配。expected:" + elementType.getName() + ",actual:" + obj.getClass());
+            throw new CommonsAssistantException(
+                "类型不匹配。expected:" + elementType.getName() + ",actual:" + obj.getClass());
         }
         return (T) obj;
     }
 
-    public Map<String, Object> getAttachData() {
-        return attachData;
+    public Map<String, Object> getExtendData() {
+        return extendData;
     }
 
     /**
@@ -123,6 +124,24 @@ public class Pageable implements Serializable {
      */
     public Object getFieldValue(String fieldName) {
         return ClassUtils.getFieldValue(this.getClass(), this, fieldName);
+    }
+
+    /**
+     * 当前页 简化前端参数
+     * 
+     * @param curPage
+     */
+    public void setP(int curPage) {
+        this.curPage = curPage;
+    }
+
+    /**
+     * 关键字 简化前端参数
+     * 
+     * @param keywords
+     */
+    public void setK(String keywords) {
+        this.keywords = keywords;
     }
 
     public int getItemsPerPage() {

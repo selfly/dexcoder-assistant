@@ -1,5 +1,6 @@
 package com.dexcoder.commons.validation;
 
+import com.dexcoder.commons.enums.IEnum;
 import com.dexcoder.commons.exceptions.DexcoderException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,14 +28,78 @@ public final class Verifier {
         return this;
     }
 
-    public Verifier notEmpty(Collection<?> value, String name) {
+    public Verifier notEmpty(Object value, String name) {
         ValidatorElement validatorElement = new ValidatorElement(value, name, new NotEmptyValidator());
         validatorElements.add(validatorElement);
         return this;
     }
 
     public Verifier notBlank(String value, String name) {
-        ValidatorElement validatorElement = new ValidatorElement(value, name, new NotBlankValidator());
+        ValidatorElement validatorElement = new ValidatorElement(value, name,
+            new StringValidator(StringValidator.NOT_BLANK));
+        validatorElements.add(validatorElement);
+        return this;
+    }
+
+    public Verifier minLength(String value, int minLength, String name) {
+        ValidatorElement validatorElement = new ValidatorElement(new Object[] { value, minLength }, name,
+            new StringValidator(StringValidator.MIN_LENGTH));
+        validatorElements.add(validatorElement);
+        return this;
+    }
+
+    public Verifier maxLength(String value, int maxLength, String name) {
+        ValidatorElement validatorElement = new ValidatorElement(new Object[] { value, maxLength }, name,
+            new StringValidator(StringValidator.MAX_LENGTH));
+        validatorElements.add(validatorElement);
+        return this;
+    }
+
+    public Verifier eqLength(String value, int maxLength, String name) {
+        ValidatorElement validatorElement = new ValidatorElement(new Object[] { value, maxLength }, name,
+            new StringValidator(StringValidator.EQ_LENGTH));
+        validatorElements.add(validatorElement);
+        return this;
+    }
+
+    public Verifier mustEmpty(Collection<?> value, String name) {
+        ValidatorElement validatorElement = new ValidatorElement(value, name,
+            new CollectionValidator(CollectionValidator.MUST_EMPTY));
+        validatorElements.add(validatorElement);
+        return this;
+    }
+
+    public Verifier mustFalse(Boolean bool, String name) {
+        ValidatorElement validatorElement = new ValidatorElement(bool, name,
+            new BooleanValidator(BooleanValidator.FALSE));
+        validatorElements.add(validatorElement);
+        return this;
+    }
+
+    public Verifier mustTrue(Boolean bool, String name) {
+        ValidatorElement validatorElement = new ValidatorElement(bool, name,
+            new BooleanValidator(BooleanValidator.TRUE));
+        validatorElements.add(validatorElement);
+        return this;
+    }
+
+    public Verifier minSize(Collection<?> value, int minSize, String name) {
+        ValidatorElement validatorElement = new ValidatorElement(new Object[] { value, minSize }, name,
+            new CollectionValidator(CollectionValidator.MIN_SIZE));
+        validatorElements.add(validatorElement);
+        return this;
+    }
+
+    public Verifier maxSize(Collection<?> value, int maxSize, String name) {
+        ValidatorElement validatorElement = new ValidatorElement(new Object[] { value, maxSize }, name,
+            new CollectionValidator(CollectionValidator.MAX_SIZE));
+        validatorElements.add(validatorElement);
+        return this;
+    }
+
+    public Verifier eqSize(Collection<?> value, int eqSize, String name) {
+        ValidatorElement validatorElement = new ValidatorElement(new Object[] { value, eqSize }, name,
+            new CollectionValidator(CollectionValidator.EQ_SIZE));
         validatorElements.add(validatorElement);
         return this;
     }
@@ -59,8 +124,29 @@ public final class Verifier {
         return this;
     }
 
-    public Verifier eq(int value, int expectVal, String name) {
-        eq((long) value, (long) expectVal, name);
+    public Verifier mustEq(int value, int expectVal, String name) {
+        mustEq((long) value, (long) expectVal, name);
+        return this;
+    }
+
+    public Verifier mustEq(String value, String expectVal, String name) {
+        ValidatorElement validatorElement = new ValidatorElement(new Object[] { value, expectVal }, name,
+            new StringValidator(StringValidator.EQ));
+        validatorElements.add(validatorElement);
+        return this;
+    }
+
+    public Verifier notEq(String value, String expectVal, String name) {
+        ValidatorElement validatorElement = new ValidatorElement(new Object[] { value, expectVal }, name,
+            new StringValidator(StringValidator.NOT_EQ));
+        validatorElements.add(validatorElement);
+        return this;
+    }
+
+    public Verifier mustEqIgnoreCase(String value, String expectVal, String name) {
+        ValidatorElement validatorElement = new ValidatorElement(new Object[] { value, expectVal }, name,
+            new StringValidator(StringValidator.EQ_IGNORE_CASE));
+        validatorElements.add(validatorElement);
         return this;
     }
 
@@ -92,7 +178,7 @@ public final class Verifier {
         return this;
     }
 
-    public Verifier eq(long value, long expectVal, String name) {
+    public Verifier mustEq(long value, long expectVal, String name) {
         ValidatorElement validatorElement = new ValidatorElement(new Object[] { value, expectVal }, name,
             new NumberValidator(NumberValidator.EQ));
         validatorElements.add(validatorElement);
@@ -119,6 +205,13 @@ public final class Verifier {
         return this;
     }
 
+    public Verifier with(boolean b) {
+        if (!b) {
+            removeLastValidationElement();
+        }
+        return this;
+    }
+
     /**
      * 单独指定错误码
      * 
@@ -141,8 +234,22 @@ public final class Verifier {
         return this;
     }
 
-    public void validate() {
+    /**
+     * 单独指定错误信息
+     *
+     * @param iEnum
+     * @return
+     */
+    public Verifier error(IEnum iEnum) {
+        ValidatorElement lastValidationElement = getLastValidationElement();
+        lastValidationElement.setErrorCode(iEnum.getCode());
+        lastValidationElement.setErrorMsg(iEnum.getDesc());
+        return this;
+    }
+
+    public Verifier validate() {
         result(true);
+        return this;
     }
 
     public ValidationResult result() {
@@ -174,6 +281,7 @@ public final class Verifier {
                 }
             }
         }
+        validatorElements.clear();
         return result;
     }
 
@@ -182,6 +290,13 @@ public final class Verifier {
             throw new DexcoderException("请先设置需要校验的元素");
         }
         return validatorElements.get(validatorElements.size() - 1);
+    }
+
+    private ValidatorElement removeLastValidationElement() {
+        if (validatorElements.isEmpty()) {
+            throw new DexcoderException("请先设置需要校验的元素");
+        }
+        return validatorElements.remove(validatorElements.size() - 1);
     }
 
 }
