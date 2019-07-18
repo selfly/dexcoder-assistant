@@ -1,4 +1,6 @@
-#Dexcoder快速开发辅助工具包
+**新版全新重构，更加方便易用，请移步：[https://gitee.com/selfly/sonsure-dumper](https://gitee.com/selfly/sonsure-dumper)**
+
+# Dexcoder快速开发辅助工具包
 
 该通用dal是在开发过程中，对于简单封装的通用dao或数据访问层使用深感痛苦与不便，由此进行了整合和改进发展而来。
 
