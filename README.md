@@ -1,4 +1,4 @@
-**新版全新重构，更加方便易用，请移步：[https://gitee.com/selfly/sonsure-dumper](https://gitee.com/selfly/sonsure-dumper)**
+**新版全新重构，更加方便易用，请移步：[https://github.com/selfly/sonsure-dumper](https://github.com/selfly/sonsure-dumper)**
 
 # Dexcoder快速开发辅助工具包
 
