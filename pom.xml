@@ -62,7 +62,7 @@
         <jaxen.version>1.1.1</jaxen.version>
         <slf4j-api.version>1.7.7</slf4j-api.version>
         <ognl.version>2.6.9</ognl.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
         <jsqlparser.version>0.9.5</jsqlparser.version>
     </properties>
 
