@@ -53,7 +53,7 @@
         <aspectj.version>1.7.2</aspectj.version>
         <!--<cglib.version>2.2.2</cglib.version>-->
         <jmock.version>2.5.1</jmock.version>
-        <commons-io.version>2.2</commons-io.version>
+        <commons-io.version>2.7</commons-io.version>
         <commons-codec.version>1.6</commons-codec.version>
         <poi.version>3.10-FINAL</poi.version>
         <xmltools.version>1.1</xmltools.version>
