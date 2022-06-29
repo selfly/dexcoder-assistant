@@ -55,7 +55,7 @@
         <jmock.version>2.5.1</jmock.version>
         <commons-io.version>2.2</commons-io.version>
         <commons-codec.version>1.6</commons-codec.version>
-        <poi.version>3.10-FINAL</poi.version>
+        <poi.version>4.1.1</poi.version>
         <xmltools.version>1.1</xmltools.version>
         <dom4j.version>1.6.1</dom4j.version>
 
